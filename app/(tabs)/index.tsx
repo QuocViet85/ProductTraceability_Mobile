@@ -1,75 +1,84 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Button, FlatList, Modal, Platform, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import Header from '../general/header';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { url } from '../server/backend';
+import Categories from '../hometemplate/Categories';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const [showModal, setShowModal] = useState(false)
+  const [categories, setCategories] = useState([]);
+  const categoryAll = {id: 0, name: 'Tất cả', isParent: true};
+  const [categoryNow, setCategoryNow] = useState(categoryAll);
+  const [searchCategories, setSearchCategories] = useState('');
+
+  const filterCategories = categories.filter((category : any) => {
+    return category.name.toLowerCase().includes(searchCategories.toLowerCase());
+    }
+  );
+
+  useEffect(() => {
+    console.log(url('api/Category'));
+    axios.get(url('api/Category')).then((res: any) => {
+      const categories = res.data.categories;
+      categories.unshift(categoryAll);
+      setCategories(categories)
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+  }, [])
+  
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <Header title={"Sản phẩm"}></Header>
+
+      <View style={styles.content}>
+
+      <Modal
+        visible={showModal}
+        animationType='slide'
+        presentationStyle='fullScreen'
+        >
+        <View style={{alignItems: 'center'}}>
+            <Text style={{fontWeight: 'bold', fontSize: 20}}>Chọn danh mục</Text>
+            <TextInput style={{borderWidth: 1, width: '80%', margin: 10, height: 40}} placeholder='Tìm kiếm' value={searchCategories} onChangeText={setSearchCategories}></TextInput>
+            <Categories categories={filterCategories} setCategories={setCategories} setCategoryNow={setCategoryNow} setShowModal={setShowModal} />
+        </View>
+        <Button title='Đóng' onPress={() => setShowModal(false)}></Button>    
+      </Modal>
+
+        <View style={{width: '100%', flexDirection: 'row'}}>
+          <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm'></TextInput>
+          <Button title={categoryNow.name === 'Tất cả' ? 'Danh mục' : categoryNow.name} onPress={() => setShowModal(true)}></Button>
+        </View>
+      </View>
+    
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,                     // cho phép chiếm toàn màn hình
+    flexDirection: 'column',     // mặc định
+    justifyContent: 'flex-start',// bắt đầu từ trên xuống
+    paddingTop: 20,              // tránh dính sát trên cùng
+    backgroundColor: '#fff',
+    alignItems: 'center'
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  content: {
+    marginTop: 80,
+    width: '100%'
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  textInputSearch: {
+    flex: 1,
+    height: 40,
+    borderColor: 'black',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    width: '60%',
+  }
 });
