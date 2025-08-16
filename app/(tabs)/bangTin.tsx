@@ -1,10 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import Header from "../general/header";
 
-export default function Diary() {
+export default function BangTin() 
+{
     return (
         <View style={styles.container}>
-            <Header title="Nhật ký"></Header>
+            <Header title="Bản tin"></Header>
         </View>
     )
 }

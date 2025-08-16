@@ -1,11 +1,10 @@
 import { StyleSheet, View } from "react-native";
 import Header from "../general/header";
 
-export default function Feed() 
-{
+export default function NhatKy() {
     return (
         <View style={styles.container}>
-            <Header title="Bản tin"></Header>
+            <Header title="Nhật ký"></Header>
         </View>
     )
 }

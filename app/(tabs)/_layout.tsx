@@ -34,21 +34,21 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="diary"
+        name="nhatKy"
         options={{
           title: 'Nhật ký',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="assignment" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="scancode"
+        name="quetMa"
         options={{
           title: 'Quét Mã',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="camera" color={color} />,
         }}
       />
       <Tabs.Screen
-        name="feed"
+        name="bangTin"
         options={{
           title: 'Bản tin',
           tabBarIcon: ({ color }) => <IconSymbol size={28} name="feed" color={color} />,
