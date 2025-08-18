@@ -8,27 +8,32 @@ export const tatCaDanhMuc = {id: 0, dM_Ten: 'Tất cả'};
 
 export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucHienTai: any, setDanhMucHienTai: any}){
     const [showModal, setShowModal] = useState(false);
-    const [listDanhMucs, setListDanhMucs] = useState([]);
-    const [timKiemDanhMuc, setTimKiemDanhMuc] = useState('');
+    const [listDanhMucsCha, setListDanhMucsCha] = useState<any[]>([]);
+    const [listDanhMucsHienTai, setListDanhMucsHienTai] = useState<any[]>([]);
 
     useEffect(() => {
         console.log(url('api/danhmuc'))
             axios.get(url('api/danhmuc')).then((res: any) => {
             const listDanhMucs = res.data.listDanhMucs;
             listDanhMucs.unshift(tatCaDanhMuc);
-            setListDanhMucs(listDanhMucs)
+            setListDanhMucsHienTai(listDanhMucs);
         })
         .catch((err) => {
             console.log(err);
         })
     }, []);
 
-    const filterDanhMucs = listDanhMucs.filter((danhMuc : any) => {
-        if (danhMuc.dM_Ten) {
-            return danhMuc.dM_Ten.toLowerCase().includes(timKiemDanhMuc.toLowerCase());
+    const moListDanhMucCon = (danhMuc: any) => {
+        if (danhMuc.dM_List_DMCon && danhMuc.dM_List_DMCon.length > 0) {
+            listDanhMucsCha.push(listDanhMucsHienTai);
+            setListDanhMucsCha(listDanhMucsCha);
+            setListDanhMucsHienTai(danhMuc.dM_List_DMCon);
         }
     }
-    );
+
+    const quayLaiListDanhMucCha = () => {
+        setListDanhMucsHienTai(listDanhMucsCha.pop());
+    }
 
     return (
         <View style={{width: '100%'}}>
@@ -41,11 +46,16 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
             animationType='slide'
             presentationStyle='fullScreen'
             >
+
+                {listDanhMucsCha.length > 0 ? (
+                <View style={{marginRight: 'auto'}}>
+                    <Text style={{borderWidth: 1}} onPress={() => quayLaiListDanhMucCha()}>{'< < <'}</Text>
+                </View>) : (<View></View>)}
+                
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Chọn danh mục</Text>
-                <TextInput style={{borderWidth: 1, width: '80%', margin: 10, height: 40}} placeholder='Tìm kiếm' value={timKiemDanhMuc} onChangeText={setTimKiemDanhMuc}></TextInput>
             </View>
-            <ListDanhMucs listDanhMucs={filterDanhMucs} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} />
+                <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} quayLaiListDanhMucCha={quayLaiListDanhMucCha} />
             <Button title='Đóng' onPress={() => setShowModal(false)}></Button>    
             </Modal>
         </View>
