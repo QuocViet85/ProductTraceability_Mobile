@@ -1,8 +1,8 @@
-import { Button, FlatList, Modal, Platform, StyleSheet, Text, TextInput, Touchable, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import Header from '../general/header';
-import { useEffect, useState } from 'react';
-import DanhMucs, { tatCaDanhMuc } from '../hometemplate/danhMucs';
-import SanPham from '../hometemplate/sanPhams';
+import DanhMucs, { tatCaDanhMuc } from '../hometemplate/danhMuc/danhMucs';
+import SanPham from '../hometemplate/sanPham/sanPhams';
 
 
 export default function HomeScreen() {

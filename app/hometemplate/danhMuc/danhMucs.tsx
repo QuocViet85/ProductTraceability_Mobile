@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, FlatList, Modal, Text, TextInput, View } from "react-native";
-import { url } from "../server/backend";
+import { Button, Modal, Text, View } from "react-native";
+import { url } from "../../server/backend";
 import ListDanhMucs from "./listDanhMucs";
 
 export const tatCaDanhMuc = {id: 0, dM_Ten: 'Tất cả'};
@@ -55,7 +55,7 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Chọn danh mục</Text>
             </View>
-                <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} quayLaiListDanhMucCha={quayLaiListDanhMucCha} />
+                <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} />
             <Button title='Đóng' onPress={() => setShowModal(false)}></Button>    
             </Modal>
         </View>
