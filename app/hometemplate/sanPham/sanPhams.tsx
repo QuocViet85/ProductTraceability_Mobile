@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
 
 export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
@@ -34,7 +34,7 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
   );
 
     return (
-        <View>
+        <ScrollView>
             <View style={{width: '100%', flexDirection: 'row'}}>
                 <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={timKiemSanPham} onChangeText={setTimKiemSanPham}></TextInput>
             </View>
@@ -45,7 +45,7 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
                 numColumns={2} // 👉 Mỗi dòng 2 cột
                 contentContainerStyle={styles.container}
                 />
-        </View>
+        </ScrollView>
     )
 }
 
