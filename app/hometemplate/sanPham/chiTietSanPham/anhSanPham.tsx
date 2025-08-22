@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { getFileAsync, getUriFile } from "@/app/helpers/fileHelper";
+import { url } from "@/app/server/backend";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 
 const { width } = Dimensions.get('window');
 export default function AnhSanPham({sP_Id} : {sP_Id : string}) 
 {
-    const images = [
-      'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-      'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-      'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D',
-    ];
+    const [listAnhSanPhams, setListAnhSanPhams] = useState<any[]>(['']);
+
+    useEffect(() => {
+      getFileAsync('SP', sP_Id, 'image').then((data) => {
+        if(data) {
+          setListAnhSanPhams(data);
+        }
+      })
+    }, [])
 
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -18,9 +25,9 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
     };
 
     return (
-        <View style={{position: 'relative', height: 300}}>
+        <View style={{height: 300}}>
                 <FlatList
-                data={images}
+                data={listAnhSanPhams}
                 horizontal
                 pagingEnabled
                 showsHorizontalScrollIndicator={false}
@@ -28,9 +35,9 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
                 onScroll={onScroll}
                 renderItem={({ item }) => (
                 <View>
-                    <Image source={{ uri: item }} style={styles.image} />
+                    <Image source={{ uri: getUriFile(item) }} style={styles.image} />
                     <View style={styles.indicatorContainer}>
-                        {images.map((_, i) => (
+                        {listAnhSanPhams.map((_, i) => (
                         <View
                             key={i}
                             style={[

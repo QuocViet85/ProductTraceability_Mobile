@@ -10,6 +10,8 @@ import NguoiPhuTrach from "./nguoiPhuTrach";
 import { Updating } from "@/app/helpers/updating";
 import BlurLine from "@/app/helpers/blurLine";
 import SaoSanPham from "./saoSanPham";
+import MoTaSanPham from "./moTaSanPham";
+import BinhLuanSanPhan from "./binhLuanSanPham";
 
 export default function Index() {
     const params = useLocalSearchParams();
@@ -18,7 +20,8 @@ export default function Index() {
     
 
     useEffect(() => {
-        let urlSanPham = url(`api/sanPham/${sP_Id}`)
+        let urlSanPham = url(`api/sanPham/${sP_Id}`);
+        console.log(urlSanPham)
         axios.get(urlSanPham).then((res: any) => {
             const sP = res.data;
             setSanPham(sP);
@@ -26,7 +29,8 @@ export default function Index() {
     }, []);
 
     return (
-        <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
+      <View>
+          <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
             {sanPham ? 
             (<View style={{flex: 1}}>
                   <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} />
@@ -40,19 +44,24 @@ export default function Index() {
                     {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
                 </Text>
                 <BlurLine />
-                <SaoSanPham sP_Id={sanPham.sP_Id} />
-                  
+                  <SaoSanPham sP_Id={sanPham.sP_Id} />
                   <Spacer height= {10} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SoHuu} vaiTro={"sở hữu"} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SanXuat} vaiTro={"sản xuất"} />
-                  <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} />
+                  <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
                   <NguoiPhuTrach userId={sanPham.sP_NguoiPhuTrach_Id} />
+                  <MoTaSanPham moTa={sanPham.sP_MoTa}/>
+                  <BinhLuanSanPhan sP_Id={sanPham.sP_Id}/>
+
+                  <Spacer height={40}/>
             </View>) 
             : (<View>
                 <Text>Không tồn tại sản phẩm</Text>
             </View>)}
-            
         </ScrollView>
+        
+      </View>
+        
     )
 }
 
@@ -65,11 +74,11 @@ function formatCurrency(price: number) : string {
 }
 
 const styles = StyleSheet.create({
-  container: {                  // cho phép chiếm toàn màn hình
+  container: {                 // cho phép chiếm toàn màn hình
     flexDirection: 'column',     // mặc định
     justifyContent: 'flex-start',// bắt đầu từ trên xuống
     backgroundColor: '#fff',
-    alignItems: 'center'
+    width: '100%'
   },
   content: {
     marginTop: 60,

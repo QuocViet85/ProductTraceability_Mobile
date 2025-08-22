@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
+import { getFileAsync, getUriFile } from "@/app/helpers/fileHelper";
 
 export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     const [listSanPhams, setListSanPham] = useState<any[]>([]);
@@ -20,14 +21,29 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
 
     axios.get(urlSanPham).then((res: any) => {
         const listSanPhams = res.data.listSanPhams;
-        setListSanPham(listSanPhams);
+
+        async function setUriSanPham() {
+            for (const sanPham of listSanPhams) {
+            sanPham.uriAnhDaiDien = null;
+            try {
+                let file = await getFileAsync('SP', sanPham.sP_Id, 'image', 1);
+                if (file) {
+                  sanPham.uriSanPham = getUriFile(file[0]);
+                  console.log(sanPham.uriSanPham)
+                }
+            }catch {}
+          }
+          setListSanPham(listSanPhams);
+        }
+
+        setUriSanPham();
     });
     }, [danhMucHienTai, timKiemSanPham]);
 
     const renderItem = ({ item } : {item: any}) => (
       <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_Id: item.sP_Id} }} asChild>
           <TouchableOpacity style={styles.card}>
-            <Image source={{ uri: 'https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D' }} style={styles.image} />
+            <Image source={{ uri: item.uriSanPham }} style={styles.image} />
             <Text style={styles.text}>{item.sP_Ten}</Text>
           </TouchableOpacity>
       </Link> 
