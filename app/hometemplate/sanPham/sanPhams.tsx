@@ -22,28 +22,33 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     axios.get(urlSanPham).then((res: any) => {
         const listSanPhams = res.data.listSanPhams;
 
-        async function setUriSanPham() {
-            for (const sanPham of listSanPhams) {
-            sanPham.uriAnhDaiDien = null;
-            try {
-                let file = await getFileAsync('SP', sanPham.sP_Id, 'image', 1);
-                if (file) {
-                  sanPham.uriSanPham = getUriFile(file[0]);
-                  console.log(sanPham.uriSanPham)
-                }
-            }catch {}
-          }
-          setListSanPham(listSanPhams);
-        }
+        const listPromiseGetUriAnhDaiDiens : any[] = [];
 
-        setUriSanPham();
+       listSanPhams.forEach((sanPham : any) => {
+        
+        sanPham.uriAnhDaiDien = null;
+        try {
+            let promiseGetUriAnhDaiDien = getFileAsync('SP', sanPham.sP_Id, 'image', 1).then((file) => {
+              if (file) {
+                sanPham.uriAnhDaiDien = getUriFile(file[0]);
+              }
+            });
+            listPromiseGetUriAnhDaiDiens.push(promiseGetUriAnhDaiDien);
+        }catch {
+          listPromiseGetUriAnhDaiDiens.push(Promise.resolve(1));
+        }
+       });
+
+       Promise.all(listPromiseGetUriAnhDaiDiens).finally(() => {
+            setListSanPham(listSanPhams);
+       });
     });
     }, [danhMucHienTai, timKiemSanPham]);
 
     const renderItem = ({ item } : {item: any}) => (
       <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_Id: item.sP_Id} }} asChild>
           <TouchableOpacity style={styles.card}>
-            <Image source={{ uri: item.uriSanPham }} style={styles.image} />
+            <Image source={{ uri: item.uriAnhDaiDien }} style={styles.image} />
             <Text style={styles.text}>{item.sP_Ten}</Text>
           </TouchableOpacity>
       </Link> 

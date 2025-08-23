@@ -16,11 +16,15 @@ export async function getFileAsync(kieuTaiNguyen: string, taiNguyenId: string, k
 }
 
 export function getUriFile(file: any) {
-    let routeKieuFile = '';
+    if (file) {
+        let routeKieuFile = '';
+        if (file.f_KieuFile === 'image' || file.f_KieuFile === 'avatar') {
+            routeKieuFile = 'images'
+        }
 
-    if (file.f_KieuFile === 'image' || file.f_KieuFile === 'avatar') {
-        routeKieuFile = 'images'
+        return url(`${routeKieuFile}/${file.f_Ten}`)
+    }else {
+        return;
     }
-
-    return url(`${routeKieuFile}/${file.f_Ten}`)
+    
 }

@@ -1,6 +1,4 @@
 import { getFileAsync, getUriFile } from "@/app/helpers/fileHelper";
-import { url } from "@/app/server/backend";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 

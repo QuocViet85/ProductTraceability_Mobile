@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { Dimensions, FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { url } from "../../../server/backend";
 import AnhSanPham from "./anhSanPham";
 import Spacer from "@/app/helpers/spacer";
