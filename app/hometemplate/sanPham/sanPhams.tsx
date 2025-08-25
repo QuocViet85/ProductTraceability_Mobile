@@ -46,7 +46,7 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     }, [danhMucHienTai, timKiemSanPham]);
 
     const renderItem = ({ item } : {item: any}) => (
-      <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_Id: item.sP_Id} }} asChild>
+      <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} asChild>
           <TouchableOpacity style={styles.card}>
             <Image source={{ uri: item.uriAnhDaiDien }} style={styles.image} />
             <Text style={styles.text}>{item.sP_Ten}</Text>

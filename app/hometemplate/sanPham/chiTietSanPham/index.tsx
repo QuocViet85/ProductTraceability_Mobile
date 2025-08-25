@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { url } from "../../../server/backend";
 import AnhSanPham from "./anhSanPham";
 import Spacer from "@/app/helpers/spacer";
@@ -12,21 +12,33 @@ import BlurLine from "@/app/helpers/blurLine";
 import SaoSanPham from "./saoSanPham";
 import MoTaSanPham from "./moTaSanPham";
 import BinhLuanSanPhan from "./binhLuanSanPham";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function Index() {
     const params = useLocalSearchParams();
-    const sP_Id = params.sP_Id;
+    const sP_MaTruyXuat = params.sP_MaTruyXuat;
     const [sanPham, setSanPham] = useState<any>();
+    const [uriSanPham, setUriSanPham] = useState<string>('');
     
 
     useEffect(() => {
-        let urlSanPham = url(`api/sanPham/${sP_Id}`);
+        let urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
         console.log(urlSanPham)
         axios.get(urlSanPham).then((res: any) => {
             const sP = res.data;
             setSanPham(sP);
+            setUriSanPham(urlSanPham);
         })
     }, []);
+
+    const shareSanPham = async () => {
+      try {
+        await Share.share({
+          message: uriSanPham,
+          url: uriSanPham,
+        });
+      }catch {}
+    }
 
     return (
       <View>
@@ -35,7 +47,13 @@ export default function Index() {
             (<View style={{flex: 1}}>
                   <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} />
                   <Spacer height= {10} />
-                  <Text style={{fontWeight: 'bold', fontSize: 25}}>{sanPham.sP_Ten}</Text>
+                  <View style={{flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold', fontSize: 25}}>{sanPham.sP_Ten}</Text>
+                        <TouchableOpacity style={{marginLeft: 'auto'}} onPress={() => shareSanPham()}>
+                            <IconSymbol name="share" size={30} color="#007AFF" />
+                        </TouchableOpacity>
+                  </View>
+                  
                   {sanPham.sP_Gia ? (<Text style={styles.textGia}>Giá: {formatCurrency(sanPham.sP_Gia)}</Text>) : (
                 <View style={{flexDirection: 'row'}}>
                     <Text style={styles.textGia}>Giá: <Updating /></Text> 
