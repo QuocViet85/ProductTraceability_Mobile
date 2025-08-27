@@ -1,6 +1,6 @@
-import getUserInfo from "@/app/helpers/getUserInfo";
-import Spacer from "@/app/helpers/spacer";
-import { Updating } from "@/app/helpers/updating";
+import {getUserInfo} from "@/app/helpers/LogicHelper/getUser";
+import Spacer from "@/app/helpers/ViewHelpers/spacer";
+import { Updating } from "@/app/helpers/ViewHelpers/updating";
 import { Entypo } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";

@@ -1,4 +1,3 @@
-import Spacer from "@/app/helpers/spacer";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";

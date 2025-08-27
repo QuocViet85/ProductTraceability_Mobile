@@ -1,4 +1,4 @@
-import { getFileAsync, getUriFile } from "@/app/helpers/fileHelper";
+import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 

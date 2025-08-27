@@ -1,9 +1,9 @@
+import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import axios from "axios";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
-import { getFileAsync, getUriFile } from "@/app/helpers/fileHelper";
 
 export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     const [listSanPhams, setListSanPham] = useState<any[]>([]);

@@ -1,18 +1,18 @@
+import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
+import Spacer from "@/app/helpers/ViewHelpers/spacer";
+import { Updating } from "@/app/helpers/ViewHelpers/updating";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { url } from "../../../server/backend";
 import AnhSanPham from "./anhSanPham";
-import Spacer from "@/app/helpers/spacer";
-import DoanhNghiepSanPham from "./doanhNghiepSanPham";
-import NguoiPhuTrach from "./nguoiPhuTrach";
-import { Updating } from "@/app/helpers/updating";
-import BlurLine from "@/app/helpers/blurLine";
-import SaoSanPham from "./saoSanPham";
-import MoTaSanPham from "./moTaSanPham";
 import BinhLuanSanPhan from "./binhLuanSanPham";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import DoanhNghiepSanPham from "./doanhNghiepSanPham";
+import MoTaSanPham from "./moTaSanPham";
+import NguoiPhuTrach from "./nguoiPhuTrach";
+import SaoSanPham from "./saoSanPham";
 
 export default function Index() {
     const params = useLocalSearchParams();

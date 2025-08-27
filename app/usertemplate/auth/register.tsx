@@ -1,17 +1,16 @@
-import { useState } from "react";
-import { Alert, Button, StyleSheet, Text, View } from "react-native";
-import { url } from "../server/backend";
-import axios from "axios";
-import { TextInput } from "react-native";
-import { ROLE_ADMIN, ROLE_DOANH_NGHIEP, ROLE_KHACH_HANG } from "../constant/Role";
 import { Picker } from '@react-native-picker/picker';
+import axios from "axios";
+import { useState } from "react";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { ROLE_ADMIN, ROLE_DOANH_NGHIEP, ROLE_KHACH_HANG } from "../../constant/Role";
+import { url } from "../../server/backend";
 
 export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
-    const [soDienThoai, setSoDienThoai] = useState<string>('');
-    const [matKhau, setMatKhau] = useState<string>('');
-    const [ten, setTen] = useState<string>('');
-    const [lapLaiMatKhau, setLapLaiMatKhau] = useState<string>('');
-    const [vaiTro, setVaiTro] = useState<string>(ROLE_KHACH_HANG);
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [name, setName] = useState<string>('');
+    const [repeatPassword, setRepeatPassword] = useState<string>('');
+    const [role, setRole] = useState<string>(ROLE_KHACH_HANG);
     const [email, setEmail] = useState<string>('');
     const [address, setAddress] = useState<string>('');
 
@@ -20,10 +19,10 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
             let urlDangKi = url('api/auth/register');
 
             const user : any = {
-                name: ten,
-                phoneNumber: soDienThoai,
-                password: matKhau,
-                role: vaiTro,
+                name: name,
+                phoneNumber: phoneNumber,
+                password: password,
+                role: role,
                 address: address
             };
 
@@ -32,28 +31,35 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
             }
 
             axios.post(urlDangKi, user).then((response) => {
-                console.log(response.data)
+                Alert.alert('Thông báo', 'Đăng kí tài khoản thành công. Xin mời đăng nhập');
+                setFormDangNhap(true);
             }).catch((error) => {
-                console.log(error.response.data);
+                let errors = error.response.data.errors;
+                let alert = '';
+                for (const error of errors) {
+                  alert += error;
+                }
+                console.log(error)
+                Alert.alert('Lỗi', alert);
             })
         }
     };
 
-    const validate : () => Boolean = () => {
+    const validate : () => boolean = () => {
         let alert = '';
-        if (soDienThoai === '') {
+        if (phoneNumber === '') {
             alert += 'Vui lòng nhập số điện thoại \n';
         }
-        if (matKhau === '') {
+        if (password === '') {
             alert += 'Vui lòng nhập mật khẩu \n';
         }
-        if (matKhau !== lapLaiMatKhau) {
+        if (password !== repeatPassword) {
             alert += 'Lặp lại mật khẩu không đúng \n';
         }
-        if (ten === '') {
+        if (name === '') {
             alert += 'Vui lòng nhập tên \n'
         }
-        if (vaiTro === '') {
+        if (role === '') {
             alert += 'Vui lòng nhập vai trò \n'
         }
 
@@ -78,30 +84,30 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
       <TextInput
         style={styles.input}
         placeholder="Tên"
-        value={ten}
-        onChangeText={setTen}
+        value={name}
+        onChangeText={setName}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Số điện thoại"
-        value={soDienThoai}
-        onChangeText={setSoDienThoai}
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Mật khẩu"
-        value={matKhau}
-        onChangeText={setMatKhau}
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry
       />
 
       <TextInput
         style={styles.input}
         placeholder="Lặp lại mật khẩu"
-        value={lapLaiMatKhau}
-        onChangeText={setLapLaiMatKhau}
+        value={repeatPassword}
+        onChangeText={setRepeatPassword}
         secureTextEntry
       />
 
@@ -121,8 +127,8 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
     
     <View style={{...styles.input, height: 50}}>
         <Picker
-            selectedValue={vaiTro}
-            onValueChange={(itemValue) => setVaiTro(itemValue)}
+            selectedValue={role}
+            onValueChange={(itemValue) => setRole(itemValue)}
             style={{ height: 55, width: '100%' }}
             >
                 <Picker.Item label="Vai trò: Admin" value={ROLE_ADMIN} />

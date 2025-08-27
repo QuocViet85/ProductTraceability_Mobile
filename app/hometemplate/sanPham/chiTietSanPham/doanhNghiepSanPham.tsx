@@ -1,7 +1,7 @@
-import { Image, Text, View } from "react-native";
+import Spacer from "@/app/helpers/ViewHelpers/spacer";
+import { Updating } from "@/app/helpers/ViewHelpers/updating";
 import { Entypo } from '@expo/vector-icons';
-import { Updating } from "@/app/helpers/updating";
-import Spacer from "@/app/helpers/spacer";
+import { Image, Text, View } from "react-native";
 
 export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep: any, vaiTro : string}) 
 {

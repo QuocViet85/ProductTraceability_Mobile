@@ -1,6 +1,6 @@
-import BlurLine from "@/app/helpers/blurLine";
-import { getFileAsync, getUriFile } from "@/app/helpers/fileHelper";
-import Spacer from "@/app/helpers/spacer";
+import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
+import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";

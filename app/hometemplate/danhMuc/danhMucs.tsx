@@ -12,7 +12,6 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
     const [listDanhMucsHienTai, setListDanhMucsHienTai] = useState<any[]>([]);
 
     useEffect(() => {
-        console.log(url('api/danhmuc'))
             axios.get(url('api/danhmuc')).then((res: any) => {
             const listDanhMucs = res.data.listDanhMucs;
             listDanhMucs.unshift(tatCaDanhMuc);
@@ -56,7 +55,10 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Chọn danh mục</Text>
             </View>
                 <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} />
-            <Button title='Đóng' onPress={() => setShowModal(false)}></Button>    
+
+            <View style={{marginTop: 'auto'}}>
+                <Button title='Đóng' onPress={() => setShowModal(false)}></Button>
+            </View>    
             </Modal>
         </View>
     );

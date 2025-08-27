@@ -1,4 +1,4 @@
-import Spacer from "@/app/helpers/spacer";
+import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { Link } from "expo-router";
 import { Button, Text, View } from "react-native";
 

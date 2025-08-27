@@ -1,16 +1,15 @@
-import { useState } from "react";
-import { Alert, Button, TextInput } from "react-native";
-import { StyleSheet, Text, View } from "react-native";
-import { url } from "../server/backend";
 import axios from "axios";
-import { getAccessToken, setAccessAndRefreshToken } from "../helpers/authCache";
+import { useState } from "react";
+import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { getAccessToken, getUserLogin, setAccessAndRefreshToken } from "../../helpers/LogicHelper/authHelper";
+import { url } from "../../server/backend";
 
-export default function Login({setFormDangNhap} : {setFormDangNhap : any}) {
-    const [soDienThoai, setSoDienThoai] = useState<string>('');
-    const [matKhau, setMatKhau] = useState<string>('');
+export default function Login({setFormDangNhap, setUserLogin} : {setFormDangNhap : any, setUserLogin: any}) {
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     const onLogin = () => {
-        if (soDienThoai === '' || matKhau === '') {
+        if (phoneNumber === '' || password === '') {
             Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
             return;
         }
@@ -18,16 +17,16 @@ export default function Login({setFormDangNhap} : {setFormDangNhap : any}) {
         let urlDangNhap = url('api/auth/login');
 
         axios.post(urlDangNhap, {
-            phoneNumber: soDienThoai,
-            passWord: matKhau
+            phoneNumber: phoneNumber,
+            passWord: password
         }).then((response) => {
             const token = response.data;
             setAccessAndRefreshToken(token.accessToken, token.refreshToken).then(() => {
-                getAccessToken().then((accessToken) => {
-                    console.log(accessToken)
+                getUserLogin().then((userLogin) => {
+                    setUserLogin(userLogin)
                 })
             });
-        }).catch((error) => {
+        }).catch(() => {
             Alert.alert("Lỗi","Tên đăng nhập hoặc mật khẩu không hợp lệ")
         });
     };
@@ -39,15 +38,15 @@ export default function Login({setFormDangNhap} : {setFormDangNhap : any}) {
       <TextInput
         style={styles.input}
         placeholder="Số điện thoại"
-        value={soDienThoai}
-        onChangeText={setSoDienThoai}
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
       />
 
       <TextInput
         style={styles.input}
         placeholder="Mật khẩu"
-        value={matKhau}
-        onChangeText={setMatKhau}
+        value={password}
+        onChangeText={setPassword}
         secureTextEntry
       />
     
