@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Image, ImageSourcePropType, StyleSheet, Text, TextInput, View } from "react-native";
 import Logout from "../auth/logout";
 import { ChangePassword } from "../auth/changePassword";
-import { getUriAvatarUser } from "@/app/helpers/LogicHelper/fileHelper";
 import AvatarUserLogin from "./avatar";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {

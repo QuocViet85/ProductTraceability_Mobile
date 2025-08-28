@@ -5,29 +5,37 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { url } from "../../../server/backend";
 import AnhSanPham from "./anhSanPham";
-import BinhLuanSanPhan from "./binhLuanSanPham";
+import BinhLuanSanPhan from "./binhLuan/binhLuanSanPham";
 import DoanhNghiepSanPham from "./doanhNghiepSanPham";
 import MoTaSanPham from "./moTaSanPham";
 import NguoiPhuTrach from "./nguoiPhuTrach";
 import SaoSanPham from "./saoSanPham";
+import AppUser from "@/app/model/AppUser";
+import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
 
 export default function Index() {
     const params = useLocalSearchParams();
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
     const [sanPham, setSanPham] = useState<any>();
     const [uriSanPham, setUriSanPham] = useState<string>('');
+    const [userLogin, setUserLogin] = useState<AppUser | null>(null);
     
 
     useEffect(() => {
         let urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
-        console.log(urlSanPham)
         axios.get(urlSanPham).then((res: any) => {
             const sP = res.data;
             setSanPham(sP);
             setUriSanPham(urlSanPham);
+        })
+
+        getUserLogin().then((userLogin : AppUser | null) => {
+          if (userLogin) {
+            setUserLogin(userLogin);
+          }
         })
     }, []);
 
@@ -41,7 +49,10 @@ export default function Index() {
     }
 
     return (
-      <View>
+      <KeyboardAvoidingView
+          style={{ flex: 1 }}
+          behavior={Platform.OS === "ios" ? "position" : "position"}
+        >
           <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
             {sanPham ? 
             (<View style={{flex: 1}}>
@@ -69,7 +80,7 @@ export default function Index() {
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
                   <NguoiPhuTrach userId={sanPham.sP_NguoiPhuTrach_Id} />
                   <MoTaSanPham moTa={sanPham.sP_MoTa}/>
-                  <BinhLuanSanPhan sP_Id={sanPham.sP_Id}/>
+                  <BinhLuanSanPhan sP_Id={sanPham.sP_Id} userLogin={userLogin}/>
 
                   <Spacer height={40}/>
             </View>) 
@@ -77,9 +88,7 @@ export default function Index() {
                 <Text>Không tồn tại sản phẩm</Text>
             </View>)}
         </ScrollView>
-        
-      </View>
-        
+      </KeyboardAvoidingView>
     )
 }
 

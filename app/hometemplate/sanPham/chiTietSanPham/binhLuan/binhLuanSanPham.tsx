@@ -1,21 +1,28 @@
+import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
 import { getFileAsync, getUriAvatarUser, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
+import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import ChonSaoSanPham from "./chonSaoSanPham";
+import XoaBinhLuan from "./xoaBinhLuan";
 
-export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
+export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<any[]>([]);
     const [tongSoBinhLuan, setTongSoBinhLuan] = useState<number>(0)
     const [pageNumber, setPageNumber] = useState<number>(1);
+    const [binhLuanPost, setBinhLuanPost] = useState<string>('');
+    const [saoPost, setSaoPost] = useState<number>(0);
+
     const limit = 5;
     let tongSoTrang : number = Math.ceil(tongSoBinhLuan / limit);
 
-    useEffect(() => {
+    const layCacBinhLuans = () => {
         let urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?pageNumber=${pageNumber}&limit=${limit}`);
 
         axios.get(urlBinhLuan).then((response) => {
@@ -34,14 +41,11 @@ export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
 
                     listPromiseAnhDaiDienVaSoSao.push(promiseAnhDaiDienBinhLuan);
 
-                    let urlSoSaoCuaNguoiBinhLuan = url(`api/sanpham/sao-san-pham-user/${sP_Id}?userId=${binhLuan.bL_NguoiTao_Client.id}`);
-                    let promiseSoSaoCuaNguoiBinhLuan = axios.get(urlSoSaoCuaNguoiBinhLuan).then((response) => {
-                        if (response.data) {
-                            binhLuan.bL_NguoiTao_Client.soSao = response.data;
-                        }
+                    let promiseSoSaoCuaNguoiBinhLuan = laySoSaoCuaMotNguoi(sP_Id, binhLuan.bL_NguoiTao_Client.id).then((soSao) => {
+                        binhLuan.bL_NguoiTao_Client.soSao = soSao;
                     }).catch(() => {});
 
-                   listPromiseAnhDaiDienVaSoSao.push(promiseSoSaoCuaNguoiBinhLuan);
+                listPromiseAnhDaiDienVaSoSao.push(promiseSoSaoCuaNguoiBinhLuan);
                 })
                 
                 Promise.all(listPromiseAnhDaiDienVaSoSao).finally(() => {
@@ -52,6 +56,25 @@ export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
                 setTongSoBinhLuan(response.data.tongSo);
             }
         });
+    }
+    
+    const laySoSaoCuaMotNguoi = async (sP_Id : string, userId : string) : Promise<number> => {
+        let urlSoSao = url(`api/sanpham/sao-san-pham-user/${sP_Id}?userId=${userId}`);
+
+        try {
+            let soSao = (await axios.get(urlSoSao)).data;
+
+            if (soSao) {
+                return soSao;
+            }
+            return 0;
+        }catch {
+            return 0;
+        }
+    }
+
+    useEffect(() => {
+        layCacBinhLuans();
     }, [pageNumber])
 
     const backPage = () => {
@@ -63,6 +86,25 @@ export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
     const nextPage = () => {
         if (pageNumber < tongSoTrang) {
             setPageNumber(pageNumber + 1);
+        }
+    }
+
+    const postBinhLuan = () => {
+        if (binhLuanPost) {
+            getBearerToken()
+            .then((bearerToken : any) => {
+                let urlPostBinhLuan = url('api/binhluan');
+                axios.post(urlPostBinhLuan, {
+                    bL_NoiDung: binhLuanPost,
+                    bL_SP_Id: sP_Id
+                }, {headers: {Authorization: bearerToken}})
+                .then(() => {
+                   layCacBinhLuans();
+                })
+            })
+            .catch(() => Alert.alert('Lỗi', 'Lỗi đăng bình luận'))
+        }else {
+            Alert.alert('Lỗi', 'Chưa nhập bình luận');
         }
     }
 
@@ -104,6 +146,7 @@ export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
                         </View>
                         <Text>{item.bL_NoiDung}</Text>
                         <Text style={{fontStyle: 'italic', fontSize: 10}}>{new Date(item.bL_NgayTao).toLocaleString()}</Text>
+                        {userLogin ? (<XoaBinhLuan userLogin={userLogin} binhLuan={item}/>) : (<View></View>)}
                         <BlurLine />
                     </View>
                 );
@@ -119,7 +162,36 @@ export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
                     </TouchableOpacity>
                 </View>
             </View>
-
+            {userLogin ? (
+                <View>
+                    <View style={{height: 10}}></View>
+                    <ChonSaoSanPham sP_Id={sP_Id} userId={userLogin.id as string} laySoSaoCuaMotNguoi={laySoSaoCuaMotNguoi}/>
+                    <View style={{height: 10}}></View>
+                    <View style={{flexDirection: 'row'}}>
+                        <TextInput
+                            style={{
+                                    height: 120,
+                                    borderColor: "gray",
+                                    borderWidth: 1,
+                                    padding: 10,
+                                    borderRadius: 8,
+                                    width: '85%'}}
+                            placeholder="Nhập bình luận..."
+                            value={binhLuanPost}
+                            onChangeText={setBinhLuanPost}
+                            multiline={true}     // Cho phép nhiều dòng
+                            numberOfLines={3}    // Gợi ý chiều cao ban đầu
+                            textAlignVertical="top" // Cho chữ căn từ trên xuống (Android)
+                            maxLength={1000}
+                            />
+                        <TouchableOpacity onPress={postBinhLuan}>
+                            <Ionicons style={{marginLeft: 'auto'}} name="arrow-forward-circle-outline" size={50} color="blue" />
+                        </TouchableOpacity>
+                     </View>
+                </View>
+                
+                    
+            ) : (<View></View>)}
             <Spacer height={10}/>
         </View>
     )

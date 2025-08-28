@@ -23,8 +23,6 @@ export default function AvatarUserLogin({userId} : {userId : string | undefined}
                 if (uriArr.length > 0) {
                     const uriNewAvatarInDevice = uriArr[0];
 
-                    console.log(uriNewAvatarInDevice)
-
                     const formData = new FormData();
                     formData.append("file", {
                                         uri: uriNewAvatarInDevice,
@@ -50,8 +48,6 @@ export default function AvatarUserLogin({userId} : {userId : string | undefined}
                     })
                 }
             })
-            
-            
         })
         .catch(() => {
             Alert.alert('Lỗi', 'Đổi ảnh đại diện thất bại');
@@ -60,20 +56,19 @@ export default function AvatarUserLogin({userId} : {userId : string | undefined}
 
     return (
         <View>
-        <TouchableOpacity onPress={changeAvatar}>
-            <Image
-                source={{uri: uriAvatar}}
-                style={{
-                    width: 70,
-                    height: 70,
-                    borderRadius: 25,
-                    borderWidth: 2,
-                    borderColor: '#007BFF',
-                    backgroundColor: '#ccc',
-                }}
-                />
-        </TouchableOpacity>
-            
+            <TouchableOpacity onPress={changeAvatar}>
+                <Image
+                    source={{uri: uriAvatar}}
+                    style={{
+                        width: 70,
+                        height: 70,
+                        borderRadius: 25,
+                        borderWidth: 2,
+                        borderColor: '#007BFF',
+                        backgroundColor: '#ccc',
+                    }}
+                    />
+            </TouchableOpacity>
         </View>
         
     )
