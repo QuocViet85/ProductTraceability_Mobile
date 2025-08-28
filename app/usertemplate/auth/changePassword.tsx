@@ -1,7 +1,8 @@
+import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useState } from "react";
-import { Alert, Button, Modal, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export function ChangePassword() {
     const [modalChangePassword, setModalChangePassword] = useState<boolean | undefined>(false);
@@ -12,22 +13,49 @@ export function ChangePassword() {
     const changePassword = () => {
         let urlChangePassword = url('api/auth/change-password');
 
-        axios.put(urlChangePassword, {
-
-        });
+        if (validate()) {
+            getBearerToken().then((bearerToken : string | undefined) => {
+            axios.put(urlChangePassword, {
+              oldPassword: oldPassword,
+              newPassword: newPassword
+            }, 
+            {
+              headers: {
+                Authorization: bearerToken
+              }
+            })
+            .then(() => {
+              Alert.alert('Đổi mật khẩu thành công');
+            })
+            .catch(() => {
+              Alert.alert('Đổi mật khẩu thất bại. Sai mật khẩu cũ');
+            });
+          });
+        }
     }
 
     const validate : () => boolean = () => {
+            let alert = '';
             if (newPassword !== repeatNewPassword) {
-                Alert.alert('Lỗi', 'Lặp lại mật khẩu mới không đúng');
-                return false;
+                alert += 'Lặp lại mật khẩu mới không đúng \n';
+            }
+
+            if (newPassword.length < 6 || newPassword.length > 100) {
+              alert += 'Mật khẩu phải có độ dài trong khoảng 6 đến 100 kí tự \n';
+            }
+
+            if (alert !== '') {
+              Alert.alert('Lỗi', alert);
+              return false;
             }
             return true;
         }
     
     return (
         <View>
-            <Button title="Đổi mật khẩu" onPress={() => setModalChangePassword(true)}/>
+              <TouchableOpacity style={{backgroundColor: '#14dbdb', height: 25, width: 100}} onPress={() => setModalChangePassword(true)}>
+                  <Text>Đổi mật khẩu</Text>
+              </TouchableOpacity>
 
                 <Modal
                 visible={modalChangePassword}
@@ -61,7 +89,7 @@ export function ChangePassword() {
                     secureTextEntry
                     />
 
-                    <Button title="Đổi mật khẩu" color={'green'} onPress={() => setModalChangePassword(false)}/>
+                    <Button title="Đổi mật khẩu" color={'green'} onPress={() => changePassword()}/>
                 </View>
                 <View style={{marginTop: 'auto'}}>
                         <Button title="Đóng" onPress={() => setModalChangePassword(false)}/>

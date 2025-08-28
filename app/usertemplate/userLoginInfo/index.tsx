@@ -2,15 +2,18 @@ import getBearerToken, { deleteToken, getAccessToken } from "@/app/helpers/Logic
 import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
 import axios, { AxiosHeaderValue } from "axios";
-import { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Button, Image, ImageSourcePropType, StyleSheet, Text, TextInput, View } from "react-native";
 import Logout from "../auth/logout";
 import { ChangePassword } from "../auth/changePassword";
+import { getUriAvatarUser } from "@/app/helpers/LogicHelper/fileHelper";
+import AvatarUserLogin from "./avatar";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {
     const [name, setName] = useState<string | undefined>(userLogin.name);
     const [email, setEmail] = useState<string | undefined>(userLogin.email);
     const [address, setAddress] = useState<string | undefined>(userLogin.address);
+    
 
     const updateUser = () => {
         if (validate()) {
@@ -65,22 +68,22 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
 
     return(
         <View style={styles.container}>
-            <Text style={styles.title}>Thông tin người dùng</Text>
-
+            <View style={{flexDirection: 'row'}}>
+                <AvatarUserLogin userId={userLogin.id}/>
+                    <View>
+                        <Text style={{fontWeight: 'bold'}}>{userLogin.name}</Text>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{backgroundColor: 'grey', marginRight: 10}}>{userLogin.role}</Text>
+                            <ChangePassword />
+                        </View>
+                    </View>
+            </View>
 
             <Text>Số điện thoại:</Text>
             <TextInput
                 style={{...styles.input, backgroundColor: 'grey'}}
                 placeholder="Số điện thoại"
                 value={userLogin.phoneNumber}
-                editable={false}
-            />
-
-            <Text>Vai trò:</Text>
-            <TextInput
-                style={{...styles.input, backgroundColor: 'grey'}}
-                placeholder="Số điện thoại"
-                value={userLogin.role}
                 editable={false}
             />
             
@@ -109,8 +112,6 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
             />
 
             <Button title="Cập nhật" onPress={updateUser} color={'green'}/>
-            <View style={{marginBottom: 20}}></View>
-            <ChangePassword />
             <View style={{marginBottom: 20}}></View>
             <Logout setUserLogin={setUserLogin}/>
             

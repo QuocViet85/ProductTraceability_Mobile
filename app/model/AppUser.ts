@@ -1,4 +1,6 @@
 export default class AppUser {
+    id: string | undefined;
+    
     phoneNumber: string | undefined;
 
     name: string | undefined;

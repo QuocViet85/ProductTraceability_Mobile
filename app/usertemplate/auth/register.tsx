@@ -33,14 +33,8 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
             axios.post(urlDangKi, user).then((response) => {
                 Alert.alert('Thông báo', 'Đăng kí tài khoản thành công. Xin mời đăng nhập');
                 setFormDangNhap(true);
-            }).catch((error) => {
-                let errors = error.response.data.errors;
-                let alert = '';
-                for (const error of errors) {
-                  alert += error;
-                }
-                console.log(error)
-                Alert.alert('Lỗi', alert);
+            }).catch(() => {
+                Alert.alert('Lỗi', 'Đăng kí thất bại');
             })
         }
     };
@@ -52,6 +46,9 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
         }
         if (password === '') {
             alert += 'Vui lòng nhập mật khẩu \n';
+        }
+        if (password.length < 6 || password.length > 100) {
+          alert += 'Mật khẩu phải có độ dài trong khoảng 6 đến 100 kí tự \n';
         }
         if (password !== repeatPassword) {
             alert += 'Lặp lại mật khẩu không đúng \n';

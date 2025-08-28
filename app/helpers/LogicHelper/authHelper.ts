@@ -70,7 +70,6 @@ export async function deleteToken(allDevices : Boolean = false) {
     let urlLogoutAllDevices = url('api/auth/logoutAll');
 
     getBearerToken().then((bearerToken: any) => {
-      console.log(bearerToken)
       axios.post(urlLogoutAllDevices, null, {
         headers: {
           Authorization: bearerToken
@@ -103,6 +102,7 @@ export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<App
   const decoded = jwtDecode<any>(accessToken);
 
   const user = new AppUser();
+  user.id = decoded.sub;
   user.phoneNumber = decoded.PhoneNumber;
   user.name = decoded.Name;
   user.email = decoded.Email;

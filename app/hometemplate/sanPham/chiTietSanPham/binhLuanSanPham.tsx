@@ -1,4 +1,4 @@
-import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriAvatarUser, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { url } from "@/app/server/backend";
@@ -26,9 +26,9 @@ export default function BinhLuanSanPhan({sP_Id} : {sP_Id : string}) {
                     binhLuan.bL_NguoiTao_Client.uriAnhDaiDien = null;
                     binhLuan.bL_NguoiTao_Client.soSao = 0;
 
-                    let promiseAnhDaiDienBinhLuan = getFileAsync('USER', binhLuan.bL_NguoiTao_Client.id, 'avatar').then((file) => {
-                        if (file) {
-                            binhLuan.bL_NguoiTao_Client.uriAnhDaiDien = getUriFile(file[0]);
+                    let promiseAnhDaiDienBinhLuan = getUriAvatarUser(binhLuan.bL_NguoiTao_Client.id).then((uri) => {
+                        if (uri) {
+                            binhLuan.bL_NguoiTao_Client.uriAnhDaiDien = uri;
                         }
                     }).catch(() => {})
 
