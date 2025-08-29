@@ -49,34 +49,42 @@ export default function ChonSaoSanPham({sP_Id, userId, laySoSaoCuaMotNguoi} : {s
                             <BlurLine />
                             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => chonSoSao(5)}>
                                 {Array.from({length: 5}).map((_, index) => {
-                                        return (<IconSymbol key={index} name="star" size={40} color="#FFD700" />)
+                                        return (<IconSymbol key={index + '5'} name="star" size={40} color="#FFD700" />)
                                     })}
                             </TouchableOpacity>
                             <BlurLine />
                             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => chonSoSao(4)}>
                                 {Array.from({length: 4}).map((_, index) => {
-                                        return (<IconSymbol key={index} name="star" size={40} color="#FFD700" />)
+                                        return (<IconSymbol key={index + '4'} name="star" size={40} color="#FFD700" />)
                                     })}
                             </TouchableOpacity>
                             <BlurLine />
                             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => chonSoSao(3)}>
                                 {Array.from({length: 3}).map((_, index) => {
-                                        return (<IconSymbol key={index} name="star" size={40} color="#FFD700" />)
+                                        return (<IconSymbol key={index + '3'} name="star" size={40} color="#FFD700" />)
                                     })}
                             </TouchableOpacity>
                             <BlurLine />
                             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => chonSoSao(2)}>
                                 {Array.from({length: 2}).map((_, index) => {
-                                        return (<IconSymbol key={index} name="star" size={40} color="#FFD700" />)
+                                        return (<IconSymbol key={index + '2'} name="star" size={40} color="#FFD700" />)
                                     })}
                             </TouchableOpacity>
                             <BlurLine />
                             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => chonSoSao(1)}>
                                 {Array.from({length: 1}).map((_, index) => {
-                                        return (<IconSymbol key={index} name="star" size={40} color="#FFD700" />)
+                                        return (<IconSymbol key={index + '1'} name="star" size={40} color="#FFD700" />)
                                     })}
                             </TouchableOpacity>
-                            <Button title="Đóng" onPress={() => setShowModalChonSao(false)}></Button>
+                            <View style={{flexDirection:'row', width: '100%', alignItems: 'center'}}>
+                                <View style={{width: '50%'}}>
+                                    <Button title="Hủy sao" color={'red'} onPress={() => chonSoSao(0)}></Button>
+                                </View>
+                                <View style={{width: '50%'}}>
+                                    <Button title="Đóng" onPress={() => setShowModalChonSao(false)}></Button>
+                                </View>
+                            </View>
+                            
                         </View>
                 </Modal>
             </View>

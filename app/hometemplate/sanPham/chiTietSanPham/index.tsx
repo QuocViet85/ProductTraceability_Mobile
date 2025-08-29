@@ -92,6 +92,10 @@ export default function Index() {
     )
 }
 
+Index.options = {
+  headerShown: false
+}
+
 function formatCurrency(price: number) : string {
     const vnFormatter = new Intl.NumberFormat('vi-VN', {
     style: 'currency',

@@ -1,5 +1,5 @@
 import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
-import { getFileAsync, getUriAvatarUser, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { getUriAvatarUser } from "@/app/helpers/LogicHelper/fileHelper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import AppUser from "@/app/model/AppUser";
@@ -17,7 +17,6 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
     const [tongSoBinhLuan, setTongSoBinhLuan] = useState<number>(0)
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [binhLuanPost, setBinhLuanPost] = useState<string>('');
-    const [saoPost, setSaoPost] = useState<number>(0);
 
     const limit = 5;
     let tongSoTrang : number = Math.ceil(tongSoBinhLuan / limit);
@@ -99,7 +98,8 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                     bL_SP_Id: sP_Id
                 }, {headers: {Authorization: bearerToken}})
                 .then(() => {
-                   layCacBinhLuans();
+                    setBinhLuanPost('');
+                    layCacBinhLuans();
                 })
             })
             .catch(() => Alert.alert('Lỗi', 'Lỗi đăng bình luận'))
@@ -146,7 +146,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                         </View>
                         <Text>{item.bL_NoiDung}</Text>
                         <Text style={{fontStyle: 'italic', fontSize: 10}}>{new Date(item.bL_NgayTao).toLocaleString()}</Text>
-                        {userLogin ? (<XoaBinhLuan userLogin={userLogin} binhLuan={item}/>) : (<View></View>)}
+                        {userLogin ? (<XoaBinhLuan userLogin={userLogin} binhLuan={item} layCacBinhLuans={layCacBinhLuans}/>) : (<View></View>)}
                         <BlurLine />
                     </View>
                 );

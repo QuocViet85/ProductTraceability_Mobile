@@ -1,13 +1,15 @@
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import axios from "axios";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
+import Header from "@/app/general/header";
 
 export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     const [listSanPhams, setListSanPham] = useState<any[]>([]);
     const [timKiemSanPham, setTimKiemSanPham] = useState('');
+    const router = useRouter();
     
     useEffect(() => {
     let urlSanPham = url('api/sanpham');
@@ -46,12 +48,13 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     }, [danhMucHienTai, timKiemSanPham]);
 
     const renderItem = ({ item } : {item: any}) => (
-      <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} asChild>
+        <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
           <TouchableOpacity style={styles.card}>
             <Image source={{ uri: item.uriAnhDaiDien }} style={styles.image} />
             <Text style={styles.text}>{item.sP_Ten}</Text>
           </TouchableOpacity>
-      </Link> 
+        </Link>
+       
   );
 
     return (
