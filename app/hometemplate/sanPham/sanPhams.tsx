@@ -8,7 +8,6 @@ import { url } from "../../server/backend";
 export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     const [listSanPhams, setListSanPham] = useState<any[]>([]);
     const [timKiemSanPham, setTimKiemSanPham] = useState('');
-    const router = useRouter();
     
     useEffect(() => {
     let urlSanPham = url('api/sanpham');

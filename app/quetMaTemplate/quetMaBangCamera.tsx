@@ -1,10 +1,14 @@
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { layMaTruyXuatTuUrl } from '../helpers/LogicHelper/helper';
+import { useRouter } from 'expo-router';
 
-export default function App() {
+export default function QuetMaBangCamera({navigation} : {navigation: any}) {
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
+  const [scanned, setScanned] = useState(false);
+  const router = useRouter();
 
   useEffect(() => { 
         if (!permission || !permission.granted) { 
@@ -31,17 +35,29 @@ export default function App() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
+  function handleBarCodeScanned({type, data}: {type: any, data: any}) {
+    setScanned(true);
+    console.log(data);
+    const maTruyXuat = layMaTruyXuatTuUrl(data);
+    router.push({
+      pathname: '/hometemplate/sanPham/chiTietSanPham', 
+      params: {sP_MaTruyXuat: maTruyXuat}
+    });
+  }
+
   return (
     <View style={styles.container}>
       <CameraView 
         style={styles.camera} 
         facing={facing} 
         barcodeScannerSettings={{ barcodeTypes: ["qr"], }}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
         />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-          <Text style={styles.text}>Flip Camera</Text>
+          <Text style={styles.text}>Đảo Camera</Text>
         </TouchableOpacity>
+        <Button title='Scan' onPress={() => setScanned(false)}></Button>
       </View>
     </View>
   );
