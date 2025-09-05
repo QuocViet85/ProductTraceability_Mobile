@@ -24,6 +24,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" options={{ headerShown: false }}/>
         <Stack.Screen name="hometemplate/sanPham/chiTietSanPham/index" options={{  headerShown: false }} />
         <Stack.Screen name="quetMaTemplate/quetMaBangCamera" options={{  headerShown: false }} />
+        <Stack.Screen name="doanhNghiepTemplate/index" options={{  headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

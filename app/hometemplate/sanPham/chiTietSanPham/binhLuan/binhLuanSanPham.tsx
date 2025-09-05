@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import ChonSaoSanPham from "./chonSaoSanPham";
 import XoaBinhLuan from "./xoaBinhLuan";
+import AvatarUser from "@/app/usertemplate/avatarUser";
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<any[]>([]);
@@ -27,27 +28,16 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
         axios.get(urlBinhLuan).then((response) => {
             if (response.data.listBinhLuans) {
                 let listBinhLuans = response.data.listBinhLuans;
-                const listPromiseAnhDaiDienVaSoSao : any[] = []
+                const listPromiseSoSao : any[] = []
                 listBinhLuans.forEach((binhLuan : any) => {
-                    binhLuan.bL_NguoiTao_Client.uriAnhDaiDien = null;
-                    binhLuan.bL_NguoiTao_Client.soSao = 0;
-
-                    let promiseAnhDaiDienBinhLuan = getUriAvatarUser(binhLuan.bL_NguoiTao_Client.id).then((uri) => {
-                        if (uri) {
-                            binhLuan.bL_NguoiTao_Client.uriAnhDaiDien = uri;
-                        }
-                    }).catch(() => {})
-
-                    listPromiseAnhDaiDienVaSoSao.push(promiseAnhDaiDienBinhLuan);
-
                     let promiseSoSaoCuaNguoiBinhLuan = laySoSaoCuaMotNguoi(sP_Id, binhLuan.bL_NguoiTao_Client.id).then((soSao) => {
                         binhLuan.bL_NguoiTao_Client.soSao = soSao;
                     }).catch(() => {});
 
-                listPromiseAnhDaiDienVaSoSao.push(promiseSoSaoCuaNguoiBinhLuan);
+                listPromiseSoSao.push(promiseSoSaoCuaNguoiBinhLuan);
                 })
                 
-                Promise.all(listPromiseAnhDaiDienVaSoSao).finally(() => {
+                Promise.all(listPromiseSoSao).finally(() => {
                     setListBinhLuans(listBinhLuans);
                 })
             }
@@ -115,17 +105,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                 return (
                     <View key={item.sP_Id}>
                         <View style={{flexDirection: 'row'}}>
-                            <Image
-                                source={{ uri: item.bL_NguoiTao_Client.uriAnhDaiDien }}
-                                style={{
-                                    width: 50,
-                                    height: 50,
-                                    borderRadius: 25,
-                                    borderWidth: 2,
-                                    borderColor: '#007BFF',
-                                    backgroundColor: '#ccc',
-                                }}
-                                />
+                            <AvatarUser userId={item.bL_NguoiTao_Client.id} width={40} height={40} canChange={false} />
                             <View>
                                 <Text style={{fontWeight: 'bold'}}>{item.bL_NguoiTao_Client.name}</Text>
                                 <View style={{flexDirection: 'row'}}>

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Image, ImageSourcePropType, StyleSheet, Text, TextInput, View } from "react-native";
 import Logout from "../auth/logout";
 import { ChangePassword } from "../auth/changePassword";
-import AvatarUserLogin from "./avatar";
+import AvatarUser from "../avatarUser";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {
     const [name, setName] = useState<string | undefined>(userLogin.name);
@@ -68,7 +68,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
     return(
         <View style={styles.container}>
             <View style={{flexDirection: 'row'}}>
-                <AvatarUserLogin userId={userLogin.id}/>
+                <AvatarUser userId={userLogin.id} width={64} height={64} canChange={true}/>
                     <View>
                         <Text style={{fontWeight: 'bold'}}>{userLogin.name}</Text>
                         <View style={{flexDirection: 'row'}}>

@@ -5,7 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Image, TouchableOpacity, View } from "react-native";
 
-export default function AvatarUserLogin({userId} : {userId : string | undefined}) {
+export default function AvatarUser({userId, width, height, canChange} : {userId : string | undefined, width: number, height: number, canChange: boolean}) {
     const [uriAvatar, setUriAvatar] = useState<string>('');
 
     useEffect(() => {
@@ -56,16 +56,18 @@ export default function AvatarUserLogin({userId} : {userId : string | undefined}
 
     return (
         <View>
-            <TouchableOpacity onPress={changeAvatar}>
+            <TouchableOpacity onPress={canChange ? changeAvatar : () => {}}>
                 <Image
                     source={{uri: uriAvatar}}
                     style={{
-                        width: 70,
-                        height: 70,
-                        borderRadius: 25,
-                        borderWidth: 2,
-                        borderColor: '#007BFF',
-                        backgroundColor: '#ccc',
+                        width: width,
+                        height: height,
+                        borderRadius: 32,
+                        backgroundColor: '#eee',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderWidth: 1,
+                        borderColor: '#ccc',
                     }}
                     />
             </TouchableOpacity>

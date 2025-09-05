@@ -2,6 +2,8 @@ import axios from "axios";
 import { url } from "../../server/backend";
 import * as ImagePicker from 'expo-image-picker';
 import { Alert } from "react-native";
+import { AVATAR, COVER_PHOTO, IMAGE } from "@/app/constant/KieuFile";
+import { DOANH_NGHIEP, USER } from "@/app/constant/KieuTaiNguyen";
 
 export async function getFileAsync(
   kieuTaiNguyen: string,
@@ -27,7 +29,7 @@ export async function getFileAsync(
 export function getUriFile(file: any) {
   if (file) {
     let routeKieuFile = "";
-    if (file.f_KieuFile === "image" || file.f_KieuFile === "avatar") {
+    if (file.f_KieuFile === IMAGE || file.f_KieuFile === AVATAR || file.f_KieuFile === COVER_PHOTO) {
       routeKieuFile = "images";
     }
 
@@ -38,7 +40,15 @@ export function getUriFile(file: any) {
 }
 
 export async function getUriAvatarUser(userId: string) {
-  const fileAvatar = await getFileAsync('USER', userId, 'avatar');
+  const fileAvatar = await getFileAsync(USER, userId, AVATAR);
+  if (fileAvatar) {
+    return getUriFile(fileAvatar[0])
+  }
+  return null;
+}
+
+export async function getUriAvatarDoanhNghiep(dN_Id: string) {
+  const fileAvatar = await getFileAsync(DOANH_NGHIEP, dN_Id, AVATAR);
   if (fileAvatar) {
     return getUriFile(fileAvatar[0])
   }

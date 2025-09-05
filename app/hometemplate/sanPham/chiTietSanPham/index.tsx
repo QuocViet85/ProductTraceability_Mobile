@@ -15,7 +15,6 @@ import NguoiPhuTrach from "./nguoiPhuTrach";
 import SaoSanPham from "./saoSanPham";
 import AppUser from "@/app/model/AppUser";
 import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
-import QRCode from 'react-native-qrcode-svg';
 import QrCode from "./qrCode";
 
 export default function Index() {
@@ -27,7 +26,6 @@ export default function Index() {
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
 
     useEffect(() => {
-        
         axios.get(urlSanPham).then((res: any) => {
             const sP = res.data;
             setSanPham(sP);
