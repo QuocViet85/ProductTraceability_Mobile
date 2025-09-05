@@ -10,6 +10,7 @@ import axios from "axios";
 import CoverPhotoDoanhNghiep from "./coverPhoto";
 import { Updating } from "../helpers/ViewHelpers/updating";
 import AvatarDoanhNghiep from "./avatar";
+import TheoDoiDoanhNghiep from "./theoDoi";
 
 export default function Index() 
 {
@@ -17,6 +18,7 @@ export default function Index()
     const dN_Id = params.dN_Id;
 
     const [doanhNghiep, setDoanhNghiep] = useState<DoanhNghiep | null>(null);
+    const [soTheoDoi, setSoTheoDoi] = useState<number>(0);
 
     useEffect(() => {
         const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
@@ -27,19 +29,31 @@ export default function Index()
                     setDoanhNghiep(res.data as DoanhNghiep);
                 }
             })
-    }, [])
+
+        
+    }, []);
+
+    const laySoTheoDoi = () => {
+        const urlSoTheoDoi = url(`api/doanhnghiep/so-luong-theo-doi/${dN_Id}`);
+        axios.get(urlSoTheoDoi)
+            .then((res) => {
+                if (res.data) {
+                    setSoTheoDoi(res.data);
+                }
+            })
+    }
 
     return (
         <View style={styles.container}>
             {doanhNghiep ? (
                 <View>
                     {/* Banner */}
-                <CoverPhotoDoanhNghiep dN_Id={dN_Id as string} />
+                <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} />
 
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     {/* Logo + Name */}
                     <View style={styles.profileHeader}>
-                    <AvatarDoanhNghiep dN_Id={dN_Id as string} width={64} height={64}/>
+                    <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} width={64} height={64}/>
                     <View style={styles.nameSection}>
                         <Text style={styles.businessName}>{doanhNghiep.dN_Ten}</Text>
                         <Text style={styles.businessType}>Doanh nghiệp</Text>
@@ -48,9 +62,7 @@ export default function Index()
 
                     {/* Follow + Call */}
                     <View style={styles.actionRow}>
-                        <View style={{width: '70%'}}>
-                            <Button title="+Theo dõi" color={'green'}></Button>
-                        </View>
+                        <TheoDoiDoanhNghiep dN_Id={dN_Id as string} />
                     <TouchableOpacity style={styles.iconButton}>
                         <IconSymbol name="call" size={24} color="green" />
                     </TouchableOpacity>
@@ -59,8 +71,8 @@ export default function Index()
                     </TouchableOpacity>
                     </View>
 
-                    <Text style={styles.followerText}>??? người đang theo dõi trang này</Text>
-
+                    <Text style={styles.followerText}>{soTheoDoi} người đang theo dõi trang này</Text>
+                   
                     {/* Stats */}
                     <View style={styles.statsRow}>
                         <StatBox label="Sản phẩm" value="1211" />
