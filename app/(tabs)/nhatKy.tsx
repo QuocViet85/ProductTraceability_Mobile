@@ -4,7 +4,7 @@ import Header from "../general/header";
 export default function NhatKy() {
     return (
         <View style={styles.container}>
-            <Header title="Nhật ký"></Header>
+            <Header title="Nhật ký" fontSize={30} resource={null}></Header>
         </View>
     )
 }

@@ -5,7 +5,7 @@ export default function BangTin()
 {
     return (
         <View style={styles.container}>
-            <Header title="Bản tin"></Header>
+            <Header title="Bản tin" fontSize={30} resource={null}></Header>
         </View>
     )
 }

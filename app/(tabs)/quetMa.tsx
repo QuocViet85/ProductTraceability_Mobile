@@ -7,7 +7,7 @@ import QuetMaBangAnhCoSan from "../quetMaTemplate/quetMaBangAnhCoSan";
 export default function QuetMa() {
     return (
         <View style={styles.container}>
-          <Header title="Quét Mã"/>
+          <Header title="Quét Mã" fontSize={30} resource={null}/>
           <View style={styles.content}> 
               <View style={{alignItems: 'center', marginTop: '70%'}}>
                 <View>

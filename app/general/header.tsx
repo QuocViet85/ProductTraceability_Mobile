@@ -1,10 +1,12 @@
+import { Fontisto } from "@expo/vector-icons";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function Header({title}: {title: string}) 
+export default function Header({title, fontSize, resource}: {title: string, fontSize: number, resource: string | undefined | null}) 
 {
     return (
         <View style={styles.topOverlay}>
-            <Text style={styles.text}>{title}</Text>
+            <Text style={{...styles.text, fontSize: fontSize}}>{title}</Text>
+            {resource ? (<Text style={{color: 'white', fontSize: fontSize}}>{resource}</Text>) : (<View></View>)}
         </View>
     )
 }
@@ -23,7 +25,6 @@ const styles = StyleSheet.create({
     },
     text: {
         flex: 1,
-        fontSize: 30,
         color: 'white',
         marginTop: "5%"
     }

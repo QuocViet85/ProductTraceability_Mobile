@@ -20,11 +20,13 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" options={{ headerShown: false }}/>
-        <Stack.Screen name="hometemplate/sanPham/chiTietSanPham/index" options={{  headerShown: false }} />
-        <Stack.Screen name="quetMaTemplate/quetMaBangCamera" options={{  headerShown: false }} />
-        <Stack.Screen name="doanhNghiepTemplate/index" options={{  headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" options={{ headerShown: false }}/>
+          <Stack.Screen name="hometemplate/sanPham/chiTietSanPham/index" options={{  headerShown: false }} />
+          <Stack.Screen name="hometemplate/sanPham/sanPhams" options={{  headerShown: false }} />
+          <Stack.Screen name="quetMaTemplate/quetMaBangCamera" options={{  headerShown: false }} />
+          <Stack.Screen name="doanhNghiepTemplate/index" options={{  headerShown: false }} />
+          <Stack.Screen name="usertemplate/user/index" options={{  headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

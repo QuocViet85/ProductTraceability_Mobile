@@ -1,6 +1,6 @@
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Button, ScrollView, Text, TouchableOpacity } from "react-native";
 import { Image, StyleSheet, View } from "react-native";
 import DoanhNghiep from "../model/DoanhNghiep";
@@ -10,7 +10,7 @@ import axios from "axios";
 import CoverPhotoDoanhNghiep from "./coverPhoto";
 import { Updating } from "../helpers/ViewHelpers/updating";
 import AvatarDoanhNghiep from "./avatar";
-import TheoDoiDoanhNghiep from "./theoDoi";
+import TheoDoiVaLienHeDoanhNghiep from "./theoDoiVaLienHe";
 
 export default function Index() 
 {
@@ -18,7 +18,9 @@ export default function Index()
     const dN_Id = params.dN_Id;
 
     const [doanhNghiep, setDoanhNghiep] = useState<DoanhNghiep | null>(null);
-    const [soTheoDoi, setSoTheoDoi] = useState<number>(0);
+    const [soSanPhamSoHuu, setSoSanPhamSoHuu] = useState<number>(0);
+    const router = useRouter();
+    
 
     useEffect(() => {
         const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
@@ -28,20 +30,17 @@ export default function Index()
                 if (res.data) {
                     setDoanhNghiep(res.data as DoanhNghiep);
                 }
-            })
+            });
 
-        
-    }, []);
+        const urlSoSanPhamSoHuu = url(`api/sanpham/doanh-nghiep-so-huu/tong-so/${dN_Id}`);
 
-    const laySoTheoDoi = () => {
-        const urlSoTheoDoi = url(`api/doanhnghiep/so-luong-theo-doi/${dN_Id}`);
-        axios.get(urlSoTheoDoi)
+        axios.get(urlSoSanPhamSoHuu)
             .then((res) => {
                 if (res.data) {
-                    setSoTheoDoi(res.data);
+                    setSoSanPhamSoHuu(res.data);
                 }
             })
-    }
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -49,7 +48,6 @@ export default function Index()
                 <View>
                     {/* Banner */}
                 <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} />
-
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     {/* Logo + Name */}
                     <View style={styles.profileHeader}>
@@ -60,25 +58,18 @@ export default function Index()
                     </View>
                     </View>
 
-                    {/* Follow + Call */}
-                    <View style={styles.actionRow}>
-                        <TheoDoiDoanhNghiep dN_Id={dN_Id as string} />
-                    <TouchableOpacity style={styles.iconButton}>
-                        <IconSymbol name="call" size={24} color="green" />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton}>
-                        <IconSymbol name="more-horiz" size={24} color="green" />
-                    </TouchableOpacity>
-                    </View>
-
-                    <Text style={styles.followerText}>{soTheoDoi} người đang theo dõi trang này</Text>
+                    <TheoDoiVaLienHeDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} dN_SoDienThoai={doanhNghiep.dN_SoDienThoai}/>
                    
                     {/* Stats */}
                     <View style={styles.statsRow}>
-                        <StatBox label="Sản phẩm" value="1211" />
-                        <StatBox label="Đánh giá" value="4.59/5" />
-                        <StatBox label="Lượt quét" value="390.422" />
-                        <StatBox label="Xem sản phẩm" value="388.995" />
+                        <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/hometemplate/sanPham/sanPhams', params: {dN_Id: doanhNghiep.dN_Id, dN_Ten: doanhNghiep.dN_Ten}})}>
+                            <Text style={styles.statValue}>{soSanPhamSoHuu}</Text>
+                            <Text style={styles.statLabel}>{'Sản phẩm'}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.statBox}>
+                            <Text style={styles.statValue}>???</Text>
+                            <Text style={styles.statLabel}>{'Đánh giá'}</Text>
+                        </View>
                     </View>
 
                     {/* Giới thiệu */}
@@ -125,13 +116,6 @@ export default function Index()
         </View>
   );
 }
-
-const StatBox = ({ label, value }: {label: any, value: any}) => (
-  <View style={styles.statBox}>
-    <Text style={styles.statValue}>{value}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
-  </View>
-);
 
 const TabItem = ({ label, icon, active }: { label: any, icon: any, active: any }) => (
   <View style={styles.tabItem}>

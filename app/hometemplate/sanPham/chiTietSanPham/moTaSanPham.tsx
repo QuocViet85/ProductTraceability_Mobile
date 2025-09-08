@@ -9,12 +9,16 @@ export default function MoTaSanPham({moTa} : {moTa: string}) {
         <View>
             {moTa ? (
                 <View>
-                    <Text style={{fontSize: 20}}>
-                        {moTa.substring(0, 100)}
-                    </Text>
-                     <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {setShowModalMoTa(true)}}>
+                    <Text style={{marginBottom: 10, fontWeight: 'bold', fontSize: 20}}>Mô tả sản phẩm</Text>
+                    <ScrollView style={{backgroundColor: '#fff', height: 120}} nestedScrollEnabled={true}>
+                        <Text style={{fontSize: 20}}>
+                            {moTa}
+                        </Text>
+                    </ScrollView>
+                    <View style={{height: 5}}></View>
+                    <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {setShowModalMoTa(true)}}>
                         <Text style={{ color: 'grey', marginTop: 5, fontSize: 15}}>
-                            Xem thêm
+                            Xem toàn màn hình
                         </Text>
                     </TouchableOpacity>
                     <Modal

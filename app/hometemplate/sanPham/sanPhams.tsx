@@ -1,31 +1,50 @@
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import axios from "axios";
-import { Link, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
+import Header from "@/app/general/header";
 
 export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
+    const params = useLocalSearchParams();
+    const dN_Id = params.dN_Id;
+    const dN_Ten = params.dN_Ten
+
     const [listSanPhams, setListSanPham] = useState<any[]>([]);
+    const [listSanPhamsRender, setListSanPhamRender] = useState<any[]>([]);
     const [timKiemSanPham, setTimKiemSanPham] = useState('');
     
     useEffect(() => {
-    let urlSanPham = url('api/sanpham');
-    if (danhMucHienTai.dM_Id) {
-        urlSanPham += `/danh-muc/${danhMucHienTai.dM_Id}`;
-    }
+      let urlSanPham = url('api/sanpham');
+      if (!dN_Id) {
+        if (danhMucHienTai.dM_Id) {
+          urlSanPham += `/danh-muc/${danhMucHienTai.dM_Id}`;
+        }
+      }else {
+        urlSanPham +=`/doanh-nghiep-so-huu/${dN_Id}`;
+      }
+    
+      if (timKiemSanPham) {
+        const listSanPhamsTimKiem = listSanPhams.filter((sanPham: any) => {
+          return sanPham.sP_Ten.toLowerCase().includes(timKiemSanPham.toLowerCase()) || sanPham.sP_MaTruyXuat.toLowerCase().includes(timKiemSanPham.toLowerCase());
+        });
 
-    if (timKiemSanPham) {
-      urlSanPham += `?search=${timKiemSanPham}`
-    }
+        if (listSanPhamsTimKiem) {
+          if (listSanPhamsTimKiem.length > 0) {
+            setListSanPhamRender(listSanPhamsTimKiem);
+            return;
+          }
+        }
+        urlSanPham += `?search=${timKiemSanPham}`
+      }
 
-    axios.get(urlSanPham).then((res: any) => {
+      axios.get(urlSanPham).then((res: any) => {
         const listSanPhams = res.data.listSanPhams;
 
         const listPromiseGetUriAnhDaiDiens : any[] = [];
 
        listSanPhams.forEach((sanPham : any) => {
-        
         sanPham.uriAnhDaiDien = null;
         try {
             let promiseGetUriAnhDaiDien = getFileAsync('SP', sanPham.sP_Id, 'image', 1).then((file) => {
@@ -41,6 +60,7 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
 
        Promise.all(listPromiseGetUriAnhDaiDiens).finally(() => {
             setListSanPham(listSanPhams);
+            setListSanPhamRender(listSanPhams)
        });
     });
     }, [danhMucHienTai, timKiemSanPham]);
@@ -56,18 +76,25 @@ export default function SanPham({danhMucHienTai} : {danhMucHienTai: any}) {
   );
 
     return (
-        <ScrollView>
-            <View style={{width: '100%', flexDirection: 'row'}}>
-                <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={timKiemSanPham} onChangeText={setTimKiemSanPham}></TextInput>
-            </View>
-            <FlatList
-                data={listSanPhams}
-                keyExtractor={(item) => item.sP_Id}
-                renderItem={renderItem}
-                numColumns={2} // 👉 Mỗi dòng 2 cột
-                contentContainerStyle={styles.container}
-                />
-        </ScrollView>
+      <View style={dN_Id ? styles.container : {}}>
+          {dN_Id ? (<Header title={`Sản phẩm doanh nghiệp`} resource={dN_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
+        <View style={dN_Id ? styles.content : {}}>
+            <ScrollView >
+              <View style={{width: '100%', flexDirection: 'row'}}>
+                  <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={timKiemSanPham} onChangeText={setTimKiemSanPham}></TextInput>
+              </View>
+              <FlatList
+                  data={listSanPhamsRender}
+                  keyExtractor={(item) => item.sP_Id}
+                  renderItem={renderItem}
+                  numColumns={2} // 👉 Mỗi dòng 2 cột
+                  contentContainerStyle={{padding: 10}}
+                  />
+          </ScrollView>
+        </View>
+        
+      </View>
+        
     )
 }
 
@@ -80,9 +107,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     width: '60%',
-  },
-  container: {
-    padding: 10,
   },
   card: {
     flex: 1, // 👉 để 2 item chia đều 1 hàng
@@ -102,5 +126,19 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  container: {
+    flex: 1,                     // cho phép chiếm toàn màn hình
+    flexDirection: 'column',     // mặc định
+    justifyContent: 'flex-start',// bắt đầu từ trên xuống
+    paddingTop: 20,              // tránh dính sát trên cùng
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    height: '100%'
+  },
+  content: {
+    marginTop: 60,
+    width: '100%',
+    height: '100%'
   },
 });

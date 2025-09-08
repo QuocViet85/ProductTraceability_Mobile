@@ -10,7 +10,7 @@ export default function HomeScreen() {
   
   return (
     <View style={styles.container}>
-      <Header title={"Sản phẩm"}></Header>
+      <Header title={"Sản phẩm"} fontSize={30} resource={null}></Header>
 
       <View style={styles.content}>
           <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} />

@@ -32,7 +32,7 @@ export default function UserInApp() {
   }
   return (
      <View style={styles.container}>
-            <Header title={"Người dùng"}></Header>
+            <Header title={"Người dùng"} fontSize={30} resource={null}></Header>
             {userLogin ? (<UserLoginInfo userLogin={userLogin} setUserLogin={setUserLogin} setRefreshUserLogin={setRefreshUserLogin} />) : formDangNhapDangKi}
       </View>
   );

@@ -7,6 +7,7 @@ import { Alert, Button, Image, ImageSourcePropType, StyleSheet, Text, TextInput,
 import Logout from "../auth/logout";
 import { ChangePassword } from "../auth/changePassword";
 import AvatarUser from "../avatarUser";
+import { generateExactRole } from "@/app/constant/Role";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {
     const [name, setName] = useState<string | undefined>(userLogin.name);
@@ -72,7 +73,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
                     <View>
                         <Text style={{fontWeight: 'bold'}}>{userLogin.name}</Text>
                         <View style={{flexDirection: 'row'}}>
-                            <Text style={{backgroundColor: 'grey', marginRight: 10}}>{userLogin.role}</Text>
+                            <Text style={{backgroundColor: 'grey', marginLeft: 10, marginRight: 10, borderRadius: 6}}>{generateExactRole(userLogin.role as string)}</Text>
                             <ChangePassword />
                         </View>
                     </View>

@@ -1,5 +1,6 @@
 import { url } from "@/app/server/backend";
 import axios from "axios";
+import { Alert, Linking } from "react-native";
 
 export function layMaTruyXuatTuUrl(url: string) {
     const indexGachCheoCuoi : number = url.lastIndexOf('/');
@@ -27,3 +28,16 @@ export async function giaiMaQrCode(base64: any) {
     throw new Error('Không decode được');
   }
 }
+
+export function makePhoneCall(phoneNumber: string | undefined) {
+  const url = `tel:${phoneNumber}`;
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        Alert.alert('Lỗi', 'Thiết bị không hỗ trợ gọi điện');
+      } else {
+        return Linking.openURL(url);
+      }
+    })
+    .catch((err) => console.error('Lỗi khi gọi điện:', err));
+};

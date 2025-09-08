@@ -53,7 +53,7 @@ export function ChangePassword() {
     
     return (
         <View>
-              <TouchableOpacity style={{backgroundColor: '#14dbdb', height: 25, width: 100}} onPress={() => setModalChangePassword(true)}>
+              <TouchableOpacity style={{backgroundColor: '#14dbdb', height: 25, width: 100, borderRadius: 6}} onPress={() => setModalChangePassword(true)}>
                   <Text>Đổi mật khẩu</Text>
               </TouchableOpacity>
 

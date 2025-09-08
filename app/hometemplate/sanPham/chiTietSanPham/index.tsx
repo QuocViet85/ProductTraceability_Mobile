@@ -53,7 +53,7 @@ export default function Index() {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "position" : "position"}
         >
-          <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
+          <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container} nestedScrollEnabled={true}>
             {sanPham ? 
             (<View style={{flex: 1}}>
                   <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} />

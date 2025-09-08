@@ -1,9 +1,9 @@
-import {getUserInfo} from "@/app/helpers/LogicHelper/getUser";
+import {getUserInfo} from "@/app/helpers/LogicHelper/userHelper";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
-import { Updating } from "@/app/helpers/ViewHelpers/updating";
-import { Entypo } from "@expo/vector-icons";
+import AvatarUser from "@/app/usertemplate/avatarUser";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function NguoiPhuTrach({userId} : {userId : string}) {
     const [nguoiPhuTrach, setNguoiPhuTrach] = useState<any>();
@@ -19,31 +19,19 @@ export default function NguoiPhuTrach({userId} : {userId : string}) {
     return (
         <View>
             {nguoiPhuTrach ? (
-            <View>
-                <View style={{height: 80, backgroundColor: 'grey', flexDirection: 'row'}}>
+            <Link href={{pathname: '/usertemplate/user', params: {userId: nguoiPhuTrach.id} }} withAnchor asChild>
+                <TouchableOpacity style={{height: 80, flexDirection: 'row'}}>
                     <View>
-                        <Image />
+                        <AvatarUser userId={nguoiPhuTrach.id} width={40} height={40} canChange={false} />
                     </View>
                     <View>
-                        <Text style={{color: 'white', fontWeight: 'bold', fontSize: 25}}>{nguoiPhuTrach.name}</Text>
-                        <Text style={{color: 'white', fontSize: 20}}>{`Người phụ trách`}</Text>
+                        <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{nguoiPhuTrach.name}</Text>
+                        <Text style={{color: 'black', fontSize: 20}}>{`Người phụ trách`}</Text>
                     </View>
-                </View>
-
-                <View>
-                    <Text>
-                        <Entypo name="chevron-right" size={15} color="green" /> Số điện thoại: {nguoiPhuTrach.phoneNumber ? nguoiPhuTrach.phoneNumber : (<Updating/>) }
-                    </Text>
-                    <Text>
-                        <Entypo name="chevron-right" size={15} color="green" /> Địa chỉ: {nguoiPhuTrach.address ? nguoiPhuTrach.address : (<Updating/>) }
-                    </Text>
-                    <Text>
-                        <Entypo name="chevron-right" size={15} color="green" /> Email: {nguoiPhuTrach.email ? nguoiPhuTrach.email : (<Updating/>) }
-                    </Text>
-                </View>
-                <Spacer height= {10} />
-            </View>
-            ) : (<View><Spacer height= {10} /></View>)}
+                </TouchableOpacity>
+            </Link>
+            ) : (<View></View>)}
+            <Spacer height= {10} />
         </View>
     );
 }
