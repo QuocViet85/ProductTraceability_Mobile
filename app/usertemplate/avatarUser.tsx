@@ -19,7 +19,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
     const changeAvatar = () => {
         getBearerToken()
         .then((bearerToken: string) => {
-            getUriImagesPickInDevice().then((uriArr : string[]) => {
+            getUriImagesPickInDevice(false).then((uriArr : string[]) => {
                 if (uriArr.length > 0) {
                     const uriNewAvatarInDevice = uriArr[0];
 

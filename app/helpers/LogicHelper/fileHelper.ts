@@ -1,9 +1,11 @@
 import axios from "axios";
 import { url } from "../../server/backend";
 import * as ImagePicker from 'expo-image-picker';
-import { Alert } from "react-native";
+import { Alert, PermissionsAndroid } from "react-native";
 import { AVATAR, COVER_PHOTO, IMAGE } from "@/app/constant/KieuFile";
 import { DOANH_NGHIEP, USER } from "@/app/constant/KieuTaiNguyen";
+import {launchCamera} from 'react-native-image-picker';
+
 
 export async function getFileAsync(
   kieuTaiNguyen: string,
@@ -55,7 +57,7 @@ export async function getUriAvatarDoanhNghiep(dN_Id: string) {
   return null;
 }
 
-export async function getUriImagesPickInDevice() : Promise<string[]> {
+export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean) : Promise<string[]> {
   const uriImagesArr = [];
   const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!permissionResult.granted) {
@@ -66,6 +68,7 @@ export async function getUriImagesPickInDevice() : Promise<string[]> {
   let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: 1,
+      allowsMultipleSelection: allowsMultipleSelection
   });
 
   if (!result.canceled) {
@@ -75,3 +78,20 @@ export async function getUriImagesPickInDevice() : Promise<string[]> {
   }
   return uriImagesArr;
 }
+
+export async function getUriImagesFromCamera() : Promise<string | undefined> {
+  const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      alert('Bạn cần cấp quyền camera');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      return  result.assets[0].uri;
+    }
+}
+

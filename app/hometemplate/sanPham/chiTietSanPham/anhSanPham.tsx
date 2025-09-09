@@ -1,14 +1,17 @@
+import { IMAGE } from "@/app/constant/KieuFile";
+import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 
 const { width } = Dimensions.get('window');
+const height = 400
 export default function AnhSanPham({sP_Id} : {sP_Id : string}) 
 {
     const [listAnhSanPhams, setListAnhSanPhams] = useState<any[]>(['']);
 
     useEffect(() => {
-      getFileAsync('SP', sP_Id, 'image').then((data) => {
+      getFileAsync(SAN_PHAM, sP_Id, IMAGE).then((data) => {
         if(data) {
           setListAnhSanPhams(data);
         }
@@ -23,28 +26,28 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
     };
 
     return (
-        <View style={{height: 300}}>
+        <View style={{height: height}}>
                 <FlatList
-                data={listAnhSanPhams}
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item, index) => index.toString()}
-                onScroll={onScroll}
-                renderItem={({ item }) => (
-                <View>
-                    <Image source={{ uri: getUriFile(item) }} style={styles.image} />
-                    <View style={styles.indicatorContainer}>
-                        {listAnhSanPhams.map((_, i) => (
-                        <View
-                            key={i}
-                            style={[
-                            styles.dot,
-                            { backgroundColor: i === activeIndex ? '#333' : '#aaa' },
-                            ]}
-                        />
-                        ))}
-                    </View>
+                  data={listAnhSanPhams}
+                  horizontal
+                  pagingEnabled
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item, index) => index.toString()}
+                  onScroll={onScroll}
+                  renderItem={({ item }) => (
+                  <View>
+                      <Image source={{ uri: getUriFile(item) }} style={styles.image} />
+                      <View style={styles.indicatorContainer}>
+                          {listAnhSanPhams.map((_, i) => (
+                          <View
+                              key={i}
+                              style={[
+                              styles.dot,
+                              { backgroundColor: i === activeIndex ? '#333' : '#aaa' },
+                              ]}
+                          />
+                          ))}
+                      </View>
                 </View>
                 )}
             />
@@ -55,7 +58,7 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
 const styles = StyleSheet.create({
   image: {
     width: width,
-    height: 300,
+    height: height,
     resizeMode: 'cover',
   },
   indicatorContainer: {

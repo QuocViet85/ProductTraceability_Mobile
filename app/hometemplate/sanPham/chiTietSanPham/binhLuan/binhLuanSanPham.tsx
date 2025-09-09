@@ -12,6 +12,9 @@ import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-nat
 import ChonSaoSanPham from "./chonSaoSanPham";
 import XoaBinhLuan from "./xoaBinhLuan";
 import AvatarUser from "@/app/usertemplate/avatarUser";
+import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
+import AnhBinhLuan from "./anhBinhLuan";
+import PostBinhLuan from "./postBinhLuan";
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<any[]>([]);
@@ -23,7 +26,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
     let tongSoTrang : number = Math.ceil(tongSoBinhLuan / limit);
 
     const layCacBinhLuans = () => {
-        let urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?pageNumber=${pageNumber}&limit=${limit}`);
+        const urlBinhLuan = url(`api/binhluan?kieuTaiNguyen=${SAN_PHAM}&taiNguyenId=${sP_Id}&pageNumber=${pageNumber}&limit=${limit}`);
 
         axios.get(urlBinhLuan).then((response) => {
             if (response.data.listBinhLuans) {
@@ -82,7 +85,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
         if (binhLuanPost) {
             getBearerToken()
             .then((bearerToken : any) => {
-                let urlPostBinhLuan = url('api/binhluan');
+                const urlPostBinhLuan = url(`api/sanpham/binh-luan/${sP_Id}`);
                 axios.post(urlPostBinhLuan, {
                     bL_NoiDung: binhLuanPost,
                     bL_SP_Id: sP_Id
@@ -103,7 +106,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
             <Text style={{marginBottom: 20, fontWeight: 'bold', fontSize: 20}}>Đánh giá sản phẩm ({tongSoBinhLuan})</Text>
             {listBinhLuans.map((item, indexBig) => {
                 return (
-                    <View key={item.sP_Id}>
+                    <View key={item.bL_SP_Id}>
                         <View style={{flexDirection: 'row'}}>
                             <AvatarUser userId={item.bL_NguoiTao_Client.id} width={40} height={40} canChange={false} />
                             <View>
@@ -125,6 +128,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                             </View>
                         </View>
                         <Text>{item.bL_NoiDung}</Text>
+                        <AnhBinhLuan bL_Id={item.bL_Id}/>
                         <Text style={{fontStyle: 'italic', fontSize: 10}}>{new Date(item.bL_NgayTao).toLocaleString()}</Text>
                         {userLogin ? (<XoaBinhLuan userLogin={userLogin} binhLuan={item} layCacBinhLuans={layCacBinhLuans}/>) : (<View></View>)}
                         <BlurLine />
@@ -147,30 +151,8 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                     <View style={{height: 10}}></View>
                     <ChonSaoSanPham sP_Id={sP_Id} userId={userLogin.id as string} laySoSaoCuaMotNguoi={laySoSaoCuaMotNguoi}/>
                     <View style={{height: 10}}></View>
-                    <View style={{flexDirection: 'row'}}>
-                        <TextInput
-                            style={{
-                                    height: 120,
-                                    borderColor: "gray",
-                                    borderWidth: 1,
-                                    padding: 10,
-                                    borderRadius: 8,
-                                    width: '85%'}}
-                            placeholder="Nhập bình luận..."
-                            value={binhLuanPost}
-                            onChangeText={setBinhLuanPost}
-                            multiline={true}     // Cho phép nhiều dòng
-                            numberOfLines={3}    // Gợi ý chiều cao ban đầu
-                            textAlignVertical="top" // Cho chữ căn từ trên xuống (Android)
-                            maxLength={1000}
-                            />
-                        <TouchableOpacity onPress={postBinhLuan}>
-                            <Ionicons style={{marginLeft: 'auto'}} name="arrow-forward-circle-outline" size={50} color="blue" />
-                        </TouchableOpacity>
-                     </View>
+                    <PostBinhLuan sP_Id={sP_Id} layCacBinhLuans={layCacBinhLuans}/>
                 </View>
-                
-                    
             ) : (<View></View>)}
             <Spacer height={10}/>
         </View>
