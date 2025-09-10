@@ -1,6 +1,6 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Updating } from "../helpers/ViewHelpers/updating";
@@ -8,7 +8,10 @@ import DoanhNghiep from "../model/DoanhNghiep";
 import { url } from "../server/backend";
 import AvatarDoanhNghiep from "./avatarDoanhNghiep";
 import CoverPhotoDoanhNghiep from "./coverPhotoDoanhNghiep";
-import TheoDoiVaLienHeDoanhNghiep from "./theoDoiVaLienHe";
+import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
+import AppUser from "../model/AppUser";
+import AvatarUser from "../usertemplate/avatarUser";
+import Spacer from "../helpers/ViewHelpers/spacer";
 
 export default function Index() 
 {
@@ -22,6 +25,8 @@ export default function Index()
 
     useEffect(() => {
         const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
+
+        console.log(urlDoanhNghiep)
 
         axios.get(urlDoanhNghiep)
             .then((res) => {
@@ -52,11 +57,11 @@ export default function Index()
                     <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} width={64} height={64}/>
                     <View style={styles.nameSection}>
                         <Text style={styles.businessName}>{doanhNghiep.dN_Ten}</Text>
-                        <Text style={styles.businessType}>Doanh nghiệp</Text>
+                        <Text style={styles.businessType}>{doanhNghiep.dN_KieuDN == 1 ? 'Hộ kinh doanh cá nhân' : 'Doanh Nghiệp'}</Text>
                     </View>
                     </View>
 
-                    <TheoDoiVaLienHeDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} dN_SoDienThoai={doanhNghiep.dN_SoDienThoai}/>
+                    <TuongTacDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} dN_SoDienThoai={doanhNghiep.dN_SoDienThoai}/>
                    
                     {/* Stats */}
                     <View style={styles.statsRow}>
@@ -100,6 +105,27 @@ export default function Index()
                                 Địa chỉ: {doanhNghiep.dN_DiaChi ? doanhNghiep.dN_DiaChi : (<Updating />)}
                             </Text>
                         </View>
+                    </View>
+
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Chủ doanh nghiệp</Text>
+                        {doanhNghiep.dN_List_CDN?.map((item, key) => {
+                            return (
+                                <View key={key}>
+                                    <Link style={{}} key={key} href={{pathname: '/usertemplate/user', params: {userId: item.cdN_ChuDN.id} }} withAnchor asChild>
+                                    <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
+                                        <View>
+                                            <AvatarUser userId={item.cdN_ChuDN.id} width={40} height={40} canChange={false} />
+                                        </View>
+                                        <View style={{marginLeft: 10}}>
+                                            <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{item.cdN_ChuDN.name}</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    </Link>
+                                </View>
+                                
+                            )
+                        })}
                     </View>
                 </ScrollView>
 

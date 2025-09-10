@@ -9,7 +9,7 @@ export default function MoTaSanPham({moTa} : {moTa: string}) {
         <View>
             {moTa ? (
                 <View>
-                    <Text style={{marginBottom: 10, fontWeight: 'bold', fontSize: 20}}>Mô tả sản phẩm</Text>
+                    <Text style={{marginBottom: 10, fontWeight: 'bold', fontSize: 20}}>{'Mô tả sản phẩm'}</Text>
                     <ScrollView style={{backgroundColor: '#fff', height: 120}} nestedScrollEnabled={true}>
                         <Text style={{fontSize: 20}}>
                             {moTa}

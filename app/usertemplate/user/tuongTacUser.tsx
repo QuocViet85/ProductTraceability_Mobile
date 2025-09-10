@@ -1,23 +1,22 @@
-import { Button, StyleSheet, Text, View } from "react-native";
-import { url } from "../server/backend";
-import getBearerToken from "../helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
+import { url } from "@/app/server/backend";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import { makePhoneCall } from "../helpers/LogicHelper/helper";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Button, View } from "react-native";
 
-export default function TheoDoiVaLienHeDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_Id: string, dN_SoDienThoai: string | undefined}) {
+export default function TuongTacUser({userId}: {userId: string}) {
     const [dangTheoDoi, setDangTheoDoi] = useState<boolean | undefined>(false);
     const [soTheoDoi, setSoTheoDoi] = useState<number>(0);
 
     useEffect(() => {
-        setTheoDoi();
-        laySoTheoDoi();
-    }, [])
+            setTheoDoi();
+            laySoTheoDoi();
+        }, []);
 
     const setTheoDoi = async() => {
-        const urlKiemTraDangTheoDoi = url(`api/doanhnghiep/kiem-tra-theo-doi/${dN_Id}`);
+        const urlKiemTraDangTheoDoi = url(`api/auth/kiem-tra-theo-doi/${userId}`);
         const bearerToken = await getBearerToken();
 
         if (!bearerToken) {
@@ -33,7 +32,7 @@ export default function TheoDoiVaLienHeDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_
     }
 
     const laySoTheoDoi = () => {
-            const urlSoTheoDoi = url(`api/doanhnghiep/so-luong-theo-doi/${dN_Id}`);
+            const urlSoTheoDoi = url(`api/auth/so-luong-theo-doi/${userId}`);
             axios.get(urlSoTheoDoi)
                 .then((res) => {
                     if (res.data) {
@@ -42,8 +41,8 @@ export default function TheoDoiVaLienHeDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_
                 })
             }
 
-    const theoDoiHoacHuyTheoDoi = async() => {
-        const urlTheoDoi = url(`api/doanhnghiep/theo-doi/${dN_Id}`);
+    const theoDoiHoacHuyTheoDoi = async () => {
+      const urlTheoDoi = url(`api/auth/theo-doi/${userId}`);
         const bearerToken = await getBearerToken();
 
         if (!bearerToken) {
@@ -57,7 +56,6 @@ export default function TheoDoiVaLienHeDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_
         setTheoDoi();
         laySoTheoDoi();
     }
-
     return (
         <View>
             <View style={styles.actionRow}>
@@ -66,23 +64,21 @@ export default function TheoDoiVaLienHeDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_
                     (<Button title="+Theo dõi" color={'green'} onPress={theoDoiHoacHuyTheoDoi}></Button>) : 
                     (<Button title="-Hủy theo dõi" color={'green'} onPress={theoDoiHoacHuyTheoDoi}></Button>)}        
                 </View>
-                <TouchableOpacity style={styles.iconButton} onPress={() => makePhoneCall(dN_SoDienThoai)}>
-                    <IconSymbol name="call" size={24} color="green" />
+                <TouchableOpacity style={styles.iconButton}>
+                        <IconSymbol name="message" size={22} color="green" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconButton}>
-                    <IconSymbol name="more-horiz" size={24} color="green" />
+                    <IconSymbol name="factory" size={22} color="business" />
                 </TouchableOpacity>
             </View>
             <Text style={styles.followerText}>{soTheoDoi} người đang theo dõi trang này</Text>
         </View>
-        
     )
 }
 
 const styles = StyleSheet.create({
   actionRow: {
     flexDirection: 'row',
-    alignItems: 'center',
     marginTop: 12,
   },
   followButton: { flex: 1, backgroundColor: '#00b050', marginRight: 8 },

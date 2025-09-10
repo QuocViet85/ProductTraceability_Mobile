@@ -7,6 +7,9 @@ import AvatarUser from "../avatarUser";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Updating } from "@/app/helpers/ViewHelpers/updating";
 import { generateExactRole } from "@/app/constant/Role";
+import CoverPhotoUser from "../coverPhotoUser";
+import TuongTacUser from "./tuongTacUser";
+import BinhLuanCuaUser from "./binhLuanCuaUser/binhLuanCuaUser";
 
 export default function UserInfo() {
     const params = useLocalSearchParams();
@@ -27,9 +30,10 @@ export default function UserInfo() {
             {user ? (
                 <View>
                     {/* Banner */}
-                {/* <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} /> */}
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <ScrollView>
                     {/* Logo + Name */}
+                    <CoverPhotoUser userId={userId as string} canChange={false} />
+                    <View style={{height: 10}}></View>
                     <View style={styles.profileHeader}>
                     <AvatarUser userId={user.id as string} width={64} height={64} canChange={false}/>
                     <View style={styles.nameSection}>
@@ -38,7 +42,7 @@ export default function UserInfo() {
                     </View>
                     </View>
 
-                    {/* <TheoDoiVaLienHeDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} dN_SoDienThoai={doanhNghiep.dN_SoDienThoai}/> */}
+                    <TuongTacUser userId={userId as string} />
 
                     {/* Giới thiệu */}
                     <View style={styles.section}>
@@ -64,6 +68,13 @@ export default function UserInfo() {
                             </Text>
                         </View>
                     </View>
+
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Đánh giá sản phẩm</Text>
+                        <BinhLuanCuaUser userId={userId as string}/>
+                    </View>
+
+                    <View style={{height: 50}}></View>
                 </ScrollView>
 
                 {/* Bottom Tabs */}
@@ -80,7 +91,7 @@ export default function UserInfo() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  scrollContainer: { padding: 16, marginTop: '10%' },
+  scrollContainer: { marginTop: 16 },
   profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
   logoCircle: {
     width: 64,

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Header from '../general/header';
 import DanhMucs, { tatCaDanhMuc } from '../hometemplate/danhMuc/danhMucs';
-import SanPham from '../hometemplate/sanPham/sanPhams';
+import DanhSachSanPham from '../hometemplate/sanPham/sanPhams';
 
 
 export default function HomeScreen() {
@@ -14,7 +14,7 @@ export default function HomeScreen() {
 
       <View style={styles.content}>
           <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} />
-          <SanPham danhMucHienTai={danhMucHienTai} />
+          <DanhSachSanPham danhMucHienTai={danhMucHienTai} />
       </View>
     
     </View>

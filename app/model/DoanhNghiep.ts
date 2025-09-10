@@ -14,7 +14,7 @@ export default class DoanhNghiep
 
     dN_Email: string | undefined;
 
-    dN_KieuDN: string | undefined;
+    dN_KieuDN: number | undefined;
 
     dN_JsonData: string | undefined;
 
@@ -22,5 +22,5 @@ export default class DoanhNghiep
 
     dN_NguoiTao_Id: string | undefined;
 
-    dN_List_CDN: any[] | undefined;
+    dN_List_CDN: {cdN_ChuDN: {id: string, name: string}}[] | undefined;
 }

@@ -125,12 +125,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   statBox: {
-    width: '48%',
+    width: '40%',
     backgroundColor: '#f2f2f2',
-    paddingVertical: 12,
+    paddingVertical: 10,
     marginBottom: 10,
     borderRadius: 8,
     alignItems: 'center',
+    marginLeft: 10
   },
   statValue: { fontWeight: 'bold', fontSize: 16 },
   statLabel: { color: '#555', fontSize: 13 },

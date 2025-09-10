@@ -1,6 +1,7 @@
 import { IMAGE } from "@/app/constant/KieuFile";
 import { BINH_LUAN } from "@/app/constant/KieuTaiNguyen";
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { Button, Dimensions, FlatList, Image, Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -29,7 +30,14 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
                 {listAnhBinhLuan.map((item, key) => {
                     if (key <= 2) {
                         return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
-                    }else {
+                    }else if (key === 3) {
+                        return (
+                            <View key={key} style={{backgroundColor: 'grey'}}>
+                                <IconSymbol key={key} name="more-horiz" size={80} color="white" />
+                            </View>
+                    )
+                    }
+                    else {
                         return (<View key={key}></View>)
                     }
                 })}

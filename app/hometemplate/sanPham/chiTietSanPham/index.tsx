@@ -16,11 +16,14 @@ import SaoSanPham from "./saoSanPham";
 import AppUser from "@/app/model/AppUser";
 import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
 import QrCode from "./qrCode";
+import SanPham from "@/app/model/SanPham";
+import { formatCurrency } from "@/app/helpers/LogicHelper/helper";
+import WebsiteSanPham from "./websiteSanPham";
 
 export default function Index() {
     const params = useLocalSearchParams();
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
-    const [sanPham, setSanPham] = useState<any>();
+    const [sanPham, setSanPham] = useState<SanPham | null>(null);
     const [uriSanPham, setUriSanPham] = useState<string>('');
     const [userLogin, setUserLogin] = useState<AppUser | null>(null);
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
@@ -74,14 +77,15 @@ export default function Index() {
                 </Text>
                 <QrCode urlSanPham={urlSanPham} />
                 <BlurLine />
-                  <SaoSanPham sP_Id={sanPham.sP_Id} />
+                  <SaoSanPham sP_Id={sanPham.sP_Id as string} />
                   <Spacer height= {10} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SoHuu} vaiTro={"sở hữu"} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SanXuat} vaiTro={"sản xuất"} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
-                  <NguoiPhuTrach userId={sanPham.sP_NguoiPhuTrach_Id} />
-                  <MoTaSanPham moTa={sanPham.sP_MoTa}/>
-                  <BinhLuanSanPhan sP_Id={sanPham.sP_Id} userLogin={userLogin}/>
+                  <NguoiPhuTrach userId={sanPham.sP_NguoiPhuTrach_Id as string} />
+                  <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
+                  <WebsiteSanPham sP_Website={sanPham.sP_Website} />
+                  <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>
 
                   <Spacer height={40}/>
             </View>) 
@@ -93,17 +97,6 @@ export default function Index() {
     )
 }
 
-Index.options = {
-  headerShown: false
-}
-
-function formatCurrency(price: number) : string {
-    const vnFormatter = new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    });
-    return vnFormatter.format(price);
-}
 
 const styles = StyleSheet.create({
   container: {                 // cho phép chiếm toàn màn hình

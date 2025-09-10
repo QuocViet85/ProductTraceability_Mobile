@@ -1,5 +1,6 @@
 import { url } from "@/app/server/backend";
 import axios from "axios";
+import { Link } from "expo-router";
 import { Alert, Linking } from "react-native";
 
 export function layMaTruyXuatTuUrl(url: string) {
@@ -41,3 +42,21 @@ export function makePhoneCall(phoneNumber: string | undefined) {
     })
     .catch((err) => console.error('Lỗi khi gọi điện:', err));
 };
+
+export function formatCurrency(price: number) : string {
+    const vnFormatter = new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    });
+    return vnFormatter.format(price);
+}
+
+export async function openWebsite(url: string) {
+  if (!url.startsWith('http')) {
+    url = 'https://' + url;
+  }
+  const supported = await Linking.canOpenURL(url);
+  if (supported) {
+    await Linking.openURL(url);
+  }
+}

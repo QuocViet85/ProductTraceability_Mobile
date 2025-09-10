@@ -77,14 +77,9 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
                     <Text style={styles.businessName}>{userLogin.name}</Text>
                     <Text style={styles.businessType}>{`Tài khoản ${generateExactRole(userLogin.role as string)}`}</Text>
                 </View>
+                <ChangePassword />
             </View>
 
-            <View style={styles.statsRow}>
-                <ChangePassword />
-                <TouchableOpacity style={styles.statBox} onPress={() => router.push("/baiVietTemplate/userLogin")}>
-                    <Text style={styles.statLabel}>{'Bài viết'}</Text>
-                </TouchableOpacity>
-            </View>
 
             <Text>Số điện thoại:</Text>
             <TextInput
@@ -122,15 +117,12 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
             <View style={{marginBottom: 20}}></View>
             <Logout setUserLogin={setUserLogin}/>
             </ScrollView>
-
-            
-            
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#fff' },
+  container: { backgroundColor: '#fff', width: '100%' },
   scrollContainer: { padding: 16, marginTop: '10%' },
   profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
   logoCircle: {

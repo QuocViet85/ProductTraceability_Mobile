@@ -11,34 +11,40 @@ export default function PostBinhLuan({sP_Id, layCacBinhLuans}: {sP_Id: string, l
     const [noiDungBinhLuan, setNoiDungBinhLuan] = useState<string>('');
     const [listUriAnhBinhLuan, setListUriAnhBinhLuan] = useState<string[]>([])
 
-    const postBinhLuan = () => {
+    const postBinhLuan = async () => {
         if (noiDungBinhLuan) {
-            getBearerToken()
-            .then((bearerToken : any) => {
-                const urlPostBinhLuan = url(`api/sanpham/binh-luan/${sP_Id}`);
-                const formData = new FormData();
+            const bearerToken = await getBearerToken();
 
-                formData.append("binhLuan", noiDungBinhLuan);
+            if (!bearerToken) {
+                Alert.alert('Lỗi', 'Lỗi đăng bình luận');
+            }
 
-                for (const uri of listUriAnhBinhLuan) {
-                    formData.append("listImages", {
-                        uri: uri,
-                        type: "image/jpeg",
-                        name: "avatar.jpg",
-                    } as any);
-                }
+            const urlPostBinhLuan = url(`api/binhluan/san-pham/${sP_Id}`);
 
-                axios.post(urlPostBinhLuan, formData, {headers: {
+            const formData = new FormData();
+
+            formData.append("noiDung", noiDungBinhLuan);
+
+            for (const uri of listUriAnhBinhLuan) {
+                formData.append("listImages", {
+                    uri: uri,
+                    type: "image/jpeg",
+                    name: "avatar.jpg",
+                } as any);
+            };
+
+            try {
+                await axios.post(urlPostBinhLuan, formData, {headers: {
                     Authorization: bearerToken,
                     "Content-Type": 'multipart/form-data'
                 }})
-                .then(() => {
-                    setNoiDungBinhLuan('');
-                    layCacBinhLuans();
-                    setListUriAnhBinhLuan([]);
-                })
-            })
-            .catch(() => Alert.alert('Lỗi', 'Lỗi đăng bình luận'))
+
+                setNoiDungBinhLuan('');
+                layCacBinhLuans();
+                setListUriAnhBinhLuan([]);
+            }catch {
+                Alert.alert('Lỗi', 'Lỗi đăng bình luận')
+            }
         }else {
             Alert.alert('Lỗi', 'Chưa nhập bình luận');
         }

@@ -1,0 +1,176 @@
+import { IMAGE } from "@/app/constant/KieuFile";
+import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
+import { LIMIT_BAIVIET, LIMIT_BINHLUAN } from "@/app/constant/Limit";
+import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
+import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
+import AnhBinhLuan from "@/app/hometemplate/sanPham/chiTietSanPham/binhLuan/anhBinhLuan";
+import XoaBinhLuan from "@/app/hometemplate/sanPham/chiTietSanPham/binhLuan/xoaBinhLuan";
+import AppUser from "@/app/model/AppUser";
+import BaiViet from "@/app/model/BaiViet";
+import BinhLuan from "@/app/model/BinhLuan";
+import { url } from "@/app/server/backend";
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View } from "react-native";
+
+export default function BinhLuanCuaUser({userId} : {userId: string}) {
+    const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
+    const [tongSoBinhLuan, setTongSoBinhLuan] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [userLogin, setUserLogin] = useState<AppUser | null>(null);
+    const router = useRouter();
+
+    const tongSoTrang : number = Math.ceil(tongSoBinhLuan / LIMIT_BINHLUAN);
+
+    useEffect(() => {
+        getUserLogin().then((userLogin) => {
+            setUserLogin(userLogin);
+        })
+    }, [])
+
+    useEffect(() => {
+        layCacBinhLuans();
+    }, [pageNumber])
+
+    const layCacBinhLuans = async() => {
+        const uriListBinhLuan = url(`api/binhluan/user/${userId}?pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}`);
+
+        const response = await axios.get(uriListBinhLuan);
+
+        if (response.data) {
+            const listBinhLuans = response.data.listBinhLuans;
+
+            for (const binhLuan of listBinhLuans) {
+                if (binhLuan.bL_SP) {
+                    try {
+                        const file = await getFileAsync(SAN_PHAM, binhLuan.bL_SP.sP_Id, IMAGE, 1);
+            
+                        if (file) {
+                            binhLuan.bL_SP.sP_UriAvatar = getUriFile(file[0]);
+                        }
+                    }catch {}
+                }
+
+                const urlSoSao = url(`api/sanpham/sao-san-pham-user/${binhLuan.bL_SP_Id}?userId=${userId}`);
+
+                try {
+                    const soSao = (await axios.get(urlSoSao)).data;
+
+                    if (soSao) {
+                        binhLuan.bL_NguoiTao_Client = {};
+                        binhLuan.bL_NguoiTao_Client.soSao = soSao
+                    }
+                }catch {}
+            }
+
+            setListBinhLuans(listBinhLuans);
+        }
+
+        if (response.data.tongSo) {
+            setTongSoBinhLuan(response.data.tongSo);
+        }
+    }
+
+    const backPage = () => {
+        if (pageNumber > 1) {
+            setPageNumber(pageNumber - 1);
+        }
+    }
+
+    const nextPage = () => {
+        if (pageNumber < tongSoTrang) {
+            setPageNumber(pageNumber + 1);
+        }
+    }
+    return (
+        <View>
+            {listBinhLuans.length > 0 ? (
+                <View>
+                    <View>
+                        {listBinhLuans.map((item: BinhLuan, key) => {
+                            return (
+                                <View key={key}>
+                                        <View>
+                                            <View style={{flexDirection: 'row'}}>
+                                                <Text style={{fontStyle: 'italic', fontSize: 10}}>{new Date(item.bL_NgayTao as Date).toLocaleString()}</Text>
+                                                <View style={{flexDirection: 'row'}}>
+                                                    {Array.from({length: 5}).map((_, index) => {
+                                                        if (index + 1 <= (item.bL_NguoiTao_Client?.soSao as number)) {
+                                                            return (
+                                                                <IconSymbol key={index} name="star" size={20} color="#FFD700" />
+                                                            )
+                                                        }else {
+                                                            return (
+                                                                <IconSymbol key={index} name="star" size={20} color="grey" />
+                                                            )
+                                                        }
+                                                    })}
+                                                    <XoaBinhLuan userLogin={userLogin} binhLuan={item} layCacBinhLuans={layCacBinhLuans} width={'100%'}/>
+                                                </View>
+                                            </View>
+                                            
+                                            <Text style={{fontSize: 20}}>{item.bL_NoiDung}</Text>
+                                            <AnhBinhLuan bL_Id={item.bL_Id as string}/>
+                                        </View>
+                                        <View style={styles.viewSanPham}>
+                                                <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_MaTruyXuat: item.bL_SP?.sP_MaTruyXuat as string} })}>
+                                                    <Image source={{ uri: item.bL_SP?.sP_UriAvatar }} style={styles.avatarSanPham} />
+                                                    <View style={{marginLeft: 10}}>
+                                                        <Text style={{fontSize: 17, fontWeight: 'bold'}}>{item.bL_SP?.sP_Ten}</Text>
+                                                    </View>
+                                                </TouchableOpacity>
+                                        </View>
+                                    <BlurLine />
+                                </View>
+                                
+                            )
+                        })}
+                    </View>
+                    <View style={{alignItems: 'center'}}>
+                        <Text>{pageNumber} / {tongSoTrang}</Text>
+                        <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity onPress={backPage}>
+                                <Ionicons name="arrow-back" size={32} color="black" />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={nextPage}>
+                                <Ionicons name="arrow-forward" size={32} color="black" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+                
+            ) :
+            (<View></View>)}
+            
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    viewSanPham: {
+        flex: 1, 
+        margin: 5,
+        backgroundColor: '#f2f2f2',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+        padding: 10
+    },
+    touchAvatarSanPham: {
+        width: '100%',
+        height: 40, 
+        borderRadius: 8,
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    avatarSanPham: {
+        width: 50,
+        height: 50,
+        borderRadius: 8
+    }
+});

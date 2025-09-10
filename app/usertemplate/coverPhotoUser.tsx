@@ -84,7 +84,7 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                         <TouchableOpacity onPress={canChange ? () => setShowModalChangeCoverPhoto(true) : () => {}}>
                             <Image
                                 source={{ uri: uriCoverPhoto as string }}
-                                style={{width: '100%', height: 120, marginBottom: 40}}
+                                style={{width: '100%', height: 140, marginBottom: 40}}
                                 resizeMode="cover"
                             />
                         </TouchableOpacity>
@@ -126,7 +126,7 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                                     <Text style={styles.statLabel}>{'Đặt ảnh bìa'}</Text>
                                 </TouchableOpacity>
                             </View>
-                        ) : (<View></View>)}
+                        ) : (<View style={{height: 100}}></View>)}
                     </View>
                 )
             }
