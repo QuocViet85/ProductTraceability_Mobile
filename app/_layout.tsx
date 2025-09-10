@@ -27,6 +27,7 @@ export default function RootLayout() {
           <Stack.Screen name="quetMaTemplate/quetMaBangCamera" options={{  headerShown: false }} />
           <Stack.Screen name="doanhNghiepTemplate/index" options={{  headerShown: false }} />
           <Stack.Screen name="usertemplate/user/index" options={{  headerShown: false }} />
+          <Stack.Screen name="baiVietTemplate/userLogin/index" options={{  headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

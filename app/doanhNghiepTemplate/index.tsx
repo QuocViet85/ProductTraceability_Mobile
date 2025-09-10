@@ -1,15 +1,13 @@
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { Button, ScrollView, Text, TouchableOpacity } from "react-native";
-import { Image, StyleSheet, View } from "react-native";
-import DoanhNghiep from "../model/DoanhNghiep";
-import { useEffect, useState } from "react";
-import { url } from "../server/backend";
 import axios from "axios";
-import CoverPhotoDoanhNghiep from "./coverPhoto";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Updating } from "../helpers/ViewHelpers/updating";
-import AvatarDoanhNghiep from "./avatar";
+import DoanhNghiep from "../model/DoanhNghiep";
+import { url } from "../server/backend";
+import AvatarDoanhNghiep from "./avatarDoanhNghiep";
+import CoverPhotoDoanhNghiep from "./coverPhotoDoanhNghiep";
 import TheoDoiVaLienHeDoanhNghiep from "./theoDoiVaLienHe";
 
 export default function Index() 

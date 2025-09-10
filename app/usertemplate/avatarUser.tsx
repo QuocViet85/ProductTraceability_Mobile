@@ -1,12 +1,15 @@
 import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
 import { getUriAvatarUser, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import { url } from "@/app/server/backend";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Button, Modal, Text } from "react-native";
 import { Alert, Image, TouchableOpacity, View } from "react-native";
 
 export default function AvatarUser({userId, width, height, canChange} : {userId : string | undefined, width: number, height: number, canChange: boolean}) {
-    const [uriAvatar, setUriAvatar] = useState<string>('');
+    const [uriAvatar, setUriAvatar] = useState<string | null>(null);
+    const [showModalChangeAvatar, setShowModalChangeAvatar] = useState<boolean | undefined>(false);
 
     useEffect(() => {
         getUriAvatarUser(userId as string).then((uri) => {
@@ -16,49 +19,75 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
         })
     }, [uriAvatar])
 
-    const changeAvatar = () => {
-        getBearerToken()
-        .then((bearerToken: string) => {
-            getUriImagesPickInDevice(false).then((uriArr : string[]) => {
-                if (uriArr.length > 0) {
-                    const uriNewAvatarInDevice = uriArr[0];
+    const setAvatar = async () => {
+        const bearerToken = await getBearerToken();
 
-                    const formData = new FormData();
+        if (!bearerToken) {
+                Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+            }
+
+            const uriArr = await getUriImagesPickInDevice(false);
+
+        if (!uriArr) {
+            Alert.alert("Lỗi", "Không truy cập được ảnh trong thiết bị");
+        }
+
+         if (uriArr.length > 0) {
+            const uriAvatarInDevice = uriArr[0];
+
+            const formData = new FormData();
                     formData.append("file", {
-                                        uri: uriNewAvatarInDevice,
+                                        uri: uriAvatarInDevice,
                                         type: "image/jpeg",
                                         name: "avatar.jpg",
                                         } as any); //không dùng Blob, phải để thế này thì react native mới hoạt động upload ảnh được
 
-                    let uriChangeAvatar = url('api/auth/avatar');
+            const uriChangeAvatar = url('api/auth/avatar');
 
-                    getBearerToken()
-                    .then((bearerToken : any) => {
-                        axios.put(uriChangeAvatar, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}})
-                        .then(() => {
-                            Alert.alert('Thông báo', 'Đổi avatar thành công');
-                            setUriAvatar('');
-                        })
-                        .catch(() => {
-                            Alert.alert('Lỗi', 'Đổi avatar thất bại');
-                        })
-                    })
-                    .catch(() => {
-                        Alert.alert('Lỗi', 'Đổi avatar thất bại');
-                    })
-                }
-            })
-        })
-        .catch(() => {
+            try {
+                await  axios.put(uriChangeAvatar, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
+                Alert.alert('Thông báo', 'Đổi avatar thành công');
+                setUriAvatar('');
+                setShowModalChangeAvatar(false);
+            }catch {
+                 Alert.alert('Lỗi', 'Đổi avatar thất bại');
+            }
+         }
+    }
+
+    const deleteAvatar = async () => {
+        const bearerToken =  await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+
+        try {
+            const uriDeleteCoverPhoto = url('api/auth/avatar');
+            await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
+            Alert.alert('Thông báo', 'Xóa ảnh đại diện thành công');
+            setUriAvatar(null);
+            setShowModalChangeAvatar(false);
+        }catch {
             Alert.alert('Lỗi', 'Đổi ảnh đại diện thất bại');
-        })
+            }
+    }
+
+    const handleTouchAvatar = () => {
+        if (canChange) {
+            if (uriAvatar) {
+                setShowModalChangeAvatar(true);
+            }else {
+                setAvatar();
+            }
+        }
     }
 
     return (
         <View>
-            <TouchableOpacity onPress={canChange ? changeAvatar : () => {}}>
+            <TouchableOpacity onPress={handleTouchAvatar}>
                 <Image
-                    source={{uri: uriAvatar}}
+                    source={{uri: uriAvatar ? uriAvatar : ''}}
                     style={{
                         width: width,
                         height: height,
@@ -71,6 +100,31 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
                     }}
                     />
             </TouchableOpacity>
+
+            <Modal
+            visible={showModalChangeAvatar}
+            animationType="slide">
+                <View style={{marginTop: 'auto'}}>
+                    <Image
+                        source={{ uri: uriAvatar as string }}
+                        style={{width: '100%', height: "80%", marginBottom: 40}}
+                        resizeMode="cover"
+                    />
+                    <View style={{alignItems: 'center'}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity onPress={setAvatar}>
+                                <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                            </TouchableOpacity>
+                            <Text>Đổi ảnh đại diện</Text>
+                            <TouchableOpacity onPress={deleteAvatar}>
+                                <IconSymbol name={'delete'} size={50} color={'red'}/>
+                            </TouchableOpacity>
+                            <Text>Xóa ảnh đại diện</Text>
+                        </View>
+                    </View>
+                    <Button title="Đóng" onPress={() => setShowModalChangeAvatar(false)}></Button>
+                </View>
+            </Modal>
         </View>
         
     )

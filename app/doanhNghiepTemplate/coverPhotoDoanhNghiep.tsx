@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Image } from "react-native";
+import { Image, View } from "react-native";
 import { getFileAsync, getUriFile } from "../helpers/LogicHelper/fileHelper";
 import { DOANH_NGHIEP } from "../constant/KieuTaiNguyen";
 import { COVER_PHOTO } from "../constant/KieuFile";
@@ -18,10 +18,14 @@ export default function CoverPhotoDoanhNghiep({dN_Id}:{dN_Id: string}) {
     }, [])
 
     return (
-        <Image
-            source={{ uri: uri ? uri : '' }}
+        <View>
+            {uri ? (<Image
+            source={{ uri: uri }}
             style={{width: '100%', height: 140}}
             resizeMode="cover"
-        />
+        />) : (<View></View>)}
+        </View>
+        
+        
     )
 }

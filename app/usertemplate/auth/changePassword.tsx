@@ -52,11 +52,10 @@ export function ChangePassword() {
         }
     
     return (
-        <View>
-              <TouchableOpacity style={{backgroundColor: '#14dbdb', height: 25, width: 100, borderRadius: 6}} onPress={() => setModalChangePassword(true)}>
-                  <Text>Đổi mật khẩu</Text>
+        <View style={styles.statBox}>
+              <TouchableOpacity onPress={() => setModalChangePassword(true)}>
+                        <Text style={styles.statLabel}>{'Đổi mật khẩu'}</Text>
               </TouchableOpacity>
-
                 <Modal
                 visible={modalChangePassword}
                 animationType='slide'
@@ -119,4 +118,20 @@ const styles = StyleSheet.create({
     height: 44,
     borderRadius: 6,
   },
+  statsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16,
+    justifyContent: 'space-between',
+  },
+  statBox: {
+    width: '48%',
+    backgroundColor: '#f2f2f2',
+    paddingVertical: 12,
+    marginBottom: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  statValue: { fontWeight: 'bold', fontSize: 16 },
+  statLabel: { color: '#555', fontSize: 13 },
 });

@@ -3,48 +3,20 @@ import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
 import axios, { AxiosHeaderValue } from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, Image, ImageSourcePropType, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Logout from "../auth/logout";
 import { ChangePassword } from "../auth/changePassword";
 import AvatarUser from "../avatarUser";
 import { generateExactRole } from "@/app/constant/Role";
+import CoverPhotoUser from "../coverPhotoUser";
+import { useRouter } from "expo-router";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {
     const [name, setName] = useState<string | undefined>(userLogin.name);
     const [email, setEmail] = useState<string | undefined>(userLogin.email);
     const [address, setAddress] = useState<string | undefined>(userLogin.address);
+    const router = useRouter();
     
-
-    const updateUser = () => {
-        if (validate()) {
-            let urlUpdateUser = url('api/auth');
-
-            getBearerToken()
-            .then((bearerToken : AxiosHeaderValue | undefined) => {
-                axios.put(urlUpdateUser, 
-                {
-                name: name,
-                email: email,
-                address: address
-                }, 
-                {
-                    headers: {
-                        Authorization: bearerToken
-                    }
-                })
-                .then(() => {
-                    setRefreshUserLogin(true);
-                })
-                .catch(() => {
-                    Alert.alert('Lỗi', 'Lỗi Server. Cập nhật thông tin người dùng thất bại');
-                })
-            })
-            .catch(() => {
-                Alert.alert('Lỗi', 'Lỗi Server. Cập nhật thông tin người dùng thất bại');
-            })
-        }
-    }
-
     const validate = () => {
         let alert = '';
 
@@ -66,17 +38,52 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
         return true;
     }
 
+    const updateUser = async () => {
+        if (validate()) {
+            const bearerToken = await getBearerToken();
+
+            if (!bearerToken) {
+                Alert.alert('Lỗi', 'Lỗi Server. Cập nhật thông tin người dùng thất bại');
+            }
+
+            try {   
+                const urlUpdateUser = url('api/auth');
+                await axios.put(urlUpdateUser, 
+                {
+                name: name,
+                email: email,
+                address: address
+                }, 
+                {
+                    headers: {
+                        Authorization: bearerToken
+                    }
+                })
+                setRefreshUserLogin(true);
+            }catch {
+                Alert.alert('Lỗi', 'Lỗi Server. Cập nhật thông tin người dùng thất bại');
+            }
+        }
+    }
+
     return(
         <View style={styles.container}>
-            <View style={{flexDirection: 'row'}}>
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <CoverPhotoUser userId={userLogin.id as string} canChange= {true}/>
+                                {/* Logo + Name */}
+            <View style={styles.profileHeader}>
                 <AvatarUser userId={userLogin.id} width={64} height={64} canChange={true}/>
-                    <View>
-                        <Text style={{fontWeight: 'bold'}}>{userLogin.name}</Text>
-                        <View style={{flexDirection: 'row'}}>
-                            <Text style={{backgroundColor: 'grey', marginLeft: 10, marginRight: 10, borderRadius: 6}}>{generateExactRole(userLogin.role as string)}</Text>
-                            <ChangePassword />
-                        </View>
-                    </View>
+                <View style={styles.nameSection}>
+                    <Text style={styles.businessName}>{userLogin.name}</Text>
+                    <Text style={styles.businessType}>{`Tài khoản ${generateExactRole(userLogin.role as string)}`}</Text>
+                </View>
+            </View>
+
+            <View style={styles.statsRow}>
+                <ChangePassword />
+                <TouchableOpacity style={styles.statBox} onPress={() => router.push("/baiVietTemplate/userLogin")}>
+                    <Text style={styles.statLabel}>{'Bài viết'}</Text>
+                </TouchableOpacity>
             </View>
 
             <Text>Số điện thoại:</Text>
@@ -114,23 +121,76 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
             <Button title="Cập nhật" onPress={updateUser} color={'green'}/>
             <View style={{marginBottom: 20}}></View>
             <Logout setUserLogin={setUserLogin}/>
+            </ScrollView>
+
+            
             
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    marginTop: 50,
-    width: '100%',
+  container: { backgroundColor: '#fff' },
+  scrollContainer: { padding: 16, marginTop: '10%' },
+  profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
+  logoCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 24,
-    textAlign: 'center',
+  logoText: { fontSize: 12, color: '#333' },
+  nameSection: { marginLeft: 12 },
+  businessName: { fontSize: 18, fontWeight: 'bold' },
+  businessType: { color: '#888', marginTop: 2 },
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
   },
+  followButton: { flex: 1, backgroundColor: '#00b050', marginRight: 8 },
+  iconButton: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#00b050',
+    borderRadius: 6,
+    marginHorizontal: 2,
+  },
+  followerText: { marginTop: 8, color: '#777', fontSize: 13 },
+  statsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16,
+    justifyContent: 'space-between',
+  },
+  statBox: {
+    width: '48%',
+    backgroundColor: '#f2f2f2',
+    paddingVertical: 12,
+    marginBottom: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  statValue: { fontWeight: 'bold', fontSize: 16 },
+  statLabel: { color: '#555', fontSize: 13 },
+  section: { marginTop: 16 },
+  sectionTitle: { fontWeight: 'bold', fontSize: 16, marginBottom: 6 },
+  addressRow: { flexDirection: 'row', alignItems: 'center' },
+  addressText: { marginLeft: 6, fontSize: 14, color: '#555' },
+  bottomTabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+    paddingVertical: 8,
+    marginTop: 'auto'
+  },
+  tabItem: { alignItems: 'center' },
+  tabLabel: { fontSize: 12, marginTop: 2 },
   input: {
     borderColor: '#999',
     borderWidth: 1,
@@ -140,3 +200,4 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
 });
+

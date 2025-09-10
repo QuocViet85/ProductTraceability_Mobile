@@ -1,9 +1,7 @@
-import AvatarDoanhNghiep from "@/app/doanhNghiepTemplate/avatar";
+import AvatarDoanhNghiep from "@/app/doanhNghiepTemplate/avatarDoanhNghiep";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
-import { Updating } from "@/app/helpers/ViewHelpers/updating";
-import { Entypo } from '@expo/vector-icons';
 import { Link } from "expo-router";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep: any, vaiTro : string}) 
 {
