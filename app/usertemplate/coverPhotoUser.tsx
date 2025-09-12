@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Alert, Button, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { getFileAsync, getUriFile, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { USER } from "../constant/KieuTaiNguyen";
 import { COVER_PHOTO } from "../constant/KieuFile";
 import getBearerToken from "../helpers/LogicHelper/authHelper";
@@ -22,14 +22,20 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
             })
         }, [uriCoverPhoto]);
 
-        const setCoverPhoto = async () => {
+        const setCoverPhoto = async (camera: boolean) => {
             const bearerToken =  await getBearerToken();
 
             if (!bearerToken) {
                 Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
             }
 
-            const uriArr = await getUriImagesPickInDevice(false);
+            let uriArr: string[] = [];
+
+            if (camera) {
+                uriArr = await getUriImagesFromCamera();
+            }else {
+                uriArr = await getUriImagesPickInDevice(false);
+            }
 
             if (!uriArr) {
                 Alert.alert("Lỗi", "Không truy cập được ảnh trong thiết bị");
@@ -88,33 +94,6 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                                 resizeMode="cover"
                             />
                         </TouchableOpacity>
-
-                        <Modal
-                        visible={showModalChangeCoverPhoto}
-                        animationType="slide">
-                            <View style={{marginTop: 'auto'}}>
-                                <Image
-                                    source={{ uri: uriCoverPhoto as string }}
-                                    style={{width: '100%', height: "80%", marginBottom: 40}}
-                                    resizeMode="cover"
-                                />
-                                <View style={{alignItems: 'center'}}>
-                                    <View style={{flexDirection: 'row'}}>
-                                        <TouchableOpacity onPress={setCoverPhoto}>
-                                            <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
-                                        </TouchableOpacity>
-                                        <Text>Đổi ảnh bìa</Text>
-                                        <TouchableOpacity onPress={deleteCoverPhoto}>
-                                            <IconSymbol name={'delete'} size={50} color={'red'}/>
-                                        </TouchableOpacity>
-                                        <Text>Xóa ảnh bìa</Text>
-                                    </View>
-                                </View>
-                                
-                                
-                                <Button title="Đóng" onPress={() => setShowModalChangeCoverPhoto(false)}></Button>
-                            </View>
-                        </Modal>
                     </View>
                 
                 ) : 
@@ -122,7 +101,7 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                     <View>
                         {canChange ? (
                             <View style={{height: 100}}>
-                                <TouchableOpacity style={{...styles.statBox, alignItems: 'center'}} onPress={setCoverPhoto}>
+                                <TouchableOpacity style={{...styles.statBox, alignItems: 'center'}} onPress={() => setShowModalChangeCoverPhoto(true)}>
                                     <Text style={styles.statLabel}>{'Đặt ảnh bìa'}</Text>
                                 </TouchableOpacity>
                             </View>
@@ -130,6 +109,38 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                     </View>
                 )
             }
+
+            <Modal
+            visible={showModalChangeCoverPhoto}
+            animationType="slide">
+                <View style={{marginTop: 'auto'}}>
+                    <Image
+                        source={{ uri: uriCoverPhoto as string }}
+                        style={{width: '100%', height: "80%", marginBottom: 40}}
+                        resizeMode="cover"
+                    />
+                    <View style={{alignItems: 'center'}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <TouchableOpacity onPress={() => setCoverPhoto(true)}>
+                                <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setCoverPhoto(false)}>
+                                <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                            </TouchableOpacity>
+                            <Text>{`${uriCoverPhoto ? 'Đổi' : 'Tải lên'} ảnh bìa`}</Text>
+                            {uriCoverPhoto ? (
+                                <View style={{flexDirection: 'row'}}>
+                                    <TouchableOpacity onPress={deleteCoverPhoto}>
+                                    <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                    </TouchableOpacity>
+                                    <Text>Xóa ảnh bìa</Text>
+                                </View>
+                                ) : (<View></View>)}
+                        </View>
+                    </View>                                
+                    <Button title="Đóng" onPress={() => setShowModalChangeCoverPhoto(false)}></Button>
+                </View>
+            </Modal>
         </View>
     )
 }

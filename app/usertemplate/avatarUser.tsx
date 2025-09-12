@@ -1,5 +1,5 @@
 import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
-import { getUriAvatarUser, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
+import { getUriAvatarUser, getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
@@ -19,17 +19,23 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
         })
     }, [uriAvatar])
 
-    const setAvatar = async () => {
+    const setAvatar = async (camera: boolean) => {
         const bearerToken = await getBearerToken();
 
         if (!bearerToken) {
                 Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
             }
-
-            const uriArr = await getUriImagesPickInDevice(false);
+        let uriArr : string[] = [];
+        if (camera) {
+            uriArr = await getUriImagesFromCamera();
+        }else {
+            uriArr = await getUriImagesPickInDevice(false);
+        }
+        
 
         if (!uriArr) {
             Alert.alert("Lỗi", "Không truy cập được ảnh trong thiết bị");
+            return;
         }
 
          if (uriArr.length > 0) {
@@ -75,11 +81,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
 
     const handleTouchAvatar = () => {
         if (canChange) {
-            if (uriAvatar) {
-                setShowModalChangeAvatar(true);
-            }else {
-                setAvatar();
-            }
+            setShowModalChangeAvatar(true);
         }
     }
 
@@ -112,14 +114,22 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
                     />
                     <View style={{alignItems: 'center'}}>
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity onPress={setAvatar}>
+                            <TouchableOpacity onPress={() => setAvatar(true)}>
+                                <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setAvatar(false)}>
                                 <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
                             </TouchableOpacity>
-                            <Text>Đổi ảnh đại diện</Text>
-                            <TouchableOpacity onPress={deleteAvatar}>
-                                <IconSymbol name={'delete'} size={50} color={'red'}/>
-                            </TouchableOpacity>
-                            <Text>Xóa ảnh đại diện</Text>
+                            <Text>{`${uriAvatar ? 'Đổi' : 'Tải lên'} ảnh đại diện`}</Text>
+                            {uriAvatar ? (
+                                <View style={{flexDirection: 'row'}}>
+                                    <TouchableOpacity onPress={deleteAvatar}>
+                                    <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                    </TouchableOpacity>
+                                    <Text>Xóa ảnh đại diện</Text>
+                                </View>
+                                ) : (<View></View>)}
+                            
                         </View>
                     </View>
                     <Button title="Đóng" onPress={() => setShowModalChangeAvatar(false)}></Button>

@@ -9,13 +9,11 @@ import { ChangePassword } from "../auth/changePassword";
 import AvatarUser from "../avatarUser";
 import { generateExactRole } from "@/app/constant/Role";
 import CoverPhotoUser from "../coverPhotoUser";
-import { useRouter } from "expo-router";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {
     const [name, setName] = useState<string | undefined>(userLogin.name);
     const [email, setEmail] = useState<string | undefined>(userLogin.email);
     const [address, setAddress] = useState<string | undefined>(userLogin.address);
-    const router = useRouter();
     
     const validate = () => {
         let alert = '';

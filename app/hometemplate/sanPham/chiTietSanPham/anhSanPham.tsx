@@ -1,6 +1,7 @@
 import { IMAGE } from "@/app/constant/KieuFile";
 import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import File from "@/app/model/File";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 
@@ -8,7 +9,7 @@ const { width } = Dimensions.get('window');
 const height = 400
 export default function AnhSanPham({sP_Id} : {sP_Id : string}) 
 {
-    const [listAnhSanPhams, setListAnhSanPhams] = useState<any[]>(['']);
+    const [listAnhSanPhams, setListAnhSanPhams] = useState<File[]>([]);
 
     useEffect(() => {
       getFileAsync(SAN_PHAM, sP_Id, IMAGE).then((data) => {

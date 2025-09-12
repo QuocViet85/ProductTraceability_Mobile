@@ -76,7 +76,13 @@ export default function Index() {
                 <Text style = {{fontSize: 15}}>Mã vạch: 
                     {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
                 </Text>
-                <QrCode urlSanPham={urlSanPham} />
+                <View style={{flexDirection: 'row'}}>
+                    <QrCode urlSanPham={urlSanPham} />
+                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40, marginLeft: 'auto'}}>
+                      <Text>{'Truy xuất sản phẩm'}</Text>
+                    </TouchableOpacity>
+                </View>
+                
                 <BlurLine />
                   <SaoSanPham sP_Id={sanPham.sP_Id as string} />
                   <Spacer height= {10} />

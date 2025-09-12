@@ -9,7 +9,9 @@ export default class NhaMay {
 
     nM_DiaChi: string | undefined;
 
-    nM_LienHe: string | undefined;
+    nM_SoDienThoai: string | undefined;
+
+    nM_Email: string | undefined;
 
     nM_DN_Id: string | undefined;
 

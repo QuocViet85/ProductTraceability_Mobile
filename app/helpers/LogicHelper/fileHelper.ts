@@ -5,14 +5,15 @@ import { Alert, PermissionsAndroid } from "react-native";
 import { AVATAR, COVER_PHOTO, IMAGE } from "@/app/constant/KieuFile";
 import { DOANH_NGHIEP, USER } from "@/app/constant/KieuTaiNguyen";
 import {launchCamera} from 'react-native-image-picker';
+import File from "@/app/model/File";
 
 
-export async function getFileAsync(
+export async function getFileAsync  (
   kieuTaiNguyen: string,
   taiNguyenId: string,
   kieuFile: string = "",
   limit: number = 0
-) {
+) : Promise<File[]> {
   let urlListFile = url(
     `api/file/tai-nguyen?kieuTaiNguyen=${kieuTaiNguyen}&taiNguyenId=${taiNguyenId}`
   );
@@ -28,7 +29,7 @@ export async function getFileAsync(
   return (await axios.get(urlListFile)).data;
 }
 
-export function getUriFile(file: any) {
+export function getUriFile(file: File) : string | undefined {
   if (file) {
     let routeKieuFile = "";
     if (file.f_KieuFile === IMAGE || file.f_KieuFile === AVATAR || file.f_KieuFile === COVER_PHOTO) {
@@ -41,7 +42,7 @@ export function getUriFile(file: any) {
   }
 }
 
-export async function getUriAvatarUser(userId: string) {
+export async function getUriAvatarUser(userId: string) : Promise<string | null | undefined> {
   const fileAvatar = await getFileAsync(USER, userId, AVATAR);
   if (fileAvatar) {
     return getUriFile(fileAvatar[0])
@@ -49,7 +50,7 @@ export async function getUriAvatarUser(userId: string) {
   return null;
 }
 
-export async function getUriAvatarDoanhNghiep(dN_Id: string) {
+export async function getUriAvatarDoanhNghiep(dN_Id: string) : Promise<string | null | undefined> {
   const fileAvatar = await getFileAsync(DOANH_NGHIEP, dN_Id, AVATAR);
   if (fileAvatar) {
     return getUriFile(fileAvatar[0])
@@ -79,11 +80,11 @@ export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean)
   return uriImagesArr;
 }
 
-export async function getUriImagesFromCamera() : Promise<string | undefined> {
+export async function getUriImagesFromCamera() : Promise<string[]> {
+  const uriImagesArr = [];
   const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
-      alert('Bạn cần cấp quyền camera');
-      return;
+      Alert.alert("Quyền bị từ chối", "Bạn cần cấp quyền camera");
     }
 
     const result = await ImagePicker.launchCameraAsync({
@@ -91,7 +92,10 @@ export async function getUriImagesFromCamera() : Promise<string | undefined> {
     });
 
     if (!result.canceled) {
-      return  result.assets[0].uri;
+      for (const asset of result.assets) {
+        uriImagesArr.push(asset.uri)
+      }
     }
+    return uriImagesArr;
 }
 

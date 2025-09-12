@@ -5,7 +5,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useState } from "react";
-import { Alert, Button, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function PostBinhLuan({sP_Id, layCacBinhLuans}: {sP_Id: string, layCacBinhLuans: () => void}) {
     const [noiDungBinhLuan, setNoiDungBinhLuan] = useState<string>('');
@@ -65,12 +65,12 @@ export default function PostBinhLuan({sP_Id, layCacBinhLuans}: {sP_Id: string, l
     }
 
     const chonAnhBinhLuanTuCamera = async () => {
-        const uri = await getUriImagesFromCamera();
+        const uriArr = await getUriImagesFromCamera();
 
-        if (uri) {
+        if (uriArr.length > 0) {
             const newListUriAnhBinhLuan = [];
             newListUriAnhBinhLuan.push(...listUriAnhBinhLuan);
-            newListUriAnhBinhLuan.push(uri);
+            newListUriAnhBinhLuan.push(...uriArr);
             if (validateGioiHanAnh(newListUriAnhBinhLuan)) {
                 setListUriAnhBinhLuan(newListUriAnhBinhLuan);
             }
@@ -82,7 +82,7 @@ export default function PostBinhLuan({sP_Id, layCacBinhLuans}: {sP_Id: string, l
         setListUriAnhBinhLuan(newListUriAnhBinhLuan);
     }
 
-    const validateGioiHanAnh = (newListUriAnhBinhLuan: any[]) => {
+    const validateGioiHanAnh = (newListUriAnhBinhLuan: string[]) => {
         if( newListUriAnhBinhLuan.length < limitAnh) {
             return true;
         }else {

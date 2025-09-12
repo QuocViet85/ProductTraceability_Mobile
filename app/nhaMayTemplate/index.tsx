@@ -7,6 +7,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { Updating } from "../helpers/ViewHelpers/updating";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import AvatarDoanhNghiep from "../doanhNghiepTemplate/avatarDoanhNghiep";
+import AnhNhaMay from "./anhNhaMay";
 
 export default function NhaMayChiTiet() {
     const params = useLocalSearchParams();
@@ -30,23 +31,30 @@ export default function NhaMayChiTiet() {
         <View style={styles.container}>
             {nhaMay ? (
                 <View>
-                    {/* Banner */}
-                {/* <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} /> */}
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    <AnhNhaMay nM_Id={nM_Id as string}/>
+                    <View style={{height: 50}}></View>
                     {/* Logo + Name */}
                     <View style={styles.profileHeader}>
-                    <View style={styles.nameSection}>
-                        <Text style={styles.businessName}>{nhaMay.nM_Ten}</Text>
-                    </View>
+                        <View style={styles.nameSection}>
+                            <Text style={styles.businessName}>{nhaMay.nM_Ten}</Text>
+                        </View>
                     </View>
 
                     {/* Giới thiệu */}
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Giới thiệu</Text>
                         <View style={styles.addressRow}>
-                            <MaterialIcons name="contacts" size={20} color="#555" />
+                            <MaterialIcons name="contact-phone" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Liên hệ: {nhaMay.nM_LienHe ? nhaMay.nM_LienHe: (<Updating />)}
+                                Số điện thoại: {nhaMay.nM_SoDienThoai ? nhaMay.nM_SoDienThoai: (<Updating />)}
+                            </Text>
+                        </View>
+
+                        <View style={styles.addressRow}>
+                            <MaterialIcons name="email" size={20} color="#555" />
+                            <Text style={styles.addressText}>
+                                Email: {nhaMay.nM_Email ? nhaMay.nM_Email: (<Updating />)}
                             </Text>
                         </View>
 
@@ -97,7 +105,7 @@ export default function NhaMayChiTiet() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  scrollContainer: { padding: 16, marginTop: '10%' },
+  scrollContainer: { width: '100%' },
   profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
   logoCircle: {
     width: 64,
