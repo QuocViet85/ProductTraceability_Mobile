@@ -6,7 +6,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ChonSaoSanPham from "./chonSaoSanPham";
 import XoaBinhLuan from "./xoaBinhLuan";
 import AvatarUser from "@/app/usertemplate/avatarUser";
@@ -20,13 +20,14 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
     const [tongSoBinhLuan, setTongSoBinhLuan] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(1);
+    const [soSaoBinhLuan, setSoSaoBinhLuan] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
     const router = useRouter();
 
     const tongSoTrang : number = Math.ceil(tongSoBinhLuan / LIMIT_BINHLUAN);
 
     const layCacBinhLuans = async () => {
         try {
-            const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}`);
+            const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
             const response = await axios.get(urlBinhLuan);
 
             if (response.data.listBinhLuans) {
@@ -40,10 +41,8 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                 }
                 setListBinhLuans(listBinhLuans);
             }
-            
-            if (response.data.tongSo) {
                 setTongSoBinhLuan(response.data.tongSo);
-            }
+            
         }catch {}
     }
     
@@ -64,7 +63,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
 
     useEffect(() => {
         layCacBinhLuans();
-    }, [pageNumber])
+    }, [pageNumber, soSaoBinhLuan])
 
     const backPage = () => {
         if (pageNumber > 1) {
@@ -81,6 +80,29 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
     return (
         <View>
             <Text style={{marginBottom: 20, fontWeight: 'bold', fontSize: 20}}>Đánh giá sản phẩm ({tongSoBinhLuan})</Text>
+            <View style={{alignItems: 'center', marginBottom: 10}}>
+                <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(0)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 0 ? 'bold' : 'normal'}}>Tất cả</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(5)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 5 ? 'bold' : 'normal'}}>5 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(4)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 4 ? 'bold' : 'normal'}}>4 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(3)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 3 ? 'bold' : 'normal'}}>3 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(2)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 2 ? 'bold' : 'normal'}}>2 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(1)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 1 ? 'bold' : 'normal'}}>1 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            
             {listBinhLuans.map((item, indexBig) => {
                 return (
                     <View key={item.bL_SP_Id}>
@@ -137,3 +159,11 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    touchSaoBinhLuan: {
+        borderWidth: 0.5,
+        borderRadius: 8,
+        marginLeft: 10
+    }
+})

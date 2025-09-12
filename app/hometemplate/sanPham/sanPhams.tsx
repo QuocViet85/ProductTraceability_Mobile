@@ -15,6 +15,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
     const params = useLocalSearchParams();
     const dN_Id = params.dN_Id;
     const dN_Ten = params.dN_Ten
+    const nM_Id = params.nM_Id;
+    const nM_Ten = params.nM_Ten;
 
     const [listSanPhams, setListSanPham] = useState<SanPham[]>([]);
     const [listSanPhamsRender, setListSanPhamRender] = useState<SanPham[]>([]);
@@ -24,12 +26,13 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
     
     useEffect(() => {
       let urlSanPham = url('api/sanpham');
-      if (!dN_Id) {
-        if (danhMucHienTai.dM_Id) {
-          urlSanPham += `/danh-muc/${danhMucHienTai.dM_Id}`;
-        }
-      }else {
+
+      if (dN_Id) {
         urlSanPham +=`/doanh-nghiep-so-huu/${dN_Id}`;
+      }else if (nM_Id) {
+        urlSanPham +=`/nha-may/${nM_Id}`;
+      }else if (danhMucHienTai.dM_Id){
+        urlSanPham += `/danh-muc/${danhMucHienTai.dM_Id}`;
       }
 
       urlSanPham += `?pageNumber=${pageNumber}&limit=${LIMIT_SANPHAM}`;
@@ -48,6 +51,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
         urlSanPham += `&search=${timKiemSanPham}`
       }
 
+      console.log(urlSanPham);
       axios.get(urlSanPham).then(async (res: any) => {
         const listSanPhams: SanPham[] = res.data.listSanPhams;
 
@@ -96,9 +100,10 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
   );
 
     return (
-      <View style={dN_Id ? styles.container : {}}>
+      <View style={dN_Id || nM_Id ? styles.container : {}}>
           {dN_Id ? (<Header title={`Sản phẩm doanh nghiệp`} resource={dN_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
-        <View style={dN_Id ? styles.content : {}}>
+          {nM_Id ? (<Header title={`Sản phẩm nhà máy`} resource={nM_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
+        <View style={dN_Id  || nM_Id ? styles.content : {}}>
             <ScrollView >
               <View style={{width: '100%', flexDirection: 'row'}}>
                 <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={timKiemSanPham} onChangeText={setTimKiemSanPham}></TextInput>
@@ -138,6 +143,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 10,
     width: '60%',
+    borderRadius: 8
   },
   card: {
     flex: 1, // 👉 để 2 item chia đều 1 hàng

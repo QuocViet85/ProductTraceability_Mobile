@@ -1,15 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Modal, Text, View } from "react-native";
+import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
 import ListDanhMucs from "./listDanhMucs";
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import DanhMuc from "@/app/model/DanhMuc";
 
-export const tatCaDanhMuc = {id: 0, dM_Ten: 'Tất cả'};
+export const tatCaDanhMuc = {dM_Id: '', dM_Ten: 'Tất cả'};
 
 export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucHienTai: any, setDanhMucHienTai: any}){
     const [showModal, setShowModal] = useState(false);
-    const [listDanhMucsCha, setListDanhMucsCha] = useState<any[]>([]);
-    const [listDanhMucsHienTai, setListDanhMucsHienTai] = useState<any[]>([]);
+    const [listDanhMucsCha, setListDanhMucsCha] = useState<(DanhMuc | DanhMuc[])[]>([]);
+    const [listDanhMucsHienTai, setListDanhMucsHienTai] = useState<DanhMuc[]>([]);
 
     useEffect(() => {
             axios.get(url('api/danhmuc')).then((res: any) => {
@@ -22,7 +24,7 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
         })
     }, []);
 
-    const moListDanhMucCon = (danhMuc: any) => {
+    const moListDanhMucCon = (danhMuc: DanhMuc) => {
         if (danhMuc.dM_List_DMCon && danhMuc.dM_List_DMCon.length > 0) {
             listDanhMucsCha.push(listDanhMucsHienTai);
             setListDanhMucsCha(listDanhMucsCha);
@@ -31,13 +33,13 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
     }
 
     const quayLaiListDanhMucCha = () => {
-        setListDanhMucsHienTai(listDanhMucsCha.pop());
+        setListDanhMucsHienTai(listDanhMucsCha.pop() as DanhMuc[]);
     }
 
     return (
         <View style={{width: '100%'}}>
             <View style={{alignItems: 'center', margin: 10}}>
-                <Text style={{borderWidth: 1, borderColor: 'grey'}} onPress={() => setShowModal(true)}>{danhMucHienTai.dM_Ten === 'Tất cả' ? 'Danh mục ▼' : danhMucHienTai.dM_Ten + ' ▼'}</Text>
+                <Text style={{borderWidth: 1, borderColor: 'grey', borderRadius: 8}} onPress={() => setShowModal(true)}>{danhMucHienTai.dM_Ten === 'Tất cả' ? 'Danh mục ▼' : danhMucHienTai.dM_Ten + ' ▼'}</Text>
             </View>
                   
             <Modal
@@ -47,14 +49,14 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
             >
 
                 {listDanhMucsCha.length > 0 ? (
-                <View style={{marginRight: 'auto'}}>
-                    <Text style={{borderWidth: 1}} onPress={() => quayLaiListDanhMucCha()}>{'< < <'}</Text>
-                </View>) : (<View></View>)}
+                <TouchableOpacity style={{marginRight: 'auto'}} onPress={() => quayLaiListDanhMucCha()}>
+                    <IconSymbol name={'arrow-back'} color={'blue'} size={30}/>
+                </TouchableOpacity>) : (<View></View>)}
                 
             <View style={{alignItems: 'center'}}>
                 <Text style={{fontWeight: 'bold', fontSize: 20}}>Chọn danh mục</Text>
             </View>
-                <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} />
+            <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} />
 
             <View style={{marginTop: 'auto'}}>
                 <Button title='Đóng' onPress={() => setShowModal(false)}></Button>

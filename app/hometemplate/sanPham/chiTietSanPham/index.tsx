@@ -19,6 +19,7 @@ import QrCode from "./qrCode";
 import SanPham from "@/app/model/SanPham";
 import { formatCurrency } from "@/app/helpers/LogicHelper/helper";
 import WebsiteSanPham from "./websiteSanPham";
+import NhaMaySanPham from "./nhaMaySanPham";
 
 export default function Index() {
     const params = useLocalSearchParams();
@@ -83,6 +84,7 @@ export default function Index() {
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SanXuat} vaiTro={"sản xuất"} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
                   <NguoiPhuTrach userId={sanPham.sP_NguoiPhuTrach_Id as string} />
+                  <NhaMaySanPham nhaMay={sanPham.sP_NM}/>
                   <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
                   <WebsiteSanPham sP_Website={sanPham.sP_Website} />
                   <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>

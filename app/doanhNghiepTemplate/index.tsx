@@ -26,8 +26,6 @@ export default function Index()
     useEffect(() => {
         const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
 
-        console.log(urlDoanhNghiep)
-
         axios.get(urlDoanhNghiep)
             .then((res) => {
                 if (res.data) {
@@ -79,7 +77,7 @@ export default function Index()
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Giới thiệu</Text>
                         <View style={styles.addressRow}>
-                            <MaterialIcons name="location-on" size={20} color="#555" />
+                            <MaterialIcons name="contact-phone" size={20} color="#555" />
                             <Text style={styles.addressText}>
                                 Số điện thoại: {doanhNghiep.dN_SoDienThoai ? doanhNghiep.dN_SoDienThoai : (<Updating />)}
                             </Text>

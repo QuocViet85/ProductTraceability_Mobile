@@ -1,4 +1,5 @@
 import DoanhNghiep from "./DoanhNghiep";
+import NhaMay from "./NhaMay";
 
 export default class SanPham
 {
@@ -45,4 +46,6 @@ export default class SanPham
     sP_DN_VanTai: DoanhNghiep | undefined;
 
     uriAvatar: string | undefined | null;
+
+    sP_NM: NhaMay | undefined;
 }

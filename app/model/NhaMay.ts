@@ -1,3 +1,5 @@
+import DoanhNghiep from "./DoanhNghiep";
+
 export default class NhaMay {
     nM_Id: string | undefined;
     
@@ -18,4 +20,6 @@ export default class NhaMay {
     nM_NgaySua: Date | undefined;
 
     nM_NguoiSua_Id: string | undefined;
+
+    nM_DN: DoanhNghiep | undefined;
 }

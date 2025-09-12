@@ -1,12 +1,13 @@
 import {getUserInfo} from "@/app/helpers/LogicHelper/userHelper";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
+import AppUser from "@/app/model/AppUser";
 import AvatarUser from "@/app/usertemplate/avatarUser";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function NguoiPhuTrach({userId} : {userId : string}) {
-    const [nguoiPhuTrach, setNguoiPhuTrach] = useState<any>();
+    const [nguoiPhuTrach, setNguoiPhuTrach] = useState<AppUser>();
 
     useEffect(() => {
         getUserInfo(userId).then((user) => {

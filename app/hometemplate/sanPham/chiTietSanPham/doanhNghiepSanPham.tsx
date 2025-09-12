@@ -1,9 +1,10 @@
 import AvatarDoanhNghiep from "@/app/doanhNghiepTemplate/avatarDoanhNghiep";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
+import DoanhNghiep from "@/app/model/DoanhNghiep";
 import { Link } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
-export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep: any, vaiTro : string}) 
+export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep: DoanhNghiep | undefined, vaiTro : string}) 
 {
     return (
         <View>
@@ -12,7 +13,7 @@ export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep:
                 <TouchableOpacity>
                     <View style={{height: 80, backgroundColor: 'white', flexDirection: 'row'}}>
                         <View>
-                            <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id} width={40} height={40}/>
+                            <AvatarDoanhNghiep dN_Id={doanhNghiep?.dN_Id as string} width={40} height={40}/>
                         </View>
                         <View>
                             <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{doanhNghiep.dN_Ten}</Text>

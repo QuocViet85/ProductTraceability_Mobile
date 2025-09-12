@@ -1,0 +1,159 @@
+import { useEffect, useState } from "react";
+import NhaMay from "../model/NhaMay";
+import axios from "axios";
+import { url } from "../server/backend";
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Updating } from "../helpers/ViewHelpers/updating";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import AvatarDoanhNghiep from "../doanhNghiepTemplate/avatarDoanhNghiep";
+
+export default function NhaMayChiTiet() {
+    const params = useLocalSearchParams();
+    const nM_Id = params.nM_Id;
+    const [nhaMay, setNhaMay] = useState<NhaMay | null>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+        const urlNhaMay = url(`api/nhamay/${nM_Id}`);
+
+        console.log(urlNhaMay)
+
+        axios.get(urlNhaMay).then((res) => {
+            if (res.data) {
+                setNhaMay(res.data);
+            }
+        });
+    }, []);
+
+    return (
+        <View style={styles.container}>
+            {nhaMay ? (
+                <View>
+                    {/* Banner */}
+                {/* <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} /> */}
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    {/* Logo + Name */}
+                    <View style={styles.profileHeader}>
+                    <View style={styles.nameSection}>
+                        <Text style={styles.businessName}>{nhaMay.nM_Ten}</Text>
+                    </View>
+                    </View>
+
+                    {/* Giới thiệu */}
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Giới thiệu</Text>
+                        <View style={styles.addressRow}>
+                            <MaterialIcons name="contacts" size={20} color="#555" />
+                            <Text style={styles.addressText}>
+                                Liên hệ: {nhaMay.nM_LienHe ? nhaMay.nM_LienHe: (<Updating />)}
+                            </Text>
+                        </View>
+
+                        <View style={styles.addressRow}>
+                            <MaterialIcons name="location-on" size={20} color="#555" />
+                            <Text style={styles.addressText}>
+                                Địa chỉ: {nhaMay.nM_DiaChi ? nhaMay.nM_DiaChi : (<Updating />)}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={{marginTop: 10, alignItems: 'center'}}>
+                        <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/hometemplate/sanPham/sanPhams', params: {nM_Id: nhaMay.nM_Id, nM_Ten: nhaMay.nM_Ten
+                        }})}>
+                            <Text style={styles.statLabel}>{'Sản phẩm được sản xuất tại nhà máy'}</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.section}>
+                        <Text style={styles.sectionTitle}>Doanh Nghiệp Sở Hữu Nhà Máy</Text>
+                        {nhaMay.nM_DN ? (<View>
+                            <Link href={{pathname: '/doanhNghiepTemplate', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
+                            <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
+                                <View>
+                                    <AvatarDoanhNghiep dN_Id={nhaMay.nM_DN?.dN_Id as string} width={40} height={40} />
+                                </View>
+                                <View style={{marginLeft: 10}}>
+                                    <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{nhaMay.nM_DN?.dN_Ten}</Text>
+                                </View>
+                            </TouchableOpacity>
+                            </Link>
+                        </View>) : (<View></View>)}
+                        
+                    </View>
+                </ScrollView>
+
+                {/* Bottom Tabs */}
+
+            </View>
+        ) : (
+            <View>
+                <Text>Không tồn tại nhà máy</Text>
+            </View>)}
+            
+        </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#fff' },
+  scrollContainer: { padding: 16, marginTop: '10%' },
+  profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
+  logoCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#eee',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  logoText: { fontSize: 12, color: '#333' },
+  nameSection: { marginLeft: 12 },
+  businessName: { fontSize: 18, fontWeight: 'bold' },
+  businessType: { color: '#888', marginTop: 2 },
+  actionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  followButton: { flex: 1, backgroundColor: '#00b050', marginRight: 8 },
+  iconButton: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#00b050',
+    borderRadius: 6,
+    marginHorizontal: 2,
+  },
+  followerText: { marginTop: 8, color: '#777', fontSize: 13 },
+  statsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 16,
+    justifyContent: 'space-between',
+  },
+  statBox: {
+    backgroundColor: '#f2f2f2',
+    paddingVertical: 12,
+    marginBottom: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  statValue: { fontWeight: 'bold', fontSize: 16 },
+  statLabel: { color: '#555', fontSize: 13 },
+  section: { marginTop: 16 },
+  sectionTitle: { fontWeight: 'bold', fontSize: 16, marginBottom: 6 },
+  addressRow: { flexDirection: 'row', alignItems: 'center' },
+  addressText: { marginLeft: 6, fontSize: 14, color: '#555' },
+  bottomTabs: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    borderTopWidth: 1,
+    borderColor: '#ddd',
+    paddingVertical: 8,
+    marginTop: 'auto'
+  },
+  tabItem: { alignItems: 'center' },
+  tabLabel: { fontSize: 12, marginTop: 2 },
+});

@@ -16,26 +16,25 @@ export default function ChonSaoSanPham({sP_Id, userId, laySoSaoCuaMotNguoi} : {s
         })
     }, [])
 
-    const chonSoSao = (soSao: number) => {
-        getBearerToken()
-        .then((bearerToken: any) => {
-            let urlChonSao = url(`api/sanpham/sao-san-pham/${sP_Id}?soSao=${soSao}`)
-            axios.post(urlChonSao, null, {headers: {Authorization: bearerToken}})
-            .then(() => {
-                setSoSaoChon(soSao);
-                setShowModalChonSao(false);
-            })
-            .catch(() => {setShowModalChonSao(false);});
-        })
-        .catch(() => {setShowModalChonSao(false);})
+    const chonSoSao = async (soSao: number) => {
+        const bearerToken = await getBearerToken();
+        const urlChonSao = url(`api/sanpham/sao-san-pham/${sP_Id}?soSao=${soSao}`);
+
+        try {
+            await axios.post(urlChonSao, null, {headers: {Authorization: bearerToken}});
+            setSoSaoChon(soSao);
+        }catch {}
+        finally {
+            setShowModalChonSao(false);
+        }   
     }
 
     return (
         <View>
             <View style={{alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => setShowModalChonSao(true)}>
-                    <View style={{flexDirection: 'row', borderWidth: 0.5}}>
-                        <Text>{soSaoChon}</Text>
+                    <View style={{flexDirection: 'row', borderWidth: 0.5, borderRadius: 8}}>
+                        <Text>{'Chọn sao: ' + soSaoChon}</Text>
                         <IconSymbol name="star" size={25} color="#FFD700" />
                     </View>
                 </TouchableOpacity>

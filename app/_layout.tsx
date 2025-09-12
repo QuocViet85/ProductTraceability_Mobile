@@ -28,6 +28,7 @@ export default function RootLayout() {
           <Stack.Screen name="doanhNghiepTemplate/index" options={{  headerShown: false }} />
           <Stack.Screen name="usertemplate/user/index" options={{  headerShown: false }} />
           <Stack.Screen name="baiVietTemplate/index" options={{  headerShown: false }} />
+          <Stack.Screen name="nhaMayTemplate/index" options={{  headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
