@@ -31,12 +31,12 @@ export async function getFileAsync  (
 
 export function getUriFile(file: File) : string | undefined {
   if (file) {
-    let routeKieuFile = "";
+    let routeFileTaiNguyen = "";
     if (file.f_KieuFile === IMAGE || file.f_KieuFile === AVATAR || file.f_KieuFile === COVER_PHOTO) {
-      routeKieuFile = "images";
+      routeFileTaiNguyen = `images/${file.f_KieuTaiNguyen}/${file.f_TaiNguyen_Id}`;
     }
 
-    return url(`${routeKieuFile}/${file.f_Ten}`);
+    return url(`${routeFileTaiNguyen}/${file.f_Ten}`);
   } else {
     return;
   }
