@@ -1,8 +1,8 @@
-import * as ImagePicker from 'expo-image-picker';
-import { giaiMaQrCode, layMaTruyXuatTuUrl } from '../helpers/LogicHelper/helper';
-import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
+import { Alert, Text, TouchableOpacity, View } from 'react-native';
+import { giaiMaQrCode, layMaTruyXuatTuUrl } from '../helpers/LogicHelper/helper';
 
 export default function QuetMaBangAnhCoSan() {
     const router = useRouter();
@@ -17,7 +17,7 @@ export default function QuetMaBangAnhCoSan() {
                 const urlSanPham = await giaiMaQrCode(base64);
                 const maTruyXuat = layMaTruyXuatTuUrl(urlSanPham);
                 router.push({
-                pathname: '/hometemplate/sanPham/chiTietSanPham', 
+                pathname: '/sanPhamTemplate', 
                 params: {sP_MaTruyXuat: maTruyXuat}
                 });
             }catch {

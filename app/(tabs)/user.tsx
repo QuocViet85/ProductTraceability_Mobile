@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Header from '../general/header';
 import { getUserLogin } from '../helpers/LogicHelper/authHelper';
+import Header from '../helpers/ViewHelpers/header';
+import AppUser from '../model/AppUser';
 import Login from '../usertemplate/auth/login';
 import Register from '../usertemplate/auth/register';
-import AppUser from '../model/AppUser';
 import UserLoginInfo from '../usertemplate/userLoginInfo';
 
 
@@ -32,7 +32,7 @@ export default function UserInApp() {
   }
   return (
      <View style={styles.container}>
-            <Header title={"Người dùng"} fontSize={30} resource={null}></Header>
+            <Header title={"Người dùng đăng nhập"} fontSize={30} resource={null}></Header>
             {userLogin ? (<UserLoginInfo userLogin={userLogin} setUserLogin={setUserLogin} setRefreshUserLogin={setRefreshUserLogin} />) : formDangNhapDangKi}
       </View>
   );
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     flex: 1,                     // cho phép chiếm toàn màn hình
     flexDirection: 'column',     // mặc định
     justifyContent: 'flex-start',// bắt đầu từ trên xuống
-    paddingTop: 20,              // tránh dính sát trên cùng
     backgroundColor: '#fff',
     alignItems: 'center'
   },

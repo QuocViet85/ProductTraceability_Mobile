@@ -12,6 +12,7 @@ import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
 import AppUser from "../model/AppUser";
 import AvatarUser from "../usertemplate/avatarUser";
 import Spacer from "../helpers/ViewHelpers/spacer";
+import Footer from "../helpers/ViewHelpers/footer";
 
 export default function Index() 
 {
@@ -121,20 +122,18 @@ export default function Index()
                                     </TouchableOpacity>
                                     </Link>
                                 </View>
-                                
                             )
                         })}
                     </View>
                 </ScrollView>
-
+                
                 {/* Bottom Tabs */}
-
             </View>
         ) : (
             <View>
                 <Text>Không tồn tại doanh nghiệp</Text>
             </View>)}
-            
+            <Footer backgroundColor={'black'}/>
         </View>
   );
 }
@@ -148,7 +147,7 @@ const TabItem = ({ label, icon, active }: { label: any, icon: any, active: any }
 
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: '#fff', height: '100%' },
   scrollContainer: { padding: 16, marginTop: '10%' },
   profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
   logoCircle: {

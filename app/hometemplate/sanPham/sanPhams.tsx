@@ -1,15 +1,16 @@
-import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
-import axios from "axios";
-import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { FlatList, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { url } from "../../server/backend";
-import Header from "@/app/general/header";
-import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { IMAGE } from "@/app/constant/KieuFile";
-import SanPham from "@/app/model/SanPham";
+import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
+import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import Header from "@/app/helpers/ViewHelpers/header";
+import SanPham from "@/app/model/SanPham";
 import { Ionicons } from "@expo/vector-icons";
+import axios from "axios";
+import { Link, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { url } from "../../server/backend";
+import Footer from "@/app/helpers/ViewHelpers/footer";
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}) {
     const params = useLocalSearchParams();
@@ -51,7 +52,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
         urlSanPham += `&search=${timKiemSanPham}`
       }
 
-      console.log(urlSanPham);
       axios.get(urlSanPham).then(async (res: any) => {
         const listSanPhams: SanPham[] = res.data.listSanPhams;
 
@@ -90,7 +90,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
     }
 
     const renderItem = ({ item } : {item: SanPham}) => (
-        <Link href={{pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
+        <Link href={{pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
           <TouchableOpacity style={styles.card}>
             <Image source={{ uri: item.uriAvatar as string }} style={styles.image} />
             <Text style={styles.text}>{item.sP_Ten}</Text>
@@ -103,11 +103,10 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
       <View style={dN_Id || nM_Id ? styles.container : {}}>
           {dN_Id ? (<Header title={`Sản phẩm doanh nghiệp`} resource={dN_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
           {nM_Id ? (<Header title={`Sản phẩm nhà máy`} resource={nM_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
-        <View style={dN_Id  || nM_Id ? styles.content : {}}>
-            <ScrollView >
-              <View style={{width: '100%', flexDirection: 'row'}}>
+          <View style={{width: '100%', flexDirection: 'row'}}>
                 <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={timKiemSanPham} onChangeText={setTimKiemSanPham}></TextInput>
-              </View>
+          </View>
+            <ScrollView>
               <FlatList
                   data={listSanPhamsRender}
                   keyExtractor={(item) => item.sP_Id as string}
@@ -115,22 +114,21 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: any}
                   numColumns={2} // 👉 Mỗi dòng 2 cột
                   contentContainerStyle={{padding: 10}}
                   />
-                  <View style={{alignItems: 'center'}}>
-                <Text>{pageNumber} / {tongSoTrang}</Text>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity onPress={backPage}>
-                        <Ionicons name="arrow-back" size={32} color="black" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={nextPage}>
-                        <Ionicons name="arrow-forward" size={32} color="black" />
-                    </TouchableOpacity>
-                </View>
-                <View style={{height: 100}}></View>
-            </View>
           </ScrollView>
-        </View>
-      </View>
-        
+          <View style={{alignItems: 'center'}}>
+                    <Text>{pageNumber} / {tongSoTrang}</Text>
+                    <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={backPage}>
+                            <Ionicons name="arrow-back" size={32} color="black" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={nextPage}>
+                            <Ionicons name="arrow-forward" size={32} color="black" />
+                        </TouchableOpacity>
+                    </View>
+          </View>
+          <View style={{height: '26%'}}></View>
+          <Footer backgroundColor={dN_Id || nM_Id ? 'black' : 'white'}/>
+      </View>     
     )
 }
 
@@ -168,14 +166,6 @@ const styles = StyleSheet.create({
     flex: 1,                     // cho phép chiếm toàn màn hình
     flexDirection: 'column',     // mặc định
     justifyContent: 'flex-start',// bắt đầu từ trên xuống
-    paddingTop: 20,              // tránh dính sát trên cùng
     backgroundColor: '#fff',
-    alignItems: 'center',
-    height: '100%'
-  },
-  content: {
-    marginTop: 60,
-    width: '100%',
-    height: '100%'
   },
 });

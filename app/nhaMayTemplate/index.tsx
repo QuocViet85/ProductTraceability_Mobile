@@ -8,6 +8,7 @@ import { Updating } from "../helpers/ViewHelpers/updating";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import AvatarDoanhNghiep from "../doanhNghiepTemplate/avatarDoanhNghiep";
 import AnhNhaMay from "./anhNhaMay";
+import Footer from "../helpers/ViewHelpers/footer";
 
 export default function NhaMayChiTiet() {
     const params = useLocalSearchParams();
@@ -38,6 +39,7 @@ export default function NhaMayChiTiet() {
                     <View style={styles.profileHeader}>
                         <View style={styles.nameSection}>
                             <Text style={styles.businessName}>{nhaMay.nM_Ten}</Text>
+                            <Text style={styles.businessType}>{'Nhà máy'}</Text>
                         </View>
                     </View>
 
@@ -98,7 +100,7 @@ export default function NhaMayChiTiet() {
             <View>
                 <Text>Không tồn tại nhà máy</Text>
             </View>)}
-            
+            <Footer backgroundColor={'black'} />
         </View>
   );
 }

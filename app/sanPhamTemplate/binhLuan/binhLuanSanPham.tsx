@@ -41,7 +41,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                 }
                 setListBinhLuans(listBinhLuans);
             }
-                setTongSoBinhLuan(response.data.tongSo);
+            setTongSoBinhLuan(response.data.tongSo);
             
         }catch {}
     }

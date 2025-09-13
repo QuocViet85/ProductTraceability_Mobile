@@ -121,7 +121,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
 
 const styles = StyleSheet.create({
   container: { backgroundColor: '#fff', width: '100%' },
-  scrollContainer: { padding: 16, marginTop: '10%' },
+  scrollContainer: { padding: 16 },
   profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
   logoCircle: {
     width: 64,

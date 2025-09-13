@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native";
-import Header from "../general/header";
+import Header from "../helpers/ViewHelpers/header";
 
 export default function NhatKy() {
     return (
@@ -14,7 +14,6 @@ const styles = StyleSheet.create({
     flex: 1,                     // cho phép chiếm toàn màn hình
     flexDirection: 'column',     // mặc định
     justifyContent: 'flex-start',// bắt đầu từ trên xuống
-    paddingTop: 20,              // tránh dính sát trên cùng
     backgroundColor: '#fff',
     alignItems: 'center'
   },

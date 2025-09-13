@@ -13,7 +13,6 @@ export default function Header({title, fontSize, resource}: {title: string, font
 
 const styles = StyleSheet.create({
     topOverlay: {
-        position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
@@ -21,7 +20,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         zIndex: 999,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '100%'
     },
     text: {
         flex: 1,

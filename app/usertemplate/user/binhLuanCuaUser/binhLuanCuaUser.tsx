@@ -1,22 +1,20 @@
 import { IMAGE } from "@/app/constant/KieuFile";
 import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
-import { LIMIT_BAIVIET, LIMIT_BINHLUAN } from "@/app/constant/Limit";
+import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
 import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
-import AnhBinhLuan from "@/app/hometemplate/sanPham/chiTietSanPham/binhLuan/anhBinhLuan";
-import XoaBinhLuan from "@/app/hometemplate/sanPham/chiTietSanPham/binhLuan/xoaBinhLuan";
 import AppUser from "@/app/model/AppUser";
-import BaiViet from "@/app/model/BaiViet";
 import BinhLuan from "@/app/model/BinhLuan";
+import AnhBinhLuan from "@/app/sanPhamTemplate/binhLuan/anhBinhLuan";
+import XoaBinhLuan from "@/app/sanPhamTemplate/binhLuan/xoaBinhLuan";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function BinhLuanCuaUser({userId} : {userId: string}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -118,7 +116,7 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                             <AnhBinhLuan bL_Id={item.bL_Id as string}/>
                                         </View>
                                         <View style={styles.viewSanPham}>
-                                                <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/hometemplate/sanPham/chiTietSanPham', params: {sP_MaTruyXuat: item.bL_SP?.sP_MaTruyXuat as string} })}>
+                                                <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.bL_SP?.sP_MaTruyXuat as string} })}>
                                                     <Image source={{ uri: item.bL_SP?.sP_UriAvatar }} style={styles.avatarSanPham} />
                                                     <View style={{marginLeft: 10}}>
                                                         <Text style={{fontSize: 17, fontWeight: 'bold'}}>{item.bL_SP?.sP_Ten}</Text>

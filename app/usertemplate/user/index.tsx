@@ -10,6 +10,7 @@ import { generateExactRole } from "@/app/constant/Role";
 import CoverPhotoUser from "../coverPhotoUser";
 import TuongTacUser from "./tuongTacUser";
 import BinhLuanCuaUser from "./binhLuanCuaUser/binhLuanCuaUser";
+import Footer from "@/app/helpers/ViewHelpers/footer";
 
 export default function UserInfo() {
     const params = useLocalSearchParams();
@@ -84,7 +85,7 @@ export default function UserInfo() {
             <View>
                 <Text>Không tồn tại người dùng</Text>
             </View>)}
-            
+            <Footer backgroundColor={'black'}/>
         </View>
   );
 }

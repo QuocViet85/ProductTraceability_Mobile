@@ -1,13 +1,14 @@
 import { IMAGE } from "@/app/constant/KieuFile";
 import { BINH_LUAN } from "@/app/constant/KieuTaiNguyen";
 import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import File from "@/app/model/File";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { Button, Dimensions, FlatList, Image, Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 
 const { width } = Dimensions.get('window');
 export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
-    const [listAnhBinhLuan, setListAnhBinhLuan] = useState<any[]>([]);
+    const [listAnhBinhLuan, setListAnhBinhLuan] = useState<File[]>([]);
     const [showModalAnhBinhLuan, setShowModalAnhBinhLuan] = useState<boolean | undefined>(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
 

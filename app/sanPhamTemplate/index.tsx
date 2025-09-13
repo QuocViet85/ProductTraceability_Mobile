@@ -3,10 +3,10 @@ import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { Updating } from "@/app/helpers/ViewHelpers/updating";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { url } from "../../../server/backend";
+import { url } from "../server/backend";
 import AnhSanPham from "./anhSanPham";
 import BinhLuanSanPhan from "./binhLuan/binhLuanSanPham";
 import DoanhNghiepSanPham from "./doanhNghiepSanPham";
@@ -20,6 +20,7 @@ import SanPham from "@/app/model/SanPham";
 import { formatCurrency } from "@/app/helpers/LogicHelper/helper";
 import WebsiteSanPham from "./websiteSanPham";
 import NhaMaySanPham from "./nhaMaySanPham";
+import Footer from "../helpers/ViewHelpers/footer";
 
 export default function Index() {
     const params = useLocalSearchParams();
@@ -28,6 +29,7 @@ export default function Index() {
     const [uriSanPham, setUriSanPham] = useState<string>('');
     const [userLogin, setUserLogin] = useState<AppUser | null>(null);
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
+    const router = useRouter();
 
     useEffect(() => {
         axios.get(urlSanPham).then((res: any) => {
@@ -78,7 +80,8 @@ export default function Index() {
                 </Text>
                 <View style={{flexDirection: 'row'}}>
                     <QrCode urlSanPham={urlSanPham} />
-                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40, marginLeft: 'auto'}}>
+                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40, marginLeft: 'auto'}}
+                                      onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten}})}>
                       <Text>{'Truy xuất sản phẩm'}</Text>
                     </TouchableOpacity>
                 </View>
@@ -94,13 +97,12 @@ export default function Index() {
                   <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
                   <WebsiteSanPham sP_Website={sanPham.sP_Website} />
                   <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>
-
-                  <Spacer height={40}/>
             </View>) 
-            : (<View>
+            : (<View style={{backgroundColor: '#fff'}}>
                 <Text>Không tồn tại sản phẩm</Text>
             </View>)}
         </ScrollView>
+        <Footer backgroundColor={'black'}/>
       </KeyboardAvoidingView>
     )
 }

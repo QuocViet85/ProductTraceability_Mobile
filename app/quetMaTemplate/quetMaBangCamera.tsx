@@ -1,8 +1,8 @@
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { layMaTruyXuatTuUrl } from '../helpers/LogicHelper/helper';
-import { useRouter } from 'expo-router';
 
 export default function QuetMaBangCamera({navigation} : {navigation: any}) {
   const [facing, setFacing] = useState<CameraType>('back');
@@ -40,7 +40,7 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
     console.log(data);
     const maTruyXuat = layMaTruyXuatTuUrl(data);
     router.push({
-      pathname: '/hometemplate/sanPham/chiTietSanPham', 
+      pathname: '/sanPhamTemplate', 
       params: {sP_MaTruyXuat: maTruyXuat}
     });
   }

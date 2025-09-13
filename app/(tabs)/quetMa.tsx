@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Header from "../general/header";
-import { Link } from "expo-router";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Link } from "expo-router";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Header from "../helpers/ViewHelpers/header";
 import QuetMaBangAnhCoSan from "../quetMaTemplate/quetMaBangAnhCoSan";
 
 export default function QuetMa() {
@@ -35,7 +35,6 @@ const styles = StyleSheet.create({
     flex: 1,                     // cho phép chiếm toàn màn hình
     flexDirection: 'column',     // mặc định
     justifyContent: 'flex-start',// bắt đầu từ trên xuống
-    paddingTop: 20,              // tránh dính sát trên cùng
     backgroundColor: 'white',
     alignItems: 'center'
   },
