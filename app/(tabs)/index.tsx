@@ -24,6 +24,5 @@ const styles = StyleSheet.create({
     flexDirection: 'column',     // mặc định
     justifyContent: 'flex-start',// bắt đầu từ trên xuống
     backgroundColor: '#fff',
-    width: '100%'
   },
 });
