@@ -30,4 +30,11 @@ export default class LoSanPham
         nM_Id: string,
         nM_Ten: string
     } | undefined
+
+    lsP_SP: {
+        sP_Id: string, 
+        sP_Ten: string, 
+        sP_MaTruyXuat: string,
+        sP_UriAvatar: string
+    } | undefined;
 }

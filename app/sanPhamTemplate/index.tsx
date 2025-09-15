@@ -81,7 +81,7 @@ export default function Index() {
                 <View style={{flexDirection: 'row'}}>
                     <QrCode urlSanPham={urlSanPham} />
                     <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40, marginLeft: 'auto'}}
-                                      onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten}})}>
+                                      onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat}})}>
                       <Text>{'Truy xuất sản phẩm'}</Text>
                     </TouchableOpacity>
                 </View>

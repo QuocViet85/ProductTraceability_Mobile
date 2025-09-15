@@ -3,7 +3,7 @@ import { url } from "../../server/backend";
 import * as ImagePicker from 'expo-image-picker';
 import { Alert, PermissionsAndroid } from "react-native";
 import { AVATAR, COVER_PHOTO, IMAGE } from "@/app/constant/KieuFile";
-import { DOANH_NGHIEP, USER } from "@/app/constant/KieuTaiNguyen";
+import { DOANH_NGHIEP, SAN_PHAM, USER } from "@/app/constant/KieuTaiNguyen";
 import {launchCamera} from 'react-native-image-picker';
 import File from "@/app/model/File";
 
@@ -56,6 +56,14 @@ export async function getUriAvatarDoanhNghiep(dN_Id: string) : Promise<string | 
     return getUriFile(fileAvatar[0])
   }
   return null;
+}
+
+export async function getUriAvatarSanPham(sP_Id: string) {
+    const file = await getFileAsync(SAN_PHAM, sP_Id as string, IMAGE, 1);
+
+    if (file) {
+        return getUriFile(file[0]);
+    }
 }
 
 export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean) : Promise<string[]> {

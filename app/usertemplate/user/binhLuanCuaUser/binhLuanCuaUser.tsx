@@ -2,7 +2,7 @@ import { IMAGE } from "@/app/constant/KieuFile";
 import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
 import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
-import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriAvatarSanPham, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import AppUser from "@/app/model/AppUser";
 import BinhLuan from "@/app/model/BinhLuan";
@@ -46,11 +46,7 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
             for (const binhLuan of listBinhLuans) {
                 if (binhLuan.bL_SP) {
                     try {
-                        const file = await getFileAsync(SAN_PHAM, binhLuan.bL_SP.sP_Id, IMAGE, 1);
-            
-                        if (file) {
-                            binhLuan.bL_SP.sP_UriAvatar = getUriFile(file[0]);
-                        }
+                        binhLuan.bL_SP.sP_UriAvatar = await getUriAvatarSanPham(binhLuan.bL_SP.sP_Id);
                     }catch {}
                 }
 

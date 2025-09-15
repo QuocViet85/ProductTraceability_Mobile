@@ -9,3 +9,5 @@ export const DOANH_NGHIEP = "DN";
 export const BINH_LUAN = "BL";
 
 export const LO_SAN_PHAM = "LSP"
+
+export const SK_TRUY_XUAT = "SK";

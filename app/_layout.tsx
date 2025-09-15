@@ -30,6 +30,7 @@ export default function RootLayout() {
           <Stack.Screen name="baiVietTemplate/index" options={{  headerShown: false }} />
           <Stack.Screen name="nhaMayTemplate/index" options={{  headerShown: false }} />
           <Stack.Screen name="loSanPhamTemplate/index" options={{  headerShown: false }} />
+          <Stack.Screen name="suKienTruyXuatTemplate/index" options={{  headerShown: false }} />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>

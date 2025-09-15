@@ -5,7 +5,7 @@ import Spacer from "../helpers/ViewHelpers/spacer";
 import { useRouter } from "expo-router";
 import AnhLoSanPham from "./anhLoSanPham";
 
-export default function LoSanPhamRender({loSanPham}: {loSanPham: LoSanPham}) {
+export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat}: {loSanPham: LoSanPham, sP_Id: string | undefined, sP_Ten: string | undefined, sP_MaTruyXuat: string | undefined}) {
     const router = useRouter();
     return (
         <View>
@@ -35,12 +35,18 @@ export default function LoSanPhamRender({loSanPham}: {loSanPham: LoSanPham}) {
             </View>
             <AnhLoSanPham lsP_Id={loSanPham.lsP_Id as string}/>
             <View style={{height: 10}}></View>
-
-            <View style={{alignItems: 'center'}}>
-                <TouchableOpacity style={styles.statBox}>
+            
+            {sP_Id ? (<View style={{alignItems: 'center'}}>
+                <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/suKienTruyXuatTemplate', params: {
+                    lsP_Id: loSanPham.lsP_Id,
+                    lsP_MaLSP: loSanPham.lsP_MaLSP,
+                    sP_Id: sP_Id, 
+                    sP_Ten: sP_Ten, 
+                    sP_MaTruyXuat: sP_MaTruyXuat}})}>
                     <Text style={styles.statLabel}>{'Xem sự kiện truy xuất'}</Text>
                 </TouchableOpacity>
-            </View>
+            </View>) : (<View></View>)}
+            
             <Spacer  height={10}/>
         </View>
     )

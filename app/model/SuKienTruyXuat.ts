@@ -1,3 +1,5 @@
+import LoSanPham from "./LoSanPham";
+
 export default class SuKienTruyXuat
 {
     sK_Id: string | undefined;
@@ -21,4 +23,6 @@ export default class SuKienTruyXuat
     sK_NgaySua: Date | undefined;
 
     sK_NguoiSua_Id: string | undefined;
+
+    sK_LSP: LoSanPham | undefined;
 }

@@ -1,7 +1,5 @@
-import { IMAGE } from "@/app/constant/KieuFile";
-import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
-import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriAvatarSanPham, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import Header from "@/app/helpers/ViewHelpers/header";
 import SanPham from "@/app/model/SanPham";
 import axios from "axios";
@@ -29,17 +27,14 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const [loading, setLoading] = useState<boolean>(false);
     const [forceReRender, setForceReRender]  = useState<number>(0);
 
-    const [doanhNghiepId] = useState(dN_Id);
-    const [nhaMayId] = useState(nM_Id);
-
     const layCacSanPhams = async() => {
         setLoading(true);
         let urlSanPham = url('api/sanpham');
 
-        if (doanhNghiepId) {
-          urlSanPham +=`/doanh-nghiep-so-huu/${doanhNghiepId}`;
-        }else if (nhaMayId) {
-          urlSanPham +=`/nha-may/${nhaMayId}`;
+        if (dN_Id) {
+          urlSanPham +=`/doanh-nghiep-so-huu/${dN_Id}`;
+        }else if (nM_Id) {
+          urlSanPham +=`/nha-may/${nM_Id}`;
         }else if (danhMucHienTai.dM_Id){
           urlSanPham += `/danh-muc/${danhMucHienTai.dM_Id}`;
         }
@@ -58,15 +53,9 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
           if (res.data.listSanPhams) {
             const listSanPhamsTuBackEnd: SanPham[] = res.data.listSanPhams;
 
-            for (const sanPham of listSanPhams) {
-                sanPham.uriAvatar = null;
-                try {
-                  const file = await getFileAsync(SAN_PHAM, sanPham.sP_Id as string, IMAGE, 1);
+            for (const sanPham of listSanPhamsTuBackEnd) {
+              sanPham.uriAvatar = await getUriAvatarSanPham(sanPham.sP_Id as string);
 
-                  if (file) {
-                      sanPham.uriAvatar = getUriFile(file[0]);
-                  }
-                }catch {}
             }
             const newListSanPhams = [];
             if (pageNumber > 1) {
@@ -128,10 +117,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     }
 
     const isNotMainScreen = () => {
-      return doanhNghiepId || nhaMayId;
+      return dN_Id || nM_Id;
     }
-
-    console.log(isNotMainScreen())
 
     const renderItem = ({ item } : {item: SanPham}) => (
         <Link href={{pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
@@ -140,7 +127,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
             <Text style={styles.text}>{item.sP_Ten}</Text>
           </TouchableOpacity>
         </Link>
-       
   );
 
     return (
@@ -158,12 +144,12 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
           </View>
           <FlatList
               data={listSanPhams}
-              keyExtractor={(item) => item.sP_Id as string}
+              keyExtractor={(item: SanPham) => item.sP_Id as string}
               renderItem={renderItem}
               numColumns={2} // 👉 Mỗi dòng 2 cột
               contentContainerStyle={{padding: 10}}
               onEndReached={handleLoadMore}
-              onEndReachedThreshold={0.5}
+              onEndReachedThreshold={0}
               />
           {loading ? (<Loading />) : (<View></View>)}
           {isNotMainScreen() ? (<></>) : (<View style={{height: '40%'}}></View>)}

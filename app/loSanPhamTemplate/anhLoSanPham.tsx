@@ -94,8 +94,6 @@ export default function AnhLoSanPham({lsP_Id}: {lsP_Id: string}) {
                         <Button title="Đóng" onPress={() => setShowModalAnhLoSanPham(false)}></Button>
                     </View>
                 </Modal>
-            
-            
         </View>
     )
 }
