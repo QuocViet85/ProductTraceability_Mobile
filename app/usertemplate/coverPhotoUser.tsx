@@ -90,7 +90,7 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                         <TouchableOpacity onPress={canChange ? () => setShowModalChangeCoverPhoto(true) : () => {}}>
                             <Image
                                 source={{ uri: uriCoverPhoto as string }}
-                                style={{width: '100%', height: 140, marginBottom: 40}}
+                                style={{width: '100%', height: 300, marginBottom: 40}}
                                 resizeMode="cover"
                             />
                         </TouchableOpacity>

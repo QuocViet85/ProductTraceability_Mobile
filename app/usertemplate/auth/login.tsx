@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { getAccessToken, getUserLogin, setAccessAndRefreshToken } from "../../helpers/LogicHelper/authHelper";
 import { url } from "../../server/backend";
+import Header from "@/app/helpers/ViewHelpers/header";
 
 export default function Login({setFormDangNhap, setUserLogin} : {setFormDangNhap : any, setUserLogin: any}) {
     const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -33,35 +34,35 @@ export default function Login({setFormDangNhap, setUserLogin} : {setFormDangNhap
 
     return (
     <View style={styles.container}>
-      <Text style={styles.title}>Đăng Nhập</Text>
+      <Header title={"Đăng nhập"} fontSize={30} resource={null}></Header>
+      <View style={{marginTop: '10%'}}>
+          <TextInput
+          style={styles.input}
+          placeholder="Số điện thoại"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Số điện thoại"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-    
-      <Button title="Đăng nhập" onPress={onLogin} />
-      <View style={{marginBottom: 20}}></View>
-      <Button title="Chưa có tài khoản? Đăng kí" onPress={() => setFormDangNhap(false)} color={'green'}/>
+        <TextInput
+          style={styles.input}
+          placeholder="Mật khẩu"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+      
+        <Button title="Đăng nhập" onPress={onLogin} />
+        <View style={{marginBottom: 20}}></View>
+        <Button title="Chưa có tài khoản? Đăng kí" onPress={() => setFormDangNhap(false)} color={'green'}/>
+      </View>
     </View>
     )
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    marginTop: 100,
-    width: '100%',
+    flex: 1,
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 28,

@@ -98,7 +98,6 @@ export default function DanhSachSuKienTruyXuat() {
     return (
         <View style={styles.container}>
             <Header title={('Nhật ký truy xuất' + (isNotMainScreen() ? ' của lô hàng' :  '')) as string} fontSize={isNotMainScreen() ? 20 : 30} resource={(isNotMainScreen() ? lsP_MaLSP : '') as string | undefined | null}></Header>
-
             <FlatList
                 data={listSuKiens}
                 keyExtractor={(item: SuKienTruyXuat) => item.sK_Id as string}
@@ -112,8 +111,6 @@ export default function DanhSachSuKienTruyXuat() {
                 />
                 {loading ? (<Loading />) : (<View></View>)}
                 {isNotMainScreen() ? (<Footer backgroundColor={'black'}/>) : (<View></View>)}
-                
-
         </View>
     )
 }

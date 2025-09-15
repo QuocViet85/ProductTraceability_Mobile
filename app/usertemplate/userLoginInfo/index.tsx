@@ -3,7 +3,7 @@ import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
 import axios, { AxiosHeaderValue } from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Button, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import Logout from "../auth/logout";
 import { ChangePassword } from "../auth/changePassword";
 import AvatarUser from "../avatarUser";
@@ -66,61 +66,68 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
 
     return(
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <CoverPhotoUser userId={userLogin.id as string} canChange= {true}/>
-                                {/* Logo + Name */}
-            <View style={styles.profileHeader}>
-                <AvatarUser userId={userLogin.id} width={64} height={64} canChange={true}/>
-                <View style={styles.nameSection}>
-                    <Text style={styles.businessName}>{userLogin.name}</Text>
-                    <Text style={styles.businessType}>{`Tài khoản ${generateExactRole(userLogin.role as string)}`}</Text>
-                </View>
-                <ChangePassword />
-            </View>
+            <ScrollView>
+                <CoverPhotoUser userId={userLogin.id as string} canChange= {true}/>
+                <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', flex: 1, marginTop: 10}}>
+                    <View>
+                        <View style={styles.profileHeader}>
+                            <AvatarUser userId={userLogin.id} width={64} height={64} canChange={true}/>
+                            <View style={styles.nameSection}>
+                                <Text style={styles.businessName}>{userLogin.name}</Text>
+                                <Text style={styles.businessType}>{`Tài khoản ${generateExactRole(userLogin.role as string)}`}</Text>
+                            </View>
+                            <ChangePassword />
+                        </View>
 
 
-            <Text>Số điện thoại:</Text>
-            <TextInput
-                style={{...styles.input, backgroundColor: 'grey'}}
-                placeholder="Số điện thoại"
-                value={userLogin.phoneNumber}
-                editable={false}
-            />
-            
-            <Text>Tên người dùng:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Tên"
-                value={name}
-                onChangeText={setName}
-            />
+                        <Text>Số điện thoại:</Text>
+                        <TextInput
+                            style={{...styles.input, backgroundColor: 'grey'}}
+                            placeholder="Số điện thoại"
+                            value={userLogin.phoneNumber}
+                            editable={false}
+                        />
+                        
+                        <Text>Tên người dùng:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Tên"
+                            value={name}
+                            onChangeText={setName}
+                        />
 
-            <Text>Email:</Text>
-            <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={setEmail}
-            />
-            
-            <Text>Địa chỉ:</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="Địa chỉ"
-                value={address}
-                onChangeText={setAddress} 
-            />
+                        <Text>Email:</Text>
+                        <TextInput
+                                style={styles.input}
+                                placeholder="Email"
+                                value={email}
+                                onChangeText={setEmail}
+                        />
+                        
+                        <Text>Địa chỉ:</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Địa chỉ"
+                            value={address}
+                            onChangeText={setAddress} 
+                        />
 
-            <Button title="Cập nhật" onPress={updateUser} color={'green'}/>
-            <View style={{marginBottom: 20}}></View>
-            <Logout setUserLogin={setUserLogin}/>
+                        <Button title="Cập nhật" onPress={updateUser} color={'green'}/>
+                        <View style={{height: 20}}></View>
+                        <Logout setUserLogin={setUserLogin}/>
+                        <View style={{height: 20}}></View>
+                    </View>
+                </View> 
             </ScrollView>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: '#fff', width: '100%' },
+  container: { 
+    flex: 1,                     
+    backgroundColor: '#fff',
+   },
   scrollContainer: { padding: 16 },
   profileHeader: { flexDirection: 'row', alignItems: 'center', marginTop: -40 },
   logoCircle: {

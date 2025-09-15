@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { getUserLogin } from '../helpers/LogicHelper/authHelper';
 import Header from '../helpers/ViewHelpers/header';
@@ -24,26 +24,15 @@ export default function UserInApp() {
     })
   }, [refreshUserLogin]);
 
-  let formDangNhapDangKi = (<View></View>)
+  let formDangNhapDangKi : ReactNode= (<View></View>)
   if (formDangNhap) {
     formDangNhapDangKi = (<Login setFormDangNhap={setFormDangNhap} setUserLogin={setUserLogin}/>)
   }else {
     formDangNhapDangKi = (<Register setFormDangNhap={setFormDangNhap}/>)
   }
-  return (
-     <View style={styles.container}>
-            <Header title={"Người dùng đăng nhập"} fontSize={30} resource={null}></Header>
-            {userLogin ? (<UserLoginInfo userLogin={userLogin} setUserLogin={setUserLogin} setRefreshUserLogin={setRefreshUserLogin} />) : formDangNhapDangKi}
-      </View>
-  );
+  return userLogin 
+              ? (
+              <UserLoginInfo userLogin={userLogin} setUserLogin={setUserLogin} setRefreshUserLogin={setRefreshUserLogin} />
+              ) : formDangNhapDangKi;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,                     // cho phép chiếm toàn màn hình
-    flexDirection: 'column',     // mặc định
-    justifyContent: 'flex-start',// bắt đầu từ trên xuống
-    backgroundColor: '#fff',
-    alignItems: 'center'
-  },
-});

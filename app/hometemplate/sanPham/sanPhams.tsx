@@ -130,7 +130,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
   );
 
     return (
-      <View style={isNotMainScreen() ? styles.container : {}}>
+      <View style={styles.container}>
           {dN_Id ? (<Header title={`Sản phẩm doanh nghiệp`} resource={dN_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
           {nM_Id ? (<Header title={`Sản phẩm nhà máy`} resource={nM_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
           <View style={{width: '100%', flexDirection: 'row'}}>
@@ -144,7 +144,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
           </View>
           <FlatList
               data={listSanPhams}
-              keyExtractor={(item: SanPham) => item.sP_Id as string}
+              keyExtractor={(item: SanPham, index) => `${item.sP_Id}-${index}`}
               renderItem={renderItem}
               numColumns={2} // 👉 Mỗi dòng 2 cột
               contentContainerStyle={{padding: 10}}
@@ -152,8 +152,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               onEndReachedThreshold={0}
               />
           {loading ? (<Loading />) : (<View></View>)}
-          {isNotMainScreen() ? (<></>) : (<View style={{height: '40%'}}></View>)}
-          <Footer backgroundColor={isNotMainScreen() ? 'black' : 'white'}/>
+          {isNotMainScreen() ? (<Footer backgroundColor={'black'}/>) : (<View></View>)}
       </View>     
     )
 }

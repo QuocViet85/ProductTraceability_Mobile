@@ -1,9 +1,10 @@
 import { Picker } from '@react-native-picker/picker';
 import axios from "axios";
 import { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ROLE_ADMIN, ROLE_DOANH_NGHIEP, ROLE_KHACH_HANG } from "../../constant/Role";
 import { url } from "../../server/backend";
+import Header from '@/app/helpers/ViewHelpers/header';
 
 export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
     const [phoneNumber, setPhoneNumber] = useState<string>('');
@@ -76,78 +77,80 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
 
     return (
     <View style={styles.container}>
-      <Text style={styles.title}>Đăng Kí</Text>
+      <Header title={"Đăng kí"} fontSize={30} resource={null}></Header>
+      <ScrollView style={{marginTop: '10%'}}>
+          <TextInput
+              style={styles.input}
+              placeholder="Tên"
+              value={name}
+              onChangeText={setName}
+            />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Tên"
-        value={name}
-        onChangeText={setName}
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Số điện thoại"
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+            />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Số điện thoại"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Mật khẩu"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Lặp lại mật khẩu"
+              value={repeatPassword}
+              onChangeText={setRepeatPassword}
+              secureTextEntry
+            />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Lặp lại mật khẩu"
-        value={repeatPassword}
-        onChangeText={setRepeatPassword}
-        secureTextEntry
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+            />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-      />
+            <TextInput
+              style={styles.input}
+              placeholder="Địa chỉ"
+              value={address}
+              onChangeText={setAddress}
+            />
+          
+          <View style={{...styles.input, height: 50}}>
+              <Picker
+                  selectedValue={role}
+                  onValueChange={(itemValue) => setRole(itemValue)}
+                  style={{ height: 55, width: '100%' }}
+                  >
+                      <Picker.Item label="Vai trò: Admin" value={ROLE_ADMIN} />
+                      <Picker.Item label="Vai trò: Doanh Nghiệp" value={ROLE_DOANH_NGHIEP} />
+                      <Picker.Item label="Vai trò: Khách Hàng" value={ROLE_KHACH_HANG} />
+              </Picker>
+          </View>
+          
+            
+          
+            <Button title="Đăng kí" onPress={onRegister} color={'green'}/>
+            <View style={{marginBottom: 20}}></View>
+            <Button title="Đã có tài khoản? Đăng nhập" onPress={() => setFormDangNhap(true)} />
+      </ScrollView>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Địa chỉ"
-        value={address}
-        onChangeText={setAddress}
-      />
-    
-    <View style={{...styles.input, height: 50}}>
-        <Picker
-            selectedValue={role}
-            onValueChange={(itemValue) => setRole(itemValue)}
-            style={{ height: 55, width: '100%' }}
-            >
-                <Picker.Item label="Vai trò: Admin" value={ROLE_ADMIN} />
-                <Picker.Item label="Vai trò: Doanh Nghiệp" value={ROLE_DOANH_NGHIEP} />
-                <Picker.Item label="Vai trò: Khách Hàng" value={ROLE_KHACH_HANG} />
-        </Picker>
-    </View>
-    
       
-    
-      <Button title="Đăng kí" onPress={onRegister} color={'green'}/>
-      <View style={{marginBottom: 20}}></View>
-      <Button title="Đã có tài khoản? Đăng nhập" onPress={() => setFormDangNhap(true)} />
     </View>
     )
 }
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    marginTop: 50,
-    width: '100%',
+    flex: 1,
+    backgroundColor: 'white'
   },
   title: {
     fontSize: 28,
