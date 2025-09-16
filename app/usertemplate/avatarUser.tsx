@@ -8,10 +8,10 @@ import { Button, Modal, Text } from "react-native";
 import { Alert, Image, TouchableOpacity, View } from "react-native";
 import { STATE_CHANGE } from "../constant/State";
 
-const temp_UriAvatarUser : [{
+const temp_UriAvatarUser : {
     userId: string,
     uri: string
-} | undefined] = [undefined]
+}[] = []
 
 export default function AvatarUser({userId, width, height, canChange} : {userId : string | undefined, width: number, height: number, canChange: boolean}) {
     const [uriAvatar, setUriAvatar] = useState<string | null>(null);
@@ -23,7 +23,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
 
     const layUriAvatar = async() => {
         const uriAvatarInTemp = temp_UriAvatarUser.find((item) => {
-            return item?.userId === userId
+            return item.userId === userId
         });
 
         if (!uriAvatarInTemp || uriAvatar === STATE_CHANGE) {

@@ -4,19 +4,37 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
+const temp_SaoSanPham : {sP_Id: string, soSao: number}[] = [];
+
 export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
     const [soSao, setSoSao] = useState<any>(0);
 
     const sizeSao = 30;
     
     useEffect(() => {
-        let urlLaySoSao = url(`api/sanpham/sao-san-pham/${sP_Id}`);
-        axios.get(urlLaySoSao).then((res) => {
-            if (res.data) {
-                setSoSao(res.data);
-            }
-        })
+        laySoSaoCuaSanPham();
     });
+
+    const laySoSaoCuaSanPham = async() => {
+        const soSaoInTemp = temp_SaoSanPham.find((item) => {
+                return item.sP_Id === sP_Id;
+        });
+
+        if (!soSaoInTemp) {
+            const urlLaySoSao = url(`api/sanpham/sao-san-pham/${sP_Id}`);
+            const res = await axios.get(urlLaySoSao);
+            if (res.data) {
+                const soSao = res.data;
+                setSoSao(soSao);
+                temp_SaoSanPham.push({
+                    sP_Id: sP_Id,
+                    soSao: soSao
+                });
+            }
+        }else {
+            setSoSao(soSaoInTemp.soSao);
+        }
+    }
 
     let saoArr = [];
     for (let i = 1; i <= 5; i++) {

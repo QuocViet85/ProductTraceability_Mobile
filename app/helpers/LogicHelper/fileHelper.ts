@@ -43,26 +43,26 @@ export function getUriFile(file: File) : string | undefined {
 }
 
 export async function getUriAvatarUser(userId: string) : Promise<string | null | undefined> {
-  const fileAvatar = await getFileAsync(USER, userId, AVATAR);
-  if (fileAvatar) {
-    return getUriFile(fileAvatar[0])
+  const fileAvatars = await getFileAsync(USER, userId, AVATAR);
+  if (fileAvatars && fileAvatars.length > 0) {
+    return getUriFile(fileAvatars[0])
   }
   return null;
 }
 
 export async function getUriAvatarDoanhNghiep(dN_Id: string) : Promise<string | null | undefined> {
-  const fileAvatar = await getFileAsync(DOANH_NGHIEP, dN_Id, AVATAR);
-  if (fileAvatar) {
-    return getUriFile(fileAvatar[0])
+  const fileAvatars = await getFileAsync(DOANH_NGHIEP, dN_Id, AVATAR);
+  if (fileAvatars && fileAvatars.length > 0) {
+    return getUriFile(fileAvatars[0])
   }
   return null;
 }
 
 export async function getUriAvatarSanPham(sP_Id: string) {
-    const file = await getFileAsync(SAN_PHAM, sP_Id as string, IMAGE, 1);
+    const files = await getFileAsync(SAN_PHAM, sP_Id as string, IMAGE, 1);
 
-    if (file) {
-        return getUriFile(file[0]);
+    if (files && files.length > 0) {
+        return getUriFile(files[0]);
     }
 }
 

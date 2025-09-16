@@ -6,10 +6,10 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { Button, Dimensions, FlatList, Image, Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 
-const temp_ListFilesAnhBinhLuan : [{
+const temp_ListFilesAnhBinhLuan : {
     bL_Id: string,
     listFilesAnhBinhLuan: File[]
-} | undefined] = [undefined]
+}[] = []
 
 const { width } = Dimensions.get('window');
 export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {

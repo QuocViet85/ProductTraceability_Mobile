@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Button, DimensionValue, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { USER } from "../constant/KieuTaiNguyen";
 import { COVER_PHOTO } from "../constant/KieuFile";
@@ -9,12 +9,12 @@ import axios from "axios";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { STATE_CHANGE } from "../constant/State";
 
-const temp_UriCoverPhotoUser : [{
+const temp_UriCoverPhotoUser : {
     userId: string,
     uri: string
-} | undefined] = [undefined]
+}[] = []
 
-export default function CoverPhotoUser({userId, canChange}: {userId: string, canChange: boolean}) {
+export default function CoverPhotoUser({userId, height, canChange}: {userId: string, height: DimensionValue | undefined ,canChange: boolean}) {
     const [uriCoverPhoto, setUriCoverPhoto] = useState<string | null>(null);
     const [showModalChangeCoverPhoto, setShowModalChangeCoverPhoto] = useState<boolean | undefined>(false);
     
@@ -24,30 +24,34 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
 
         const layUriCoverPhoto = async() => {
             const uriCoverPhotoInTemp = temp_UriCoverPhotoUser.find((item) => {
-                return item?.userId === userId
+                return item.userId === userId
             });
 
             if (!uriCoverPhotoInTemp || uriCoverPhoto === STATE_CHANGE) {
                 const listFilesCoverPhoto = await getFileAsync(USER, userId, COVER_PHOTO);
 
-                const uri = getUriFile(listFilesCoverPhoto[0]);
-                if (uri) {
-                    setUriCoverPhoto(uri);
+                    if (listFilesCoverPhoto.length > 0) {
+                        const uri = getUriFile(listFilesCoverPhoto[0]);
+                    if (uri) {
+                        setUriCoverPhoto(uri);
 
-                    if (uriCoverPhoto === STATE_CHANGE) {
-                        const indexOldCoverPhotoInTemp = temp_UriCoverPhotoUser.findIndex((item) => {
-                            return item?.userId === userId
-                        });
-                        if (indexOldCoverPhotoInTemp !== - 1) {
-                            temp_UriCoverPhotoUser.splice(indexOldCoverPhotoInTemp, 1);
+                        if (uriCoverPhoto === STATE_CHANGE) {
+                            const indexOldCoverPhotoInTemp = temp_UriCoverPhotoUser.findIndex((item) => {
+                                return item.userId === userId
+                            });
+                            if (indexOldCoverPhotoInTemp !== - 1) {
+                                temp_UriCoverPhotoUser.splice(indexOldCoverPhotoInTemp, 1);
+                            }
                         }
-                    }
 
-                    temp_UriCoverPhotoUser.push({
-                        userId: userId as string,
-                        uri: uri
-                    })
+                        temp_UriCoverPhotoUser.push({
+                            userId: userId as string,
+                            uri: uri
+                        })
+                    }
                 }
+
+                
             }else {
                 setUriCoverPhoto(uriCoverPhotoInTemp.uri);
             }
@@ -121,7 +125,7 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                         <TouchableOpacity onPress={canChange ? () => setShowModalChangeCoverPhoto(true) : () => {}}>
                             <Image
                                 source={{ uri: uriCoverPhoto as string }}
-                                style={{width: '100%', height: 300, marginBottom: 40}}
+                                style={{width: '100%', height: height, marginBottom: 40}}
                                 resizeMode="cover"
                             />
                         </TouchableOpacity>

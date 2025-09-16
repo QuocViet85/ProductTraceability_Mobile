@@ -67,7 +67,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
     return(
         <View style={styles.container}>
             <ScrollView>
-                <CoverPhotoUser userId={userLogin.id as string} canChange= {true}/>
+                <CoverPhotoUser userId={userLogin.id as string} height={300} canChange= {true}/>
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', flex: 1, marginTop: 10}}>
                     <View>
                         <View style={styles.profileHeader}>

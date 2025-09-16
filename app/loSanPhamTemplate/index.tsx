@@ -11,6 +11,8 @@ import LoSanPhamRender from "./loSanPhamRender";
 import Footer from "../helpers/ViewHelpers/footer";
 import Loading from "../helpers/ViewHelpers/loading";
 
+const temp_ListLoSanPham : LoSanPham[] = [];
+
 export default function DanhSachLoSanPham() {
     const params = useLocalSearchParams();
     const sP_Id: string = params.sP_Id as string;
@@ -30,6 +32,19 @@ export default function DanhSachLoSanPham() {
 
     const layListLoSanPham = async() => {
         setLoading(true);
+
+        const listLoSanPhamsInTemp = temp_ListLoSanPham.filter((item) => {
+            return item.lsP_SP_Id === sP_Id;
+        });
+
+        const newListLoSanPhams = [];
+
+        if (listLoSanPhamsInTemp.length > 0) {
+            newListLoSanPhams.push(...listLoSanPhamsInTemp);
+        }
+
+
+
         const urlLoSanPham = url(`api/losanpham/san-pham/${sP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_LO_SANPHAM}`);
 
         try {
@@ -41,14 +56,13 @@ export default function DanhSachLoSanPham() {
             if (res.data.listLoSanPhams) {
                 const listLoSanPhamsTuBackEnd = res.data.listLoSanPhams;
 
-                const newListLoSanPhams = [];
-
                 if (pageNumber > 1) {
                     newListLoSanPhams.push(...listLoSanPhams, ...listLoSanPhamsTuBackEnd);
                 }else {
                     newListLoSanPhams.push(...listLoSanPhamsTuBackEnd);
                 }
                 setListLoSanPhams(newListLoSanPhams);
+                temp_ListLoSanPham.push(...newListLoSanPhams);
             }
             setLoading(false);
         }catch {}
@@ -76,7 +90,7 @@ export default function DanhSachLoSanPham() {
                 onEndReachedThreshold={0}
                 />
             {loading ? (<Loading />) : (<View></View>)}
-            <Footer backgroundColor={'black'}/>
+            <Footer backgroundColor={'black'} height={'6%'}/>
         </View>
     )
 }

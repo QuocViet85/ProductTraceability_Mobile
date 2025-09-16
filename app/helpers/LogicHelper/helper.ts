@@ -60,3 +60,9 @@ export async function openWebsite(url: string) {
     await Linking.openURL(url);
   }
 }
+
+export function paginate(resource: any[], pageNumber: number, limit: number) : any[] {
+  const start = (pageNumber - 1) * limit + 1;
+  const end = start + limit - 1;
+  return resource.slice(start, end);
+}

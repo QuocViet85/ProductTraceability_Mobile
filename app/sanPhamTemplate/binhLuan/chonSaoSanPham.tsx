@@ -5,6 +5,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
+import { temp_SoSaoCuaMotNguoiVoiMotSanPham } from "./binhLuanSanPham";
 
 export default function ChonSaoSanPham({sP_Id, userId, laySoSaoCuaMotNguoi} : {sP_Id: string, userId: string, laySoSaoCuaMotNguoi: (sP_Id: string, userId: string) => Promise<number>}) {
     const [showModalChonSao, setShowModalChonSao] = useState<boolean | undefined>(false);
@@ -14,7 +15,7 @@ export default function ChonSaoSanPham({sP_Id, userId, laySoSaoCuaMotNguoi} : {s
         laySoSaoCuaMotNguoi(sP_Id, userId).then((soSao) => {
             setSoSaoChon(soSao)
         })
-    }, [])
+    }, []);
 
     const chonSoSao = async (soSao: number) => {
         const bearerToken = await getBearerToken();
@@ -23,6 +24,14 @@ export default function ChonSaoSanPham({sP_Id, userId, laySoSaoCuaMotNguoi} : {s
         try {
             await axios.post(urlChonSao, null, {headers: {Authorization: bearerToken}});
             setSoSaoChon(soSao);
+
+            const soSaoInTemp = temp_SoSaoCuaMotNguoiVoiMotSanPham.find((item) => {
+                return item.sP_Id === sP_Id && item.userId === userId;
+            });
+            
+            if (soSaoInTemp) {
+                soSaoInTemp.soSao = soSao;
+            }
         }catch {}
         finally {
             setShowModalChonSao(false);

@@ -1,7 +1,7 @@
-import { ColorValue, View } from "react-native";
+import { ColorValue, DimensionValue, View } from "react-native";
 
-export default function Footer({backgroundColor}: {backgroundColor: ColorValue | undefined}) {
+export default function Footer({backgroundColor, height}: {backgroundColor: ColorValue | undefined, height: DimensionValue | undefined}) {
     return (
-        <View style={{height: '6%', backgroundColor: backgroundColor, marginTop: 'auto'}}></View>
+        <View style={{height: height, backgroundColor: backgroundColor, marginTop: 'auto'}}></View>
     )
 }

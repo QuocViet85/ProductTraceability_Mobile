@@ -5,7 +5,7 @@ import File from "@/app/model/File";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
 
-const temp_ListFileAnhSanPhams : [{sP_Id: string, listFileAnhSanPhams: File[]} | undefined] = [undefined];
+const temp_ListFileAnhSanPhams : {sP_Id: string, listFileAnhSanPhams: File[]}[] = [];
 
 const { width } = Dimensions.get('window');
 const height = 400;
@@ -19,7 +19,7 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
 
     const layAnhSanPham = async() => {
       const listFilesInTemp = temp_ListFileAnhSanPhams.find((item) => {
-        return item?.sP_Id === sP_Id;
+        return item.sP_Id === sP_Id;
       });
 
       if (!listFilesInTemp) {

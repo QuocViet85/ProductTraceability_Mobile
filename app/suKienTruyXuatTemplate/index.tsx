@@ -110,7 +110,7 @@ export default function DanhSachSuKienTruyXuat() {
                 onEndReachedThreshold={0}
                 />
                 {loading ? (<Loading />) : (<View></View>)}
-                {isNotMainScreen() ? (<Footer backgroundColor={'black'}/>) : (<View></View>)}
+                {isNotMainScreen() ? (<Footer backgroundColor={'black'} height={'6%'}/>) : (<View></View>)}
         </View>
     )
 }

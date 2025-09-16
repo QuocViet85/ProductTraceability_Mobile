@@ -12,6 +12,8 @@ import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
 import AvatarUser from "../usertemplate/avatarUser";
 import Footer from "../helpers/ViewHelpers/footer";
 
+const temp_DoanhNghiep: {doanhNghiep: DoanhNghiep, soSanPham: number}[] = [];
+
 export default function Index() 
 {
     const params = useLocalSearchParams();
@@ -27,112 +29,127 @@ export default function Index()
     }, []);
 
     const layDoanhNghiep = async() => {
-        const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
+        const doanhNghiepInTemp = temp_DoanhNghiep.find((dn) => {
+            return dn.doanhNghiep.dN_Id === dN_Id;
+        });
 
-        const resDN = await axios.get(urlDoanhNghiep);
-        if (resDN.data) {
-            setDoanhNghiep(resDN.data as DoanhNghiep);
+        if (!doanhNghiepInTemp) {
+            const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
+
+            const resDN = await axios.get(urlDoanhNghiep);
+            if (resDN.data) {
+                const doanhNghiep : DoanhNghiep = resDN.data;
+                setDoanhNghiep(doanhNghiep);
+                const doanhNghiepPushToTemp : {doanhNghiep: DoanhNghiep, soSanPham: number} = {doanhNghiep: doanhNghiep, soSanPham: 0};
+
+                temp_DoanhNghiep.push(doanhNghiepPushToTemp);
+
+                const urlSoSanPhamSoHuu = url(`api/sanpham/doanh-nghiep-so-huu/tong-so/${dN_Id}`);
+
+                const resSoSP = await axios.get(urlSoSanPhamSoHuu);
+
+                if (resSoSP.data) {
+                    setSoSanPhamSoHuu(resSoSP.data);
+                    doanhNghiepPushToTemp.soSanPham = resSoSP.data;
+                }
+            }
+        }else {
+            setDoanhNghiep(doanhNghiepInTemp.doanhNghiep);
+            setSoSanPhamSoHuu(doanhNghiepInTemp.soSanPham);
         }
-
-        const urlSoSanPhamSoHuu = url(`api/sanpham/doanh-nghiep-so-huu/tong-so/${dN_Id}`);
-
-        const resSoSP = await axios.get(urlSoSanPhamSoHuu);
-
-        if (resSoSP.data) {
-            setSoSanPhamSoHuu(resSoSP.data);
-        }
+        
     }
 
     return (
         <View style={styles.container}>
             {doanhNghiep ? (
-                <View>
-                    {/* Banner */}
-                <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} />
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    {/* Logo + Name */}
-                    <View style={styles.profileHeader}>
-                    <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} width={64} height={64}/>
-                    <View style={styles.nameSection}>
-                        <Text style={styles.businessName}>{doanhNghiep.dN_Ten}</Text>
-                        <Text style={styles.businessType}>{doanhNghiep.dN_KieuDN == 1 ? 'Hộ kinh doanh cá nhân' : 'Doanh Nghiệp'}</Text>
-                    </View>
-                    </View>
-
-                    <TuongTacDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} dN_SoDienThoai={doanhNghiep.dN_SoDienThoai}/>
-                   
-                    {/* Stats */}
-                    <View style={styles.statsRow}>
-                        <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/hometemplate/sanPham/sanPhams', params: {dN_Id: doanhNghiep.dN_Id, dN_Ten: doanhNghiep.dN_Ten}})}>
-                            <Text style={styles.statValue}>{soSanPhamSoHuu}</Text>
-                            <Text style={styles.statLabel}>{'Sản phẩm'}</Text>
-                        </TouchableOpacity>
-                        <View style={styles.statBox}>
-                            <Text style={styles.statValue}>???</Text>
-                            <Text style={styles.statLabel}>{'Đánh giá'}</Text>
+            <View style={{flex: 1}}>
+                <ScrollView>
+                    <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} height={300}/>
+                    <View style={styles.scrollContainer}>
+                        {/* Logo + Name */}
+                        <View style={styles.profileHeader}>
+                        <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} width={64} height={64}/>
+                        <View style={styles.nameSection}>
+                            <Text style={styles.businessName}>{doanhNghiep.dN_Ten}</Text>
+                            <Text style={styles.businessType}>{doanhNghiep.dN_KieuDN == 1 ? 'Hộ kinh doanh cá nhân' : 'Doanh Nghiệp'}</Text>
                         </View>
-                    </View>
-
-                    {/* Giới thiệu */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Giới thiệu</Text>
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="contact-phone" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                Số điện thoại: {doanhNghiep.dN_SoDienThoai ? doanhNghiep.dN_SoDienThoai : (<Updating />)}
-                            </Text>
                         </View>
 
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="email" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                Email: {doanhNghiep.dN_Email ? doanhNghiep.dN_Email : (<Updating />)}
-                            </Text>
+                        <TuongTacDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} dN_SoDienThoai={doanhNghiep.dN_SoDienThoai}/>
+                    
+                        {/* Stats */}
+                        <View style={styles.statsRow}>
+                            <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/hometemplate/sanPham/sanPhams', params: {dN_Id: doanhNghiep.dN_Id, dN_Ten: doanhNghiep.dN_Ten}})}>
+                                <Text style={styles.statValue}>{soSanPhamSoHuu}</Text>
+                                <Text style={styles.statLabel}>{'Sản phẩm'}</Text>
+                            </TouchableOpacity>
+                            <View style={styles.statBox}>
+                                <Text style={styles.statValue}>???</Text>
+                                <Text style={styles.statLabel}>{'Đánh giá'}</Text>
+                            </View>
                         </View>
 
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="code" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                Mã số thuế: {doanhNghiep.dN_MaSoThue ? doanhNghiep.dN_MaSoThue : (<Updating />)}
-                            </Text>
+                        {/* Giới thiệu */}
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>Giới thiệu</Text>
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="contact-phone" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    Số điện thoại: {doanhNghiep.dN_SoDienThoai ? doanhNghiep.dN_SoDienThoai : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="email" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    Email: {doanhNghiep.dN_Email ? doanhNghiep.dN_Email : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="code" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    Mã số thuế: {doanhNghiep.dN_MaSoThue ? doanhNghiep.dN_MaSoThue : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="location-on" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    Địa chỉ: {doanhNghiep.dN_DiaChi ? doanhNghiep.dN_DiaChi : (<Updating />)}
+                                </Text>
+                            </View>
                         </View>
 
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="location-on" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                Địa chỉ: {doanhNghiep.dN_DiaChi ? doanhNghiep.dN_DiaChi : (<Updating />)}
-                            </Text>
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>Chủ doanh nghiệp</Text>
+                            {doanhNghiep.dN_List_CDN?.map((item, key) => {
+                                return (
+                                    <View key={key}>
+                                        <Link style={{}} key={key} href={{pathname: '/usertemplate/user', params: {userId: item.cdN_ChuDN.id} }} withAnchor asChild>
+                                        <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
+                                            <View>
+                                                <AvatarUser userId={item.cdN_ChuDN.id} width={40} height={40} canChange={false} />
+                                            </View>
+                                            <View style={{marginLeft: 10}}>
+                                                <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{item.cdN_ChuDN.name}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                        </Link>
+                                    </View>
+                                )
+                            })}
                         </View>
                     </View>
-
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Chủ doanh nghiệp</Text>
-                        {doanhNghiep.dN_List_CDN?.map((item, key) => {
-                            return (
-                                <View key={key}>
-                                    <Link style={{}} key={key} href={{pathname: '/usertemplate/user', params: {userId: item.cdN_ChuDN.id} }} withAnchor asChild>
-                                    <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
-                                        <View>
-                                            <AvatarUser userId={item.cdN_ChuDN.id} width={40} height={40} canChange={false} />
-                                        </View>
-                                        <View style={{marginLeft: 10}}>
-                                            <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{item.cdN_ChuDN.name}</Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                    </Link>
-                                </View>
-                            )
-                        })}
-                    </View>
+                    
                 </ScrollView>
-                
-                {/* Bottom Tabs */}
             </View>
         ) : (
             <View>
                 <Text>Không tồn tại doanh nghiệp</Text>
             </View>)}
-            <Footer backgroundColor={'black'}/>
+            <Footer backgroundColor={'black'} height={'6%'}/>
         </View>
   );
 }

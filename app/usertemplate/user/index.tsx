@@ -11,6 +11,7 @@ import CoverPhotoUser from "../coverPhotoUser";
 import TuongTacUser from "./tuongTacUser";
 import BinhLuanCuaUser from "./binhLuanCuaUser/binhLuanCuaUser";
 import Footer from "@/app/helpers/ViewHelpers/footer";
+import { getUserInTemp, setUserToTemp } from "@/app/temp/tempUser";
 
 export default function UserInfo() {
     const params = useLocalSearchParams();
@@ -19,12 +20,23 @@ export default function UserInfo() {
     const [user, setUser] = useState<AppUser | null>(null);
 
     useEffect(() => {
-        getUserInfo(userId as string).then((user) => {
-                if (user) {
-                    setUser(user);
-                }
-            })
+        layUser();
     }, []);
+
+    const layUser = async() => {
+        const userInTemp = getUserInTemp(userId as string);
+
+        if (!userInTemp) {
+            const user = await getUserInfo(userId as string);
+        
+            if (user) {
+                setUser(user);
+                setUserToTemp(user);
+            }
+        }else {
+            setUser(userInTemp);
+        }
+    }
 
     return (
         <View style={styles.container}>
@@ -33,7 +45,7 @@ export default function UserInfo() {
                     {/* Banner */}
                 <ScrollView>
                     {/* Logo + Name */}
-                    <CoverPhotoUser userId={userId as string} canChange={false} />
+                    <CoverPhotoUser userId={userId as string} height={300} canChange={false} />
                     <View style={{height: 10}}></View>
                     <View style={styles.profileHeader}>
                     <AvatarUser userId={user.id as string} width={64} height={64} canChange={false}/>
@@ -85,7 +97,7 @@ export default function UserInfo() {
             <View>
                 <Text>Không tồn tại người dùng</Text>
             </View>)}
-            <Footer backgroundColor={'black'}/>
+            <Footer backgroundColor={'black'} height={'6%'}/>
         </View>
   );
 }

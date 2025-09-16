@@ -152,7 +152,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               onEndReachedThreshold={0}
               />
           {loading ? (<Loading />) : (<View></View>)}
-          {isNotMainScreen() ? (<Footer backgroundColor={'black'}/>) : (<View></View>)}
+          {isNotMainScreen() ? (<Footer backgroundColor={'black'} height={'6%'}/>) : (<View></View>)}
       </View>     
     )
 }

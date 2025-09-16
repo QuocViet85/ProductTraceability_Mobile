@@ -5,7 +5,7 @@ import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import ChonSaoSanPham from "./chonSaoSanPham";
 import XoaBinhLuan from "./xoaBinhLuan";
@@ -15,6 +15,8 @@ import PostBinhLuan from "./postBinhLuan";
 import { useRouter } from "expo-router";
 import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
 import BinhLuan from "@/app/model/BinhLuan";
+
+export const temp_SoSaoCuaMotNguoiVoiMotSanPham : {sP_Id: string, userId: string, soSao: number}[] = [];
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -46,18 +48,31 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
         }catch {}
     }
     
-    const laySoSaoCuaMotNguoi = async (sP_Id : string, userId : string) : Promise<number> => {
-        const urlSoSao = url(`api/sanpham/sao-san-pham-user/${sP_Id}?userId=${userId}`);
+    const laySoSaoCuaMotNguoi = async (sP_Id : string, userId : string, reload: boolean = false) : Promise<number> => {
+        const soSaoInTemp = temp_SoSaoCuaMotNguoiVoiMotSanPham.find((item) => {
+            return item.sP_Id === sP_Id && item.userId === userId;
+        });
 
-        try {
-            let soSao = (await axios.get(urlSoSao)).data;
+        if (!soSaoInTemp) {
+            const urlSoSao = url(`api/sanpham/sao-san-pham-user/${sP_Id}?userId=${userId}`);
 
-            if (soSao) {
-                return soSao;
+            try {
+                let soSao = (await axios.get(urlSoSao)).data;
+
+                if (soSao) {
+                    temp_SoSaoCuaMotNguoiVoiMotSanPham.push({
+                        sP_Id: sP_Id,
+                        userId: userId,
+                        soSao: soSao
+                    });
+                    return soSao;
+                }
+                return 0;
+            }catch {
+                return 0;
             }
-            return 0;
-        }catch {
-            return 0;
+        }else {
+            return soSaoInTemp.soSao;
         }
     }
 

@@ -77,7 +77,7 @@ export default function Index() {
           style={{ flex: 1 }}
           behavior={Platform.OS === "ios" ? "position" : "position"}
         >
-          <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container} nestedScrollEnabled={true}>
+          <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
             {sanPham ? 
             (<View style={{flex: 1}}>
                   <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} />
@@ -120,7 +120,7 @@ export default function Index() {
                 <Text>Không tồn tại sản phẩm</Text>
             </View>)}
         </ScrollView>
-        <Footer backgroundColor={'black'}/>
+        <Footer backgroundColor={'black'} height={'6%'}/>
       </KeyboardAvoidingView>
     )
 }
