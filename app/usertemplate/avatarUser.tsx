@@ -6,18 +6,50 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Modal, Text } from "react-native";
 import { Alert, Image, TouchableOpacity, View } from "react-native";
+import { STATE_CHANGE } from "../constant/State";
+
+const temp_UriAvatarUser : [{
+    userId: string,
+    uri: string
+} | undefined] = [undefined]
 
 export default function AvatarUser({userId, width, height, canChange} : {userId : string | undefined, width: number, height: number, canChange: boolean}) {
     const [uriAvatar, setUriAvatar] = useState<string | null>(null);
     const [showModalChangeAvatar, setShowModalChangeAvatar] = useState<boolean | undefined>(false);
 
     useEffect(() => {
-        getUriAvatarUser(userId as string).then((uri) => {
+        layUriAvatar();
+    }, [uriAvatar])
+
+    const layUriAvatar = async() => {
+        const uriAvatarInTemp = temp_UriAvatarUser.find((item) => {
+            return item?.userId === userId
+        });
+
+        if (!uriAvatarInTemp || uriAvatar === STATE_CHANGE) {
+            const uri = await getUriAvatarUser(userId as string);
+
             if (uri) {
                 setUriAvatar(uri);
+
+                if (uriAvatar === STATE_CHANGE) {
+                    const indexOldAvatarInTemp = temp_UriAvatarUser.findIndex((item) => {
+                        return item?.userId === userId
+                    });
+                    if (indexOldAvatarInTemp !== - 1) {
+                        temp_UriAvatarUser.splice(indexOldAvatarInTemp, 1);
+                    }
+                }
+
+                temp_UriAvatarUser.push({
+                    userId: userId as string,
+                    uri: uri
+                });
             }
-        })
-    }, [uriAvatar])
+        }else {
+            setUriAvatar(uriAvatarInTemp.uri);
+        }
+    }
 
     const setAvatar = async (camera: boolean) => {
         const bearerToken = await getBearerToken();
@@ -51,9 +83,9 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
             const uriChangeAvatar = url('api/auth/avatar');
 
             try {
-                await  axios.put(uriChangeAvatar, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
+                await axios.put(uriChangeAvatar, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
                 Alert.alert('Thông báo', 'Đổi avatar thành công');
-                setUriAvatar('');
+                setUriAvatar(STATE_CHANGE);
                 setShowModalChangeAvatar(false);
             }catch {
                  Alert.alert('Lỗi', 'Đổi avatar thất bại');

@@ -11,6 +11,7 @@ import Footer from "@/app/helpers/ViewHelpers/footer";
 import Loading from "@/app/helpers/ViewHelpers/loading";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import DanhMuc from "@/app/model/DanhMuc";
+import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();
@@ -52,11 +53,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
 
           if (res.data.listSanPhams) {
             const listSanPhamsTuBackEnd: SanPham[] = res.data.listSanPhams;
-
-            for (const sanPham of listSanPhamsTuBackEnd) {
-              sanPham.uriAvatar = await getUriAvatarSanPham(sanPham.sP_Id as string);
-
-            }
             const newListSanPhams = [];
             if (pageNumber > 1) {
               newListSanPhams.push(...listSanPhams, ...listSanPhamsTuBackEnd);
@@ -112,6 +108,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const handleTouchDestroySearch = () => {
       if (textTimKiemSanPham) {
         setTextTimKiemSanPham('');
+        setModeTimKiem(false);
         layCacSanPhamsTuDau();
       }
     }
@@ -123,7 +120,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const renderItem = ({ item } : {item: SanPham}) => (
         <Link href={{pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
           <TouchableOpacity style={styles.card}>
-            <Image source={{ uri: item.uriAvatar as string }} style={styles.image} />
+            <AvatarSanPham sP_Id={item.sP_Id as string} height={80} width={'100%'} marginBottom={8}/>
             <Text style={styles.text}>{item.sP_Ten}</Text>
           </TouchableOpacity>
         </Link>
@@ -141,6 +138,9 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
                 <TouchableOpacity style={styles.touchSearch} onPress={handleTouchSearch}>
                   <IconSymbol name={'search'} color={'white'}/>
                 </TouchableOpacity>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+              {modeTimKiem ? (<Text>Kết quả tìm kiếm với từ khóa: <Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
           </View>
           <FlatList
               data={listSanPhams}

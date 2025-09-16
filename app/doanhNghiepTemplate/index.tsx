@@ -9,9 +9,7 @@ import { url } from "../server/backend";
 import AvatarDoanhNghiep from "./avatarDoanhNghiep";
 import CoverPhotoDoanhNghiep from "./coverPhotoDoanhNghiep";
 import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
-import AppUser from "../model/AppUser";
 import AvatarUser from "../usertemplate/avatarUser";
-import Spacer from "../helpers/ViewHelpers/spacer";
 import Footer from "../helpers/ViewHelpers/footer";
 
 export default function Index() 
@@ -25,24 +23,25 @@ export default function Index()
     
 
     useEffect(() => {
+        layDoanhNghiep();
+    }, []);
+
+    const layDoanhNghiep = async() => {
         const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
 
-        axios.get(urlDoanhNghiep)
-            .then((res) => {
-                if (res.data) {
-                    setDoanhNghiep(res.data as DoanhNghiep);
-                }
-            });
+        const resDN = await axios.get(urlDoanhNghiep);
+        if (resDN.data) {
+            setDoanhNghiep(resDN.data as DoanhNghiep);
+        }
 
         const urlSoSanPhamSoHuu = url(`api/sanpham/doanh-nghiep-so-huu/tong-so/${dN_Id}`);
 
-        axios.get(urlSoSanPhamSoHuu)
-            .then((res) => {
-                if (res.data) {
-                    setSoSanPhamSoHuu(res.data);
-                }
-            })
-    }, []);
+        const resSoSP = await axios.get(urlSoSanPhamSoHuu);
+
+        if (resSoSP.data) {
+            setSoSanPhamSoHuu(resSoSP.data);
+        }
+    }
 
     return (
         <View style={styles.container}>

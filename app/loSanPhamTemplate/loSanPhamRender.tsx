@@ -36,7 +36,7 @@ export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat
             <AnhLoSanPham lsP_Id={loSanPham.lsP_Id as string}/>
             <View style={{height: 10}}></View>
             
-            {sP_Id ? (<View style={{alignItems: 'center'}}>
+            <View style={{alignItems: 'center'}}>
                 <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/suKienTruyXuatTemplate', params: {
                     lsP_Id: loSanPham.lsP_Id,
                     lsP_MaLSP: loSanPham.lsP_MaLSP,
@@ -45,7 +45,7 @@ export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat
                     sP_MaTruyXuat: sP_MaTruyXuat}})}>
                     <Text style={styles.statLabel}>{'Xem sự kiện truy xuất'}</Text>
                 </TouchableOpacity>
-            </View>) : (<View></View>)}
+            </View>
             
             <Spacer  height={10}/>
         </View>

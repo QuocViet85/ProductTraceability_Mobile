@@ -5,17 +5,29 @@ import AvatarUser from "@/app/usertemplate/avatarUser";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { getUserInTemp, setUserToTemp } from "../temp/tempUser";
 
 export default function NguoiPhuTrach({userId} : {userId : string}) {
     const [nguoiPhuTrach, setNguoiPhuTrach] = useState<AppUser>();
 
     useEffect(() => {
-        getUserInfo(userId).then((user) => {
+        layNguoiPhuTrach();
+    }, [])
+
+    const layNguoiPhuTrach = async() => {
+        const userInTemp = getUserInTemp(userId);
+
+        if (!userInTemp) {
+            const user = await getUserInfo(userId);
+
             if (user) {
                 setNguoiPhuTrach(user);
+                setUserToTemp(user);
             }
-        })
-    }, [])
+        }else {
+            setNguoiPhuTrach(userInTemp);
+        }
+    };
 
     return (
         <View>

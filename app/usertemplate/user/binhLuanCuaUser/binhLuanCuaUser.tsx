@@ -6,6 +6,7 @@ import { getFileAsync, getUriAvatarSanPham, getUriFile } from "@/app/helpers/Log
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import AppUser from "@/app/model/AppUser";
 import BinhLuan from "@/app/model/BinhLuan";
+import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
 import AnhBinhLuan from "@/app/sanPhamTemplate/binhLuan/anhBinhLuan";
 import XoaBinhLuan from "@/app/sanPhamTemplate/binhLuan/xoaBinhLuan";
 import { url } from "@/app/server/backend";
@@ -44,12 +45,6 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
             const listBinhLuans = response.data.listBinhLuans;
 
             for (const binhLuan of listBinhLuans) {
-                if (binhLuan.bL_SP) {
-                    try {
-                        binhLuan.bL_SP.sP_UriAvatar = await getUriAvatarSanPham(binhLuan.bL_SP.sP_Id);
-                    }catch {}
-                }
-
                 const urlSoSao = url(`api/sanpham/sao-san-pham-user/${binhLuan.bL_SP_Id}?userId=${userId}`);
 
                 try {
@@ -96,11 +91,11 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                                     {Array.from({length: 5}).map((_, index) => {
                                                         if (index + 1 <= (item.bL_NguoiTao_Client?.soSao as number)) {
                                                             return (
-                                                                <IconSymbol key={index} name="star" size={20} color="#FFD700" />
+                                                                <IconSymbol key={index + key} name="star" size={20} color="#FFD700" />
                                                             )
                                                         }else {
                                                             return (
-                                                                <IconSymbol key={index} name="star" size={20} color="grey" />
+                                                                <IconSymbol key={index + key} name="star" size={20} color="grey" />
                                                             )
                                                         }
                                                     })}
@@ -113,7 +108,7 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                         </View>
                                         <View style={styles.viewSanPham}>
                                                 <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.bL_SP?.sP_MaTruyXuat as string} })}>
-                                                    <Image source={{ uri: item.bL_SP?.sP_UriAvatar }} style={styles.avatarSanPham} />
+                                                    <AvatarSanPham sP_Id={item.bL_SP_Id as string} width={50} height={50} marginBottom={undefined}/>
                                                     <View style={{marginLeft: 10}}>
                                                         <Text style={{fontSize: 17, fontWeight: 'bold'}}>{item.bL_SP?.sP_Ten}</Text>
                                                     </View>

@@ -18,7 +18,11 @@ export default function LoSanPhamCuaSuKienTruyXuat({loSanPham}: {loSanPham: LoSa
                     visible={showModalLoSanPham}
                     animationType="slide"
                     >
-                        <LoSanPhamRender loSanPham={loSanPham} sP_Id={undefined} sP_MaTruyXuat={undefined} sP_Ten={undefined}/>
+                        <LoSanPhamRender 
+                        loSanPham={loSanPham} 
+                        sP_Id={loSanPham.lsP_SP_Id} 
+                        sP_MaTruyXuat={loSanPham.lsP_SP?.sP_MaTruyXuat} 
+                        sP_Ten={loSanPham.lsP_SP?.sP_Ten}/>
                         
                         <View style={{marginTop: 'auto'}}>
                                 <Button title='Đóng' onPress={() => setShowModalLoSanPham(false)}></Button>

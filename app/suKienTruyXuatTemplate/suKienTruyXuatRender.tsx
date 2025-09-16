@@ -1,11 +1,14 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SuKienTruyXuat from "../model/SuKienTruyXuat";
 import { Updating } from "../helpers/ViewHelpers/updating";
 import Spacer from "../helpers/ViewHelpers/spacer";
 import AnhSuKienTruyXuat from "./anhSuKienTruyXuat";
 import LoSanPhamCuaSuKienTruyXuat from "./loSanPhamCuaSuKienTruyXuat";
+import { useRouter } from "expo-router";
+import AvatarSanPham from "../sanPhamTemplate/avatarSanPham";
 
 export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien: SuKienTruyXuat, isNotMainScreen: Function}) {
+    const router = useRouter();
     return (
         <View>
             <View style={{flexDirection: 'row'}}>
@@ -29,7 +32,46 @@ export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien:
                 <LoSanPhamCuaSuKienTruyXuat loSanPham={suKien.sK_LSP}/>
             )}
             <AnhSuKienTruyXuat sK_Id={suKien.sK_Id as string} />
+            {isNotMainScreen() ? (<View></View>) 
+            : (
+                <View>
+                    <Text style={{fontWeight: 'bold'}}>Thuộc sản phẩm: </Text>
+                    <View style={styles.viewSanPham}>
+                        <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: suKien.sK_LSP?.lsP_SP?.sP_MaTruyXuat as string} })}>
+                            <AvatarSanPham sP_Id={suKien.sK_LSP?.lsP_SP_Id as string} width={50} height={50} marginBottom={undefined}/>
+                            <View style={{marginLeft: 10}}>
+                                <Text style={{fontSize: 17, fontWeight: 'bold'}}>{suKien.sK_LSP?.lsP_SP?.sP_Ten}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                
+            )}
             <Spacer height={10}/>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    viewSanPham: {
+        flex: 1, 
+        margin: 5,
+        backgroundColor: '#f2f2f2',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+        padding: 10
+    },
+    touchAvatarSanPham: {
+        width: '100%',
+        height: 40, 
+        borderRadius: 8,
+        alignItems: 'center',
+        flexDirection: 'row'
+    },
+    avatarSanPham: {
+        width: 50,
+        height: 50,
+        borderRadius: 8
+    }
+});

@@ -7,20 +7,51 @@ import getBearerToken from "../helpers/LogicHelper/authHelper";
 import { url } from "../server/backend";
 import axios from "axios";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { STATE_CHANGE } from "../constant/State";
+
+const temp_UriCoverPhotoUser : [{
+    userId: string,
+    uri: string
+} | undefined] = [undefined]
 
 export default function CoverPhotoUser({userId, canChange}: {userId: string, canChange: boolean}) {
     const [uriCoverPhoto, setUriCoverPhoto] = useState<string | null>(null);
     const [showModalChangeCoverPhoto, setShowModalChangeCoverPhoto] = useState<boolean | undefined>(false);
     
         useEffect(() => {
-            getFileAsync(USER, userId, COVER_PHOTO)
-            .then((file: any) => {
-                const uri = getUriFile(file[0]);
+            layUriCoverPhoto();
+        }, [uriCoverPhoto]);
+
+        const layUriCoverPhoto = async() => {
+            const uriCoverPhotoInTemp = temp_UriCoverPhotoUser.find((item) => {
+                return item?.userId === userId
+            });
+
+            if (!uriCoverPhotoInTemp || uriCoverPhoto === STATE_CHANGE) {
+                const listFilesCoverPhoto = await getFileAsync(USER, userId, COVER_PHOTO);
+
+                const uri = getUriFile(listFilesCoverPhoto[0]);
                 if (uri) {
                     setUriCoverPhoto(uri);
+
+                    if (uriCoverPhoto === STATE_CHANGE) {
+                        const indexOldCoverPhotoInTemp = temp_UriCoverPhotoUser.findIndex((item) => {
+                            return item?.userId === userId
+                        });
+                        if (indexOldCoverPhotoInTemp !== - 1) {
+                            temp_UriCoverPhotoUser.splice(indexOldCoverPhotoInTemp, 1);
+                        }
+                    }
+
+                    temp_UriCoverPhotoUser.push({
+                        userId: userId as string,
+                        uri: uri
+                    })
                 }
-            })
-        }, [uriCoverPhoto]);
+            }else {
+                setUriCoverPhoto(uriCoverPhotoInTemp.uri);
+            }
+        }
 
         const setCoverPhoto = async (camera: boolean) => {
             const bearerToken =  await getBearerToken();
@@ -56,7 +87,7 @@ export default function CoverPhotoUser({userId, canChange}: {userId: string, can
                 try {
                     await axios.put(uriDeleteCoverPhoto, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
                     Alert.alert('Thông báo', 'Đổi ảnh bìa thành công');
-                    setUriCoverPhoto('');
+                    setUriCoverPhoto(STATE_CHANGE);
                     setShowModalChangeCoverPhoto(false);
                 }catch {
                     Alert.alert('Lỗi', 'Đổi ảnh bìa thất bại');

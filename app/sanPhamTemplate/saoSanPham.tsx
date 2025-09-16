@@ -9,7 +9,6 @@ export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
 
     const sizeSao = 30;
     
-
     useEffect(() => {
         let urlLaySoSao = url(`api/sanpham/sao-san-pham/${sP_Id}`);
         axios.get(urlLaySoSao).then((res) => {

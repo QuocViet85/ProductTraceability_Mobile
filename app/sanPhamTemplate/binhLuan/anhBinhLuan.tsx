@@ -6,19 +6,39 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { Button, Dimensions, FlatList, Image, Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 
+const temp_ListFilesAnhBinhLuan : [{
+    bL_Id: string,
+    listFilesAnhBinhLuan: File[]
+} | undefined] = [undefined]
+
 const { width } = Dimensions.get('window');
 export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
-    const [listAnhBinhLuan, setListAnhBinhLuan] = useState<File[]>([]);
+    const [listFilesAnhBinhLuan, setListFilesAnhBinhLuan] = useState<File[]>([]);
     const [showModalAnhBinhLuan, setShowModalAnhBinhLuan] = useState<boolean | undefined>(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
 
     useEffect(() => {
-        getFileAsync(BINH_LUAN, bL_Id, IMAGE).then((data) => {
-            if(data) {
-                setListAnhBinhLuan(data);
-            }
-            })
+        layFilesAnhBinhLuan();
     }, [bL_Id]);
+
+    const layFilesAnhBinhLuan = async() => {
+        const listFilesInTemp = temp_ListFilesAnhBinhLuan.find((item) => {
+            return item?.bL_Id === bL_Id;
+        });
+
+        if (!listFilesInTemp) {
+            const listFiles = await getFileAsync(BINH_LUAN, bL_Id, IMAGE);
+            if (listFiles) {
+                setListFilesAnhBinhLuan(listFiles);
+                temp_ListFilesAnhBinhLuan.push({
+                    bL_Id: bL_Id,
+                    listFilesAnhBinhLuan: listFiles
+                })
+            }
+        }else {
+            setListFilesAnhBinhLuan(listFilesInTemp.listFilesAnhBinhLuan);
+        }
+    }
 
     const onScroll = (event: any) => {
         const index = Math.round(event.nativeEvent.contentOffset.x / width);
@@ -28,7 +48,7 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
     return (
         <View>
             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setShowModalAnhBinhLuan(true)}>
-                {listAnhBinhLuan.map((item, key) => {
+                {listFilesAnhBinhLuan.map((item, key) => {
                     if (key <= 2) {
                         return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
                     }else if (key === 3) {
@@ -51,7 +71,7 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
             >
                 <View>
                     <FlatList
-                        data={listAnhBinhLuan}
+                        data={listFilesAnhBinhLuan}
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
@@ -61,7 +81,7 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
                         <View>
                             <Image source={{ uri: getUriFile(item) }} style={styles.image} />
                             <View style={styles.indicatorContainer}>
-                                {listAnhBinhLuan.map((_, i) => (
+                                {listFilesAnhBinhLuan.map((_, i) => (
                                 <View
                                     key={i}
                                     style={[

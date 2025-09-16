@@ -22,21 +22,20 @@ import WebsiteSanPham from "./websiteSanPham";
 import NhaMaySanPham from "./nhaMaySanPham";
 import Footer from "../helpers/ViewHelpers/footer";
 
+const temp_SanPham : SanPham[] = [];
+
 export default function Index() {
     const params = useLocalSearchParams();
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
     const [sanPham, setSanPham] = useState<SanPham | null>(null);
-    const [uriSanPham, setUriSanPham] = useState<string>('');
     const [userLogin, setUserLogin] = useState<AppUser | null>(null);
+
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
+  
     const router = useRouter();
 
     useEffect(() => {
-        axios.get(urlSanPham).then((res: any) => {
-            const sP = res.data;
-            setSanPham(sP);
-            setUriSanPham(urlSanPham);
-        })
+        laySanPham();
 
         getUserLogin().then((userLogin : AppUser | null) => {
           if (userLogin) {
@@ -45,11 +44,30 @@ export default function Index() {
         })
     }, []);
 
+    const laySanPham = async () => {
+      try {
+        const sanPhamInTemp = temp_SanPham.find((sanPham: SanPham) => {
+          return sanPham.sP_MaTruyXuat === sP_MaTruyXuat;
+        });
+
+        if (!sanPhamInTemp) {
+          const res = await axios.get(urlSanPham);
+          if (res.data) {
+            const sP: SanPham = res.data;
+            setSanPham(sP);
+            temp_SanPham.push(sP);
+          }
+        }else {
+          setSanPham(sanPhamInTemp);
+        }
+      }catch {}
+    }
+
     const shareSanPham = async () => {
       try {
         await Share.share({
-          message: uriSanPham,
-          url: uriSanPham,
+          message: urlSanPham,
+          url: urlSanPham,
         });
       }catch {}
     }
