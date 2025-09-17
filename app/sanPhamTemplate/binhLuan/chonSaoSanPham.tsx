@@ -5,14 +5,14 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
-import { temp_SoSaoCuaMotNguoiVoiMotSanPham } from "./binhLuanSanPham";
+import { laySoSaoCuaMotNguoiVoiMotSanPham, temp_SoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 
-export default function ChonSaoSanPham({sP_Id, userId, laySoSaoCuaMotNguoi} : {sP_Id: string, userId: string, laySoSaoCuaMotNguoi: (sP_Id: string, userId: string) => Promise<number>}) {
+export default function ChonSaoSanPham({sP_Id, userId} : {sP_Id: string, userId: string}) {
     const [showModalChonSao, setShowModalChonSao] = useState<boolean | undefined>(false);
     const [soSaoChon, setSoSaoChon] = useState<number>(0);
 
     useEffect(() => {
-        laySoSaoCuaMotNguoi(sP_Id, userId).then((soSao) => {
+        laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, userId).then((soSao) => {
             setSoSaoChon(soSao)
         })
     }, []);

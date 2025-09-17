@@ -4,11 +4,12 @@ import { getUriAvatarDoanhNghiep } from "../helpers/LogicHelper/fileHelper";
 
 const temp_UriAvatarDoanhNghiep : {
     dN_Id: string,
-    uri: string
-}[] = []
+    uri: string | undefined
+}[] = [];
+
 
 export default function AvatarDoanhNghiep({dN_Id, width, height}: {dN_Id: string, width: number, height: number}) {
-    const [uri, setUri] = useState<string | null>(null);
+    const [uri, setUri] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         layAvatarDoanhNghiep();
@@ -21,14 +22,11 @@ export default function AvatarDoanhNghiep({dN_Id, width, height}: {dN_Id: string
 
         if (!uriAvatarInTemp) {
             const uri = await getUriAvatarDoanhNghiep(dN_Id);
-
-            if(uri) {
-                setUri(uri);
-                temp_UriAvatarDoanhNghiep.push({
-                    dN_Id: dN_Id,
-                    uri: uri
-                });
-            }
+            setUri(uri);
+            temp_UriAvatarDoanhNghiep.push({
+                dN_Id: dN_Id,
+                uri: uri
+            });
         }else {
             setUri(uriAvatarInTemp.uri);
         }

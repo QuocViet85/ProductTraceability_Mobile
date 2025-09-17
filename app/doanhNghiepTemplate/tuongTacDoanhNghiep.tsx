@@ -7,40 +7,64 @@ import { TouchableOpacity } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { makePhoneCall } from "../helpers/LogicHelper/helper";
 
+export const temp_ThongTinTheoDoiDoanhNghiep : ThongTinTheoDoiDoanhNghiepTrongTemp[] = [];
+
+type ThongTinTheoDoiDoanhNghiepTrongTemp = {
+    dangTheoDoi: boolean, //có được theo dõi bởi user đang Login hay không
+    soTheoDoi: number,
+    dN_Id: string,
+}
+
 export default function TuongTacDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_Id: string, dN_SoDienThoai: string | undefined}) {
     const [dangTheoDoi, setDangTheoDoi] = useState<boolean | undefined>(false);
     const [soTheoDoi, setSoTheoDoi] = useState<number>(0);
 
     useEffect(() => {
-        setTheoDoi();
-        laySoTheoDoi();
+        layTheoDoi();
     }, [])
 
-    const setTheoDoi = async() => {
-        const urlKiemTraDangTheoDoi = url(`api/doanhnghiep/kiem-tra-theo-doi/${dN_Id}`);
-        const bearerToken = await getBearerToken();
+    const layTheoDoi = async() => {
+        try {
+            const thongTinTheoDoiDoanhNghiepTrongTemp = temp_ThongTinTheoDoiDoanhNghiep.find((item) => {
+                return item.dN_Id === dN_Id;
+            });
 
-        if (!bearerToken) {
-            setDangTheoDoi(false)
-        }
+            if (!thongTinTheoDoiDoanhNghiepTrongTemp) {
+                //lấy số theo dõi của doanh nghiệp
+                const urlSoTheoDoi = url(`api/doanhnghiep/so-luong-theo-doi/${dN_Id}`);
+                const resSoTheoDoi = await axios.get(urlSoTheoDoi);
+                setSoTheoDoi(resSoTheoDoi.data);
 
-        const response = await axios.get(urlKiemTraDangTheoDoi, {
-            headers: {
-                Authorization: bearerToken
+                const thongTinTheoDoiDoanhNghiepPushTemp = {
+                    dangTheoDoi: false,
+                    soTheoDoi: resSoTheoDoi.data,
+                    dN_Id: dN_Id
+                }
+
+                //lấy trạng thái theo dõi doanh nghiệp của user đang login
+                const urlKiemTraDangTheoDoi = url(`api/doanhnghiep/kiem-tra-theo-doi/${dN_Id}`);
+                const bearerToken = await getBearerToken();
+
+                if (!bearerToken) {
+                    setDangTheoDoi(false)
+                }else {
+                    const resDangTheoDoi = await axios.get(urlKiemTraDangTheoDoi, {
+                        headers: {
+                            Authorization: bearerToken
+                        }
+                    });
+                    setDangTheoDoi(resDangTheoDoi.data);
+                    thongTinTheoDoiDoanhNghiepPushTemp.dangTheoDoi = resDangTheoDoi.data;
+                }
+                //push temp
+                temp_ThongTinTheoDoiDoanhNghiep.push(thongTinTheoDoiDoanhNghiepPushTemp);
+            }else {
+                setSoTheoDoi(thongTinTheoDoiDoanhNghiepTrongTemp.soTheoDoi);
+                setDangTheoDoi(thongTinTheoDoiDoanhNghiepTrongTemp.dangTheoDoi);
             }
-        });
-        setDangTheoDoi(response.data);
+            
+        }catch {}
     }
-
-    const laySoTheoDoi = () => {
-            const urlSoTheoDoi = url(`api/doanhnghiep/so-luong-theo-doi/${dN_Id}`);
-            axios.get(urlSoTheoDoi)
-                .then((res) => {
-                    if (res.data) {
-                        setSoTheoDoi(res.data);
-                    }
-                })
-            }
 
     const theoDoiHoacHuyTheoDoi = async() => {
         const urlTheoDoi = url(`api/doanhnghiep/theo-doi/${dN_Id}`);
@@ -54,8 +78,20 @@ export default function TuongTacDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_Id: str
                 Authorization: bearerToken
             }
         });
-        setTheoDoi();
-        laySoTheoDoi();
+        const thongTinTheoDoiDoanhNghiepTrongTemp = temp_ThongTinTheoDoiDoanhNghiep.find((item) => {
+            return item.dN_Id === dN_Id;
+        });
+
+        if (thongTinTheoDoiDoanhNghiepTrongTemp) {
+            thongTinTheoDoiDoanhNghiepTrongTemp.dangTheoDoi = !thongTinTheoDoiDoanhNghiepTrongTemp.dangTheoDoi;
+
+            if (thongTinTheoDoiDoanhNghiepTrongTemp.dangTheoDoi) {
+                thongTinTheoDoiDoanhNghiepTrongTemp.soTheoDoi += 1;
+            }else {
+                thongTinTheoDoiDoanhNghiepTrongTemp.soTheoDoi -= 1;
+            }
+        }
+        layTheoDoi();
     }
 
     return (

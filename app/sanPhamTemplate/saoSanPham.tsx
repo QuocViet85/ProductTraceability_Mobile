@@ -7,7 +7,7 @@ import { Text, View } from "react-native";
 const temp_SaoSanPham : {sP_Id: string, soSao: number}[] = [];
 
 export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
-    const [soSao, setSoSao] = useState<any>(0);
+    const [soSao, setSoSao] = useState<number>(0);
 
     const sizeSao = 30;
     
@@ -23,14 +23,12 @@ export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
         if (!soSaoInTemp) {
             const urlLaySoSao = url(`api/sanpham/sao-san-pham/${sP_Id}`);
             const res = await axios.get(urlLaySoSao);
-            if (res.data) {
-                const soSao = res.data;
-                setSoSao(soSao);
-                temp_SaoSanPham.push({
-                    sP_Id: sP_Id,
-                    soSao: soSao
-                });
-            }
+            const soSao = res.data;
+            setSoSao(soSao);
+            temp_SaoSanPham.push({
+                sP_Id: sP_Id,
+                soSao: soSao
+            });
         }else {
             setSoSao(soSaoInTemp.soSao);
         }

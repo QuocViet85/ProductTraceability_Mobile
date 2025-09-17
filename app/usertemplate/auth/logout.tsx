@@ -1,28 +1,34 @@
 import { deleteToken } from "@/app/helpers/LogicHelper/authHelper";
 import { useState } from "react";
 import { Button, Modal, View } from "react-native";
+import { temp_ThongTinTheoDoiUser } from "../user/tuongTacUser";
+import { temp_ThongTinTheoDoiDoanhNghiep } from "@/app/doanhNghiepTemplate/tuongTacDoanhNghiep";
 
 export default function Logout({setUserLogin} : {setUserLogin : any}) {
     const [modalLogout, setModalLogout] = useState<boolean | undefined>(false);
 
-    const logoutThisDevice = () => {
-        deleteToken(false).then(() => {
-            setUserLogin(null);
-            setModalLogout(false)
-        });
+    const logoutThisDevice = async () => {
+        await deleteToken(false);
+        setUserLogin(null);
+        setModalLogout(false);
+        deleteRelatedTempData();
     }
 
-    const logoutAllDevices = () => {
-        deleteToken(true).then(() => {
-            setUserLogin(null);
-            setModalLogout(false);
-        })
+    const logoutAllDevices = async () => {
+        await deleteToken(true);
+        setUserLogin(null);
+        setModalLogout(false);
+        deleteRelatedTempData();
+    }
+
+    const deleteRelatedTempData = () => {
+        temp_ThongTinTheoDoiUser.length = 0;
+        temp_ThongTinTheoDoiDoanhNghiep.length = 0;
     }
 
     return (
         <View>
             <Button title="Đăng xuất" color={'red'} onPress={() => setModalLogout(true)}/>
-
             <Modal
             visible={modalLogout}
             animationType='slide'

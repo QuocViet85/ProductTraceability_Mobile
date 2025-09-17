@@ -10,8 +10,9 @@ import { url } from "../server/backend";
 import LoSanPhamRender from "./loSanPhamRender";
 import Footer from "../helpers/ViewHelpers/footer";
 import Loading from "../helpers/ViewHelpers/loading";
+import { paginate } from "../helpers/LogicHelper/helper";
 
-const temp_ListLoSanPham : LoSanPham[] = [];
+const temp_ListLoSanPhams : {tongSo: number, listLoSanPhams: LoSanPham[]} = {tongSo: 0, listLoSanPhams: []};
 
 export default function DanhSachLoSanPham() {
     const params = useLocalSearchParams();
@@ -33,39 +34,46 @@ export default function DanhSachLoSanPham() {
     const layListLoSanPham = async() => {
         setLoading(true);
 
-        const listLoSanPhamsInTemp = temp_ListLoSanPham.filter((item) => {
+        const listLoSanPhamsTrongTemp = temp_ListLoSanPhams.listLoSanPhams.filter((item) => {
             return item.lsP_SP_Id === sP_Id;
         });
 
+        const listLoSanPhamsTrongTempCanLay = paginate(listLoSanPhamsTrongTemp, pageNumber, LIMIT_LO_SANPHAM) as LoSanPham[];
+
         const newListLoSanPhams = [];
 
-        if (listLoSanPhamsInTemp.length > 0) {
-            newListLoSanPhams.push(...listLoSanPhamsInTemp);
+        if (listLoSanPhamsTrongTempCanLay.length < 1) {
+            const urlLoSanPham = url(`api/losanpham/san-pham/${sP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_LO_SANPHAM}`);
+
+            try {
+                const res = await axios.get(urlLoSanPham);
+                if (res.data.tongSo) {
+                    setTongSoLoSanPham(res.data.tongSo);
+                    temp_ListLoSanPhams.tongSo = res.data.tongSo;
+                }   
+
+                if (res.data.listLoSanPhams) {
+                    const listLoSanPhamsTuBackEnd = res.data.listLoSanPhams;
+
+                    if (pageNumber > 1) {
+                        newListLoSanPhams.push(...listLoSanPhams, ...listLoSanPhamsTuBackEnd);
+                    }else {
+                        newListLoSanPhams.push(...listLoSanPhamsTuBackEnd);
+                    }
+                    setListLoSanPhams(newListLoSanPhams);
+                    temp_ListLoSanPhams.listLoSanPhams.push(...listLoSanPhamsTuBackEnd);
+                    }
+            }catch {}
+        }else {
+            if (pageNumber > 1) {
+                newListLoSanPhams.push(...listLoSanPhams, ...listLoSanPhamsTrongTempCanLay);
+            }else {
+                newListLoSanPhams.push(...listLoSanPhamsTrongTempCanLay);
+            }
+            setListLoSanPhams(newListLoSanPhams);
+            setTongSoLoSanPham(temp_ListLoSanPhams.tongSo);
         }
-
-
-
-        const urlLoSanPham = url(`api/losanpham/san-pham/${sP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_LO_SANPHAM}`);
-
-        try {
-            const res = await axios.get(urlLoSanPham);
-            if (res.data.tongSo) {
-                setTongSoLoSanPham(res.data.tongSo);
-            }
-
-            if (res.data.listLoSanPhams) {
-                const listLoSanPhamsTuBackEnd = res.data.listLoSanPhams;
-
-                if (pageNumber > 1) {
-                    newListLoSanPhams.push(...listLoSanPhams, ...listLoSanPhamsTuBackEnd);
-                }else {
-                    newListLoSanPhams.push(...listLoSanPhamsTuBackEnd);
-                }
-                setListLoSanPhams(newListLoSanPhams);
-                temp_ListLoSanPham.push(...newListLoSanPhams);
-            }
-            setLoading(false);
-        }catch {}
+        setLoading(false);
     }
 
     const handleLoadMore = () => {
@@ -80,7 +88,7 @@ export default function DanhSachLoSanPham() {
             <Header title={'Lô sản phẩm'} fontSize={20} resource={sP_Ten}/>
             <FlatList
                 data={listLoSanPhams}
-                keyExtractor={(item: LoSanPham) => item.lsP_Id as string}
+                keyExtractor={(item: LoSanPham, index) => `${item.lsP_Id}-${index}`}
                 renderItem={({item}: {item: LoSanPham}) => {
                     return (
                         <LoSanPhamRender loSanPham={item} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} />

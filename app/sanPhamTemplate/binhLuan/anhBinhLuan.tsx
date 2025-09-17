@@ -11,6 +11,7 @@ const temp_ListFilesAnhBinhLuan : {
     listFilesAnhBinhLuan: File[]
 }[] = []
 
+
 const { width } = Dimensions.get('window');
 export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
     const [listFilesAnhBinhLuan, setListFilesAnhBinhLuan] = useState<File[]>([]);
@@ -23,18 +24,16 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
 
     const layFilesAnhBinhLuan = async() => {
         const listFilesInTemp = temp_ListFilesAnhBinhLuan.find((item) => {
-            return item?.bL_Id === bL_Id;
+            return item.bL_Id === bL_Id;
         });
 
         if (!listFilesInTemp) {
             const listFiles = await getFileAsync(BINH_LUAN, bL_Id, IMAGE);
-            if (listFiles) {
-                setListFilesAnhBinhLuan(listFiles);
-                temp_ListFilesAnhBinhLuan.push({
-                    bL_Id: bL_Id,
-                    listFilesAnhBinhLuan: listFiles
-                })
-            }
+            setListFilesAnhBinhLuan(listFiles);
+            temp_ListFilesAnhBinhLuan.push({
+                bL_Id: bL_Id,
+                listFilesAnhBinhLuan: listFiles
+            })
         }else {
             setListFilesAnhBinhLuan(listFilesInTemp.listFilesAnhBinhLuan);
         }

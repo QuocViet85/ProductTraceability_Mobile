@@ -7,6 +7,8 @@ import { Button, Dimensions, FlatList, Image, Modal, StyleSheet, Text, Touchable
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Updating } from "../helpers/ViewHelpers/updating";
 
+const temp_ListAnhLoSanPhams: {lsP_Id: string | undefined, listAnhLoSanPhams: File[]}[] = [];
+
 const { width } = Dimensions.get('window');
 export default function AnhLoSanPham({lsP_Id}: {lsP_Id: string}) {
     const [listFileAnhLoSanPhams, setListFileAnhLoSanPhams] = useState<File[]>([]);
@@ -18,11 +20,21 @@ export default function AnhLoSanPham({lsP_Id}: {lsP_Id: string}) {
     }, []);
 
     const layListFileAnhLoSanPham = async() => {
-        const listFileAnhLoSanPhams = await getFileAsync(LO_SAN_PHAM, lsP_Id, IMAGE);
+        const listFilesInTemp = temp_ListAnhLoSanPhams.find((item) => {
+                return item.lsP_Id === lsP_Id;
+        });
 
-        if (listFileAnhLoSanPhams.length > 0) {
+        if (!listFilesInTemp) {
+            const listFileAnhLoSanPhams = await getFileAsync(LO_SAN_PHAM, lsP_Id, IMAGE);
             setListFileAnhLoSanPhams(listFileAnhLoSanPhams);
+            temp_ListAnhLoSanPhams.push({
+                lsP_Id: lsP_Id,
+                listAnhLoSanPhams: listFileAnhLoSanPhams,
+            })
+        }else {
+            setListFileAnhLoSanPhams(listFilesInTemp.listAnhLoSanPhams);
         }
+        
     }
 
     const onScroll = (event: any) => {

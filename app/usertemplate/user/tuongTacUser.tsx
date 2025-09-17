@@ -1,4 +1,4 @@
-import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken, { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
@@ -6,40 +6,65 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Button, View } from "react-native";
 
+export const temp_ThongTinTheoDoiUser : ThongTinTheoDoiUserTrongTemp[] = [];
+
+type ThongTinTheoDoiUserTrongTemp = {
+    dangTheoDoi: boolean, //có được theo dõi bởi user đang Login hay không
+    soTheoDoi: number,
+    userId: string,
+}
+
 export default function TuongTacUser({userId}: {userId: string}) {
-    const [dangTheoDoi, setDangTheoDoi] = useState<boolean | undefined>(false);
+    const [dangTheoDoi, setDangTheoDoi] = useState<boolean>(false);
     const [soTheoDoi, setSoTheoDoi] = useState<number>(0);
 
     useEffect(() => {
-            setTheoDoi();
-            laySoTheoDoi();
+            layTheoDoi();
         }, []);
 
-    const setTheoDoi = async() => {
-        const urlKiemTraDangTheoDoi = url(`api/auth/kiem-tra-theo-doi/${userId}`);
-        const bearerToken = await getBearerToken();
+    const layTheoDoi = async() => {
+        try {
+            const thongTinTheoDoiUserTrongTemp = temp_ThongTinTheoDoiUser.find((item) => {
+                return item.userId === userId;
+            });
 
-        if (!bearerToken) {
-            setDangTheoDoi(false)
-        }
+            if (!thongTinTheoDoiUserTrongTemp) {
+                //Lấy số người theo dõi user hiện tại
+                const urlSoTheoDoi = url(`api/auth/so-luong-theo-doi/${userId}`);
+                const resSoTheoDoi = await axios.get(urlSoTheoDoi);
+                setSoTheoDoi(resSoTheoDoi.data);
 
-        const response = await axios.get(urlKiemTraDangTheoDoi, {
-            headers: {
-                Authorization: bearerToken
-            }
-        });
-        setDangTheoDoi(response.data);
-    }
+                const thongTinTheoDoiUserPushTemp : ThongTinTheoDoiUserTrongTemp = {
+                    dangTheoDoi: false,
+                    soTheoDoi: resSoTheoDoi.data,
+                    userId: userId
+                }
 
-    const laySoTheoDoi = () => {
-            const urlSoTheoDoi = url(`api/auth/so-luong-theo-doi/${userId}`);
-            axios.get(urlSoTheoDoi)
-                .then((res) => {
-                    if (res.data) {
-                        setSoTheoDoi(res.data);
+                //Lấy trạng thái theo dõi user hiện tại của user login
+                const urlKiemTraDangTheoDoi = url(`api/auth/kiem-tra-theo-doi/${userId}`);
+                const bearerToken = await getBearerToken();
+
+                if (!bearerToken) {
+                    setDangTheoDoi(false)
+                }else {
+                    const resDangTheoDoi = await axios.get(urlKiemTraDangTheoDoi, {
+                    headers: {
+                        Authorization: bearerToken
                     }
-                })
+                    });
+                    setDangTheoDoi(resDangTheoDoi.data);
+                    thongTinTheoDoiUserPushTemp.dangTheoDoi = resDangTheoDoi.data;
+                }
+
+                //push temp
+
+                temp_ThongTinTheoDoiUser.push(thongTinTheoDoiUserPushTemp);
+            }else {
+                setSoTheoDoi(thongTinTheoDoiUserTrongTemp.soTheoDoi);
+                setDangTheoDoi(thongTinTheoDoiUserTrongTemp.dangTheoDoi);
             }
+        }catch {}
+    }
 
     const theoDoiHoacHuyTheoDoi = async () => {
       const urlTheoDoi = url(`api/auth/theo-doi/${userId}`);
@@ -53,9 +78,23 @@ export default function TuongTacUser({userId}: {userId: string}) {
                 Authorization: bearerToken
             }
         });
-        setTheoDoi();
-        laySoTheoDoi();
+
+        const thongTinTheoDoiUserTrongTemp = temp_ThongTinTheoDoiUser.find((item) => {
+            return item.userId === userId;
+        });
+
+        if (thongTinTheoDoiUserTrongTemp) {
+            thongTinTheoDoiUserTrongTemp.dangTheoDoi = !thongTinTheoDoiUserTrongTemp.dangTheoDoi;
+
+            if (thongTinTheoDoiUserTrongTemp.dangTheoDoi) {
+                thongTinTheoDoiUserTrongTemp.soTheoDoi += 1;
+            }else {
+                thongTinTheoDoiUserTrongTemp.soTheoDoi -= 1;
+            }
+        }
+        layTheoDoi();
     }
+
     return (
         <View>
             <View style={styles.actionRow}>

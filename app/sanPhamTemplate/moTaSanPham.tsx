@@ -24,9 +24,8 @@ export default function MoTaSanPham({moTa} : {moTa: string}) {
                     <Modal
                         visible={showModalMoTa}
                         animationType='slide'
-                        presentationStyle='fullScreen'
                         >
-                            <ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
+                            <ScrollView>
                                 <Text style={{fontSize: 20}}>
                                     {moTa}
                                 </Text>

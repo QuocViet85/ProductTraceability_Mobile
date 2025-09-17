@@ -11,11 +11,11 @@ import { STATE_CHANGE } from "../constant/State";
 
 const temp_UriCoverPhotoUser : {
     userId: string,
-    uri: string
+    uri: string | undefined
 }[] = []
 
 export default function CoverPhotoUser({userId, height, canChange}: {userId: string, height: DimensionValue | undefined ,canChange: boolean}) {
-    const [uriCoverPhoto, setUriCoverPhoto] = useState<string | null>(null);
+    const [uriCoverPhoto, setUriCoverPhoto] = useState<string | undefined>(undefined);
     const [showModalChangeCoverPhoto, setShowModalChangeCoverPhoto] = useState<boolean | undefined>(false);
     
         useEffect(() => {
@@ -30,28 +30,24 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
             if (!uriCoverPhotoInTemp || uriCoverPhoto === STATE_CHANGE) {
                 const listFilesCoverPhoto = await getFileAsync(USER, userId, COVER_PHOTO);
 
-                    if (listFilesCoverPhoto.length > 0) {
-                        const uri = getUriFile(listFilesCoverPhoto[0]);
-                    if (uri) {
-                        setUriCoverPhoto(uri);
+                if (listFilesCoverPhoto.length > 0) {
+                    const uri = getUriFile(listFilesCoverPhoto[0]);
 
-                        if (uriCoverPhoto === STATE_CHANGE) {
-                            const indexOldCoverPhotoInTemp = temp_UriCoverPhotoUser.findIndex((item) => {
-                                return item.userId === userId
-                            });
-                            if (indexOldCoverPhotoInTemp !== - 1) {
-                                temp_UriCoverPhotoUser.splice(indexOldCoverPhotoInTemp, 1);
-                            }
+                    setUriCoverPhoto(uri);
+
+                    if (uriCoverPhoto === STATE_CHANGE) {
+                        const indexOldCoverPhotoInTemp = temp_UriCoverPhotoUser.findIndex((item) => {
+                            return item.userId === userId
+                        });
+                        if (indexOldCoverPhotoInTemp !== - 1) {
+                            temp_UriCoverPhotoUser.splice(indexOldCoverPhotoInTemp, 1);
                         }
-
-                        temp_UriCoverPhotoUser.push({
-                            userId: userId as string,
-                            uri: uri
-                        })
                     }
+                    temp_UriCoverPhotoUser.push({
+                        userId: userId as string,
+                        uri: uri
+                    });
                 }
-
-                
             }else {
                 setUriCoverPhoto(uriCoverPhotoInTemp.uri);
             }
@@ -110,7 +106,7 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
                 const uriDeleteCoverPhoto = url('api/auth/cover-photo');
                 await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
                 Alert.alert('Thông báo', 'Xóa ảnh bìa thành công');
-                setUriCoverPhoto(null);
+                setUriCoverPhoto(undefined);
                 setShowModalChangeCoverPhoto(false);
             }catch {
                 Alert.alert('Lỗi', 'Đổi ảnh bìa thất bại');

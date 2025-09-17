@@ -9,6 +9,8 @@ import { IMAGE } from "../constant/KieuFile";
 import { SK_TRUY_XUAT } from "../constant/KieuTaiNguyen";
 import File from "../model/File";
 
+const temp_ListFileAnhSuKiens : {sK_Id: string, listFileAnhSuKiens: File[]}[] = [];
+
 const { width } = Dimensions.get('window');
 export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
     const [listFileAnhSuKiens, setListFileAnhSuKiens] = useState<File[]>([]);
@@ -20,10 +22,19 @@ export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
     }, []);
 
     const layListFileAnhSuKien = async() => {
-        const listFileAnhSuKiens = await getFileAsync(SK_TRUY_XUAT, sK_Id, IMAGE);
+        const listFilesInTemp = temp_ListFileAnhSuKiens.find((item) => {
+            return item.sK_Id === sK_Id;
+        });
 
-        if (listFileAnhSuKiens.length > 0) {
+        if (!listFilesInTemp) {
+            const listFileAnhSuKiens = await getFileAsync(SK_TRUY_XUAT, sK_Id, IMAGE);
             setListFileAnhSuKiens(listFileAnhSuKiens);
+            temp_ListFileAnhSuKiens.push({
+                sK_Id: sK_Id,
+                listFileAnhSuKiens: listFileAnhSuKiens
+            })
+        }else {
+            setListFileAnhSuKiens(listFilesInTemp.listFileAnhSuKiens);
         }
     }
 

@@ -6,11 +6,11 @@ import { COVER_PHOTO } from "../constant/KieuFile";
 
 const temp_UriCoverPhotoDoanhNghiep : {
     dN_Id: string,
-    uri: string
-}[] = []
+    uri: string | undefined
+}[] = [];
 
 export default function CoverPhotoDoanhNghiep({dN_Id, height}:{dN_Id: string, height: DimensionValue | undefined}) {
-    const [uriCoverPhoto, setUriCoverPhoto] = useState<string | null>(null);
+    const [uriCoverPhoto, setUriCoverPhoto] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         layUriCoverPhoto();
@@ -26,13 +26,11 @@ export default function CoverPhotoDoanhNghiep({dN_Id, height}:{dN_Id: string, he
 
                 if (listFilesCoverPhoto.length > 0) {
                     const uri = getUriFile(listFilesCoverPhoto[0]);
-                    if (uri) {
-                        setUriCoverPhoto(uri);
-                        temp_UriCoverPhotoDoanhNghiep.push({
-                            dN_Id: dN_Id as string,
-                            uri: uri
-                        })
-                    }
+                    setUriCoverPhoto(uri);
+                    temp_UriCoverPhotoDoanhNghiep.push({
+                        dN_Id: dN_Id as string,
+                        uri: uri
+                    })
                 }
             }else {
                 setUriCoverPhoto(uriCoverPhotoInTemp.uri);

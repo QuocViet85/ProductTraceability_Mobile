@@ -15,8 +15,10 @@ import PostBinhLuan from "./postBinhLuan";
 import { useRouter } from "expo-router";
 import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
 import BinhLuan from "@/app/model/BinhLuan";
+import { paginate } from "@/app/helpers/LogicHelper/helper";
+import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 
-export const temp_SoSaoCuaMotNguoiVoiMotSanPham : {sP_Id: string, userId: string, soSao: number}[] = [];
+const temp_ListBinhLuans: BinhLuan[] = [];
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -27,58 +29,57 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
 
     const tongSoTrang : number = Math.ceil(tongSoBinhLuan / LIMIT_BINHLUAN);
 
-    const layCacBinhLuans = async () => {
-        try {
-            const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
-            const response = await axios.get(urlBinhLuan);
-
-            if (response.data.listBinhLuans) {
-                let listBinhLuans = response.data.listBinhLuans;
-
-                for (const binhLuan of listBinhLuans) {
-                    try {
-                        const soSao = await laySoSaoCuaMotNguoi(sP_Id, binhLuan.bL_NguoiTao_Client.id);
-                        binhLuan.bL_NguoiTao_Client.soSao = soSao;
-                    }catch {}
-                }
-                setListBinhLuans(listBinhLuans);
-            }
-            setTongSoBinhLuan(response.data.tongSo);
-            
-        }catch {}
-    }
-    
-    const laySoSaoCuaMotNguoi = async (sP_Id : string, userId : string, reload: boolean = false) : Promise<number> => {
-        const soSaoInTemp = temp_SoSaoCuaMotNguoiVoiMotSanPham.find((item) => {
-            return item.sP_Id === sP_Id && item.userId === userId;
-        });
-
-        if (!soSaoInTemp) {
-            const urlSoSao = url(`api/sanpham/sao-san-pham-user/${sP_Id}?userId=${userId}`);
-
-            try {
-                let soSao = (await axios.get(urlSoSao)).data;
-
-                if (soSao) {
-                    temp_SoSaoCuaMotNguoiVoiMotSanPham.push({
-                        sP_Id: sP_Id,
-                        userId: userId,
-                        soSao: soSao
-                    });
-                    return soSao;
-                }
-                return 0;
-            }catch {
-                return 0;
-            }
-        }else {
-            return soSaoInTemp.soSao;
-        }
-    }
-
     useEffect(() => {
         layCacBinhLuans();
     }, [pageNumber, soSaoBinhLuan])
+
+    const layCacBinhLuans = async () => {
+        const listBinhLuansCuaSPTrongTemp = temp_ListBinhLuans.filter((item) => {
+            return item.bL_SP_Id === sP_Id;
+        }); 
+
+        const listBinhLuansCuaSPTrongTempCanLay = paginate(listBinhLuansCuaSPTrongTemp, pageNumber, LIMIT_BINHLUAN);
+
+        if (listBinhLuansCuaSPTrongTempCanLay.length < 1) {
+            try {
+                const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
+                const response = await axios.get(urlBinhLuan);
+
+                if (response.data.listBinhLuans) {
+                    const listBinhLuans : BinhLuan[] = response.data.listBinhLuans;
+
+                    for (const binhLuan of listBinhLuans) {
+                        if (response.data.tongSo) {
+                            binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
+                        }
+                        try {
+                            if (binhLuan.bL_NguoiTao_Client) {
+                                const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
+                                binhLuan.bL_NguoiTao_Client.soSao = soSao;
+                            }
+                        }catch {}
+                    }
+                    setListBinhLuans(listBinhLuans);
+                    temp_ListBinhLuans.push(...listBinhLuans);
+                }
+
+                if (response.data.tongSo) {
+                    setTongSoBinhLuan(response.data.tongSo);
+                }
+            }catch {}
+        }else {
+            for (const binhLuan of listBinhLuansCuaSPTrongTempCanLay) {
+                try {
+                    if (binhLuan.bL_NguoiTao_Client) {
+                        const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
+                        binhLuan.bL_NguoiTao_Client.soSao = soSao;
+                    }
+                }catch {}
+            }
+            setListBinhLuans(listBinhLuansCuaSPTrongTempCanLay);
+            setTongSoBinhLuan(listBinhLuansCuaSPTrongTemp[0].temp_tongSoBinhLuanCuaSP);
+        }
+    }
 
     const backPage = () => {
         if (pageNumber > 1) {
@@ -165,7 +166,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
             {userLogin ? (
                 <View>
                     <View style={{height: 10}}></View>
-                    <ChonSaoSanPham sP_Id={sP_Id} userId={userLogin.id as string} laySoSaoCuaMotNguoi={laySoSaoCuaMotNguoi}/>
+                    <ChonSaoSanPham sP_Id={sP_Id} userId={userLogin.id as string} />
                     <View style={{height: 10}}></View>
                     <PostBinhLuan sP_Id={sP_Id} layCacBinhLuans={layCacBinhLuans}/>
                 </View>

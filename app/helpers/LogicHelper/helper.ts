@@ -62,7 +62,7 @@ export async function openWebsite(url: string) {
 }
 
 export function paginate(resource: any[], pageNumber: number, limit: number) : any[] {
-  const start = (pageNumber - 1) * limit + 1;
-  const end = start + limit - 1;
+  const start = (pageNumber - 1) * limit;
+  const end = start + limit;
   return resource.slice(start, end);
 }

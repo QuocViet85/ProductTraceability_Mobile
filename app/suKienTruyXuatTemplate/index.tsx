@@ -33,13 +33,11 @@ export default function DanhSachSuKienTruyXuat() {
         setLoading(true);
         let urlSuKien = url('api/sukientruyxuat');
 
-        if (lsP_Id) {
+        if (isNotMainScreen()) {
             urlSuKien +=`/lo-san-pham/${lsP_Id}`;
         }
 
         urlSuKien += `?pageNumber=${pageNumber}&limit=${LIMIT_SU_KIEN_TRUY_XUAT}`;
-
-        console.log(urlSuKien)
 
         try {
             const res = await axios.get(urlSuKien);

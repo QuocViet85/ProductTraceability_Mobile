@@ -6,6 +6,7 @@ import AnhSuKienTruyXuat from "./anhSuKienTruyXuat";
 import LoSanPhamCuaSuKienTruyXuat from "./loSanPhamCuaSuKienTruyXuat";
 import { useRouter } from "expo-router";
 import AvatarSanPham from "../sanPhamTemplate/avatarSanPham";
+import MoTaSuKienTruyXuat from "./moTaSuKienTruyXuat";
 
 export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien: SuKienTruyXuat, isNotMainScreen: Function}) {
     const router = useRouter();
@@ -27,6 +28,7 @@ export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien:
                 <Text style={{fontWeight: 'bold'}}>Ngày thực hiện: </Text>
                 {suKien.sK_ThoiGian ? (<Text>{suKien.sK_ThoiGian.toLocaleString()}</Text>) : (<Updating />)}
             </View>
+            <MoTaSuKienTruyXuat moTa={suKien.sK_MoTa}/>
             {isNotMainScreen() ? (<View></View>) 
             : (
                 <LoSanPhamCuaSuKienTruyXuat loSanPham={suKien.sK_LSP}/>

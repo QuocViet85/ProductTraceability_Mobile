@@ -4,8 +4,9 @@ import { DimensionValue, Image } from "react-native";
 
 const temp_AvatarSanPham : {
     sP_Id: string,
-    uriAvatar: string
+    uriAvatar: string | undefined
 }[] = [];
+
 
 export default function AvatarSanPham({sP_Id, width, height, marginBottom}: {sP_Id: string, width: DimensionValue | undefined, height: DimensionValue | undefined, marginBottom: DimensionValue | undefined}) {
     const [uriAvatar, setUriAvatar] = useState<string | undefined>(undefined);
@@ -21,13 +22,11 @@ export default function AvatarSanPham({sP_Id, width, height, marginBottom}: {sP_
 
         if (!uriInTemp) {
             const uri = await getUriAvatarSanPham(sP_Id);
-            if (uri) {
-                setUriAvatar(uri);
-                temp_AvatarSanPham.push({
-                    sP_Id: sP_Id,
-                    uriAvatar: uri
-                })
-            }
+            setUriAvatar(uri);
+            temp_AvatarSanPham.push({
+                sP_Id: sP_Id,
+                uriAvatar: uri
+            })
         }else {
             setUriAvatar(uriInTemp.uriAvatar);
         }

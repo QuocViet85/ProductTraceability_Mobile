@@ -3,6 +3,7 @@ import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
 import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
 import { getFileAsync, getUriAvatarSanPham, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { paginate } from "@/app/helpers/LogicHelper/helper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import AppUser from "@/app/model/AppUser";
 import BinhLuan from "@/app/model/BinhLuan";
@@ -10,12 +11,15 @@ import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
 import AnhBinhLuan from "@/app/sanPhamTemplate/binhLuan/anhBinhLuan";
 import XoaBinhLuan from "@/app/sanPhamTemplate/binhLuan/xoaBinhLuan";
 import { url } from "@/app/server/backend";
+import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+const temp_ListBinhLuans: BinhLuan[] = [];
 
 export default function BinhLuanCuaUser({userId} : {userId: string}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -37,31 +41,49 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
     }, [pageNumber])
 
     const layCacBinhLuans = async() => {
-        const uriListBinhLuan = url(`api/binhluan/user/${userId}?pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}`);
+        const listBinhLuansCuaUserTrongTemp = temp_ListBinhLuans.filter((item) => {
+            return item.bL_NguoiTao_Id === userId;
+        }); 
 
-        const response = await axios.get(uriListBinhLuan);
+        const listBinhLuansCuaUserTrongTempCanLay = paginate(listBinhLuansCuaUserTrongTemp, pageNumber, LIMIT_BINHLUAN);
 
-        if (response.data) {
-            const listBinhLuans = response.data.listBinhLuans;
+        if (listBinhLuansCuaUserTrongTempCanLay.length < 1) {
+            const uriListBinhLuan = url(`api/binhluan/user/${userId}?pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}`);
 
-            for (const binhLuan of listBinhLuans) {
-                const urlSoSao = url(`api/sanpham/sao-san-pham-user/${binhLuan.bL_SP_Id}?userId=${userId}`);
+            const response = await axios.get(uriListBinhLuan);
 
+            if (response.data.listBinhLuans) {
+                const listBinhLuans : BinhLuan[] = response.data.listBinhLuans;
+
+                for (const binhLuan of listBinhLuans) {
+                    if (response.data.tongSo) {
+                        binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
+                    }
+                    try {
+                        if (binhLuan.bL_NguoiTao_Client) {
+                            const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(binhLuan.bL_SP_Id as string, binhLuan.bL_NguoiTao_Client.id);
+                            binhLuan.bL_NguoiTao_Client.soSao = soSao;
+                        }
+                    }catch {}
+                }
+                setListBinhLuans(listBinhLuans);
+                temp_ListBinhLuans.push(...listBinhLuans);
+            }
+
+            if (response.data.tongSo) {
+                setTongSoBinhLuan(response.data.tongSo);
+            }
+        }else {
+            for (const binhLuan of listBinhLuansCuaUserTrongTempCanLay) {
                 try {
-                    const soSao = (await axios.get(urlSoSao)).data;
-
-                    if (soSao) {
-                        binhLuan.bL_NguoiTao_Client = {};
-                        binhLuan.bL_NguoiTao_Client.soSao = soSao
+                    if (binhLuan.bL_NguoiTao_Client) {
+                        const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(binhLuan.bL_SP_Id, binhLuan.bL_NguoiTao_Client.id);
+                        binhLuan.bL_NguoiTao_Client.soSao = soSao;
                     }
                 }catch {}
             }
-
-            setListBinhLuans(listBinhLuans);
-        }
-
-        if (response.data.tongSo) {
-            setTongSoBinhLuan(response.data.tongSo);
+            setListBinhLuans(listBinhLuansCuaUserTrongTempCanLay);
+            setTongSoBinhLuan(listBinhLuansCuaUserTrongTempCanLay[0].temp_tongSoBinhLuanCuaUser);
         }
     }
 

@@ -24,13 +24,11 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
 
       if (!listFilesInTemp) {
         const listFiles = await getFileAsync(SAN_PHAM, sP_Id, IMAGE);
-        if (listFiles) {
-          setListFileAnhSanPhams(listFiles);
-          temp_ListFileAnhSanPhams.push({
+        setListFileAnhSanPhams(listFiles);
+        temp_ListFileAnhSanPhams.push({
             sP_Id: sP_Id,
             listFileAnhSanPhams: listFiles
           });
-        }
       }else {
         setListFileAnhSanPhams(listFilesInTemp.listFileAnhSanPhams);
       }

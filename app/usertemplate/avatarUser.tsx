@@ -10,11 +10,11 @@ import { STATE_CHANGE } from "../constant/State";
 
 const temp_UriAvatarUser : {
     userId: string,
-    uri: string
-}[] = []
+    uri: string | undefined
+}[] = [];
 
 export default function AvatarUser({userId, width, height, canChange} : {userId : string | undefined, width: number, height: number, canChange: boolean}) {
-    const [uriAvatar, setUriAvatar] = useState<string | null>(null);
+    const [uriAvatar, setUriAvatar] = useState<string | undefined>(undefined);
     const [showModalChangeAvatar, setShowModalChangeAvatar] = useState<boolean | undefined>(false);
 
     useEffect(() => {
@@ -29,23 +29,19 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
         if (!uriAvatarInTemp || uriAvatar === STATE_CHANGE) {
             const uri = await getUriAvatarUser(userId as string);
 
-            if (uri) {
-                setUriAvatar(uri);
-
-                if (uriAvatar === STATE_CHANGE) {
-                    const indexOldAvatarInTemp = temp_UriAvatarUser.findIndex((item) => {
-                        return item?.userId === userId
-                    });
-                    if (indexOldAvatarInTemp !== - 1) {
-                        temp_UriAvatarUser.splice(indexOldAvatarInTemp, 1);
-                    }
+            setUriAvatar(uri);
+            if (uriAvatar === STATE_CHANGE) {
+                const indexOldAvatarInTemp = temp_UriAvatarUser.findIndex((item) => {
+                    return item?.userId === userId
+                });
+                if (indexOldAvatarInTemp !== - 1) {
+                    temp_UriAvatarUser.splice(indexOldAvatarInTemp, 1);
                 }
-
-                temp_UriAvatarUser.push({
+            }
+            temp_UriAvatarUser.push({
                     userId: userId as string,
                     uri: uri
-                });
-            }
+            });
         }else {
             setUriAvatar(uriAvatarInTemp.uri);
         }
@@ -104,7 +100,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
             const uriDeleteCoverPhoto = url('api/auth/avatar');
             await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
             Alert.alert('Thông báo', 'Xóa ảnh đại diện thành công');
-            setUriAvatar(null);
+            setUriAvatar(undefined);
             setShowModalChangeAvatar(false);
         }catch {
             Alert.alert('Lỗi', 'Đổi ảnh đại diện thất bại');

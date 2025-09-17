@@ -14,7 +14,7 @@ export default class LoSanPham
 
     lsP_SoLuong: number | undefined;
 
-    lsP_TrangThai: string | undefined;
+    lsP_MoTa: string | undefined;
 
     lsP_NM_Id: string | undefined;
 

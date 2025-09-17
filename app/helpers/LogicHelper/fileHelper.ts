@@ -42,20 +42,20 @@ export function getUriFile(file: File) : string | undefined {
   }
 }
 
-export async function getUriAvatarUser(userId: string) : Promise<string | null | undefined> {
+export async function getUriAvatarUser(userId: string) : Promise<string | undefined> {
   const fileAvatars = await getFileAsync(USER, userId, AVATAR);
   if (fileAvatars && fileAvatars.length > 0) {
     return getUriFile(fileAvatars[0])
   }
-  return null;
+  return undefined;
 }
 
-export async function getUriAvatarDoanhNghiep(dN_Id: string) : Promise<string | null | undefined> {
+export async function getUriAvatarDoanhNghiep(dN_Id: string) : Promise<string | undefined> {
   const fileAvatars = await getFileAsync(DOANH_NGHIEP, dN_Id, AVATAR);
   if (fileAvatars && fileAvatars.length > 0) {
     return getUriFile(fileAvatars[0])
   }
-  return null;
+  return undefined;
 }
 
 export async function getUriAvatarSanPham(sP_Id: string) {

@@ -4,6 +4,7 @@ import { Updating } from "../helpers/ViewHelpers/updating";
 import Spacer from "../helpers/ViewHelpers/spacer";
 import { useRouter } from "expo-router";
 import AnhLoSanPham from "./anhLoSanPham";
+import MoTaLoSanPham from "./moTaLoSanPham";
 
 export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat}: {loSanPham: LoSanPham, sP_Id: string | undefined, sP_Ten: string | undefined, sP_MaTruyXuat: string | undefined}) {
     const router = useRouter();
@@ -18,6 +19,10 @@ export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat
                 <Text>{loSanPham.lsP_MaLSP}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
+                <Text style={{fontWeight: 'bold'}}>Số lượng: </Text>
+                {loSanPham.lsP_SoLuong ? <Text>{loSanPham.lsP_SoLuong.toLocaleString()}</Text> : (<Updating />)}
+            </View>
+            <View style={{flexDirection: 'row'}}>
                 <Text style={{fontWeight: 'bold'}}>Ngày sản xuất: </Text>
                 {loSanPham.lsP_NgaySanXuat ? <Text>{loSanPham.lsP_NgaySanXuat.toLocaleString()}</Text> : (<Updating />)}
             </View>
@@ -25,6 +30,7 @@ export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat
                 <Text style={{fontWeight: 'bold'}}>Ngày hết hạn: </Text>
                 {loSanPham.lsP_NgayHetHan ? (<Text>{loSanPham.lsP_NgayHetHan.toLocaleString()}</Text>) : (<Text>{'Không có'}</Text>)}
             </View>
+            <MoTaLoSanPham moTa={loSanPham.lsP_MoTa}/>
             <View style={{flexDirection: 'row'}}>
                 <Text style={{fontWeight: 'bold'}}>Nhà máy: </Text>
                 {loSanPham.lsP_NM ? (

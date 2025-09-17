@@ -13,14 +13,17 @@ export default class BinhLuan
     bL_NguoiTao_Client: {
         id: string,
         name: string,
-        soSao: number
+        soSao: number,
+        tongSoBL: number | undefined
     } | undefined;
 
     bL_SP: {
-        sP_Id: string,
-        sP_MaTruyXuat: string,
-        sP_Ten: string,
-        sP_UriAvatar: string | undefined
+        sP_Id: string | undefined,
+        sP_MaTruyXuat: string | undefined,
+        sP_Ten: string | undefined,
+        sP_UriAvatar: string | undefined,
     } | undefined;
-    
+
+    temp_tongSoBinhLuanCuaSP: number = 0;
+    temp_tongSoBinhLuanCuaUser: number = 0;
 }
