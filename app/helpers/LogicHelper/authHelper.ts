@@ -3,6 +3,8 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { url } from "../../server/backend";
 import AppUser from "@/app/model/AppUser";
+import { temp_ThongTinTheoDoiUser } from "@/app/usertemplate/user/tuongTacUser";
+import { temp_ThongTinTheoDoiDoanhNghiep } from "@/app/doanhNghiepTemplate/tuongTacDoanhNghiep";
 
 const AccessToken = "accessToken";
 const RefreshToken = "refreshToken";
@@ -65,32 +67,42 @@ export async function setAccessAndRefreshToken(
   await AsyncStorage.setItem("refreshToken", refreshToken);
 }
 
-export async function deleteToken(allDevices : Boolean = false) {
-  if (allDevices) {
-    let urlLogoutAllDevices = url('api/auth/logoutAll');
-
-    getBearerToken().then((bearerToken: any) => {
-      axios.post(urlLogoutAllDevices, null, {
-        headers: {
-          Authorization: bearerToken
-        }
-      });
-    });
-  }else {
-        AsyncStorage.getItem(RefreshToken).then((refreshToken) => {
-        if (refreshToken) {
-        let urlLogout = url(`api/auth/logout`);
-        axios.post(urlLogout, refreshToken, {
+export async function logOut(allDevices : Boolean = false) {
+  try {
+    if (allDevices) {
+      const urlLogoutAllDevices = url('api/auth/logoutAll');
+      const bearerToken = await getBearerToken();
+        await axios.post(urlLogoutAllDevices, null, {
           headers: {
-            "Content-Type": "application/json"
+            Authorization: bearerToken
           }
         });
-      }
-    });
+    }else {
+          const refreshToken = await AsyncStorage.getItem(RefreshToken);
+          if (refreshToken) {
+          const urlLogout = url(`api/auth/logout`);
+          await axios.post(urlLogout, refreshToken, {
+            headers: {
+              "Content-Type": "application/json"
+            }
+          });
+        }
+    }
+    deleteRelatedTempDataAfterLogout();
+    await AsyncStorage.removeItem(AccessToken);
+    await AsyncStorage.removeItem(RefreshToken);
+  }catch {
+    throw new Error('Đăng xuất thất bại');
   }
-  await AsyncStorage.removeItem(AccessToken);
-  await AsyncStorage.removeItem(RefreshToken);
 }
+
+const deleteRelatedTempDataAfterLogout = () => {
+    temp_ThongTinTheoDoiUser.length = 0;
+    temp_ThongTinTheoDoiDoanhNghiep.length = 0;
+    resetPermissionsUserLogin();
+}
+
+let permissionsUserLogin: string[] | undefined = [];
 
 export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<AppUser | null> {
   const accessToken = await getAccessToken(resetUserInfo);
@@ -107,7 +119,24 @@ export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<App
   user.name = decoded.Name;
   user.email = decoded.Email;
   user.address = decoded.Address;
-  user.role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+  user.role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
+  if (!permissionsUserLogin) {
+    const uriPermissions = url('api/auth/permissions');
+
+    try {
+      const res = await axios.get(uriPermissions, {headers: {Authorization: await getBearerToken()}});
+      const permissions: string[] = res.data;
+      permissionsUserLogin = permissions;
+      user.permissions = permissions;
+    }catch {}
+  }else {
+    user.permissions = permissionsUserLogin;
+  }
+  console.log(user.permissions);
   return user;
+}
+
+export function resetPermissionsUserLogin() {
+  permissionsUserLogin = undefined;
 }

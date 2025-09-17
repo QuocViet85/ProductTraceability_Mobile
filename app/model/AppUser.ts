@@ -10,4 +10,6 @@ export default class AppUser {
     address: string | undefined;
 
     role: string | undefined;
+
+    permissions: string[] | undefined;
 }
