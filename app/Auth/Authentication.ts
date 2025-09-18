@@ -1,10 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { url } from "../../server/backend";
 import AppUser from "@/app/model/AppUser";
 import { temp_ThongTinTheoDoiUser } from "@/app/usertemplate/user/tuongTacUser";
 import { temp_ThongTinTheoDoiDoanhNghiep } from "@/app/doanhNghiepTemplate/tuongTacDoanhNghiep";
+import { url } from "../server/backend";
 
 const AccessToken = "accessToken";
 const RefreshToken = "refreshToken";
@@ -102,7 +102,7 @@ const deleteRelatedTempDataAfterLogout = () => {
     resetPermissionsUserLogin();
 }
 
-let permissionsUserLogin: string[] | undefined = [];
+let temp_permissionsUserLogin: string[] | undefined = undefined;
 
 export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<AppUser | null> {
   const accessToken = await getAccessToken(resetUserInfo);
@@ -121,22 +121,21 @@ export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<App
   user.address = decoded.Address;
   user.role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
 
-  if (!permissionsUserLogin) {
+  if (!temp_permissionsUserLogin) {
     const uriPermissions = url('api/auth/permissions');
 
     try {
       const res = await axios.get(uriPermissions, {headers: {Authorization: await getBearerToken()}});
-      const permissions: string[] = res.data;
-      permissionsUserLogin = permissions;
+      const permissions: string[] = res.data ? res.data : [];
+      temp_permissionsUserLogin = permissions;
       user.permissions = permissions;
     }catch {}
   }else {
-    user.permissions = permissionsUserLogin;
+    user.permissions = temp_permissionsUserLogin;
   }
-  console.log(user.permissions);
   return user;
 }
 
 export function resetPermissionsUserLogin() {
-  permissionsUserLogin = undefined;
+  temp_permissionsUserLogin = undefined;
 }

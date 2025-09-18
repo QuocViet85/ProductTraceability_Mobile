@@ -37,7 +37,6 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
 
   function handleBarCodeScanned({type, data}: {type: any, data: any}) {
     setScanned(true);
-    console.log(data);
     const maTruyXuat = layMaTruyXuatTuUrl(data);
     router.push({
       pathname: '/sanPhamTemplate', 

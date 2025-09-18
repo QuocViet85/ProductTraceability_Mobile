@@ -1,9 +1,9 @@
+import Header from "@/app/helpers/ViewHelpers/header";
 import axios from "axios";
 import { useState } from "react";
-import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
-import { getAccessToken, getUserLogin, setAccessAndRefreshToken } from "../../helpers/LogicHelper/authHelper";
+import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
+import { getUserLogin, setAccessAndRefreshToken } from "../../Auth/Authentication";
 import { url } from "../../server/backend";
-import Header from "@/app/helpers/ViewHelpers/header";
 
 export default function Login({setFormDangNhap, setUserLogin} : {setFormDangNhap : any, setUserLogin: any}) {
     const [phoneNumber, setPhoneNumber] = useState<string>('');

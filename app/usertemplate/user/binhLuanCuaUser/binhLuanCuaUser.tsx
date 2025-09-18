@@ -1,8 +1,5 @@
-import { IMAGE } from "@/app/constant/KieuFile";
-import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
+import { getUserLogin } from "@/app/Auth/Authentication";
 import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
-import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
-import { getFileAsync, getUriAvatarSanPham, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
 import { paginate } from "@/app/helpers/LogicHelper/helper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import AppUser from "@/app/model/AppUser";

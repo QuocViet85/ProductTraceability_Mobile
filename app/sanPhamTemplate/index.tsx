@@ -1,28 +1,30 @@
+import { getUserLogin } from "@/app/Auth/Authentication";
+import { formatCurrency } from "@/app/helpers/LogicHelper/helper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { Updating } from "@/app/helpers/ViewHelpers/updating";
+import AppUser from "@/app/model/AppUser";
+import SanPham from "@/app/model/SanPham";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Footer from "../helpers/ViewHelpers/footer";
 import { url } from "../server/backend";
 import AnhSanPham from "./anhSanPham";
 import BinhLuanSanPhan from "./binhLuan/binhLuanSanPham";
 import DoanhNghiepSanPham from "./doanhNghiepSanPham";
 import MoTaSanPham from "./moTaSanPham";
 import NguoiPhuTrach from "./nguoiPhuTrach";
-import SaoSanPham from "./saoSanPham";
-import AppUser from "@/app/model/AppUser";
-import { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
-import QrCode from "./qrCode";
-import SanPham from "@/app/model/SanPham";
-import { formatCurrency } from "@/app/helpers/LogicHelper/helper";
-import WebsiteSanPham from "./websiteSanPham";
 import NhaMaySanPham from "./nhaMaySanPham";
-import Footer from "../helpers/ViewHelpers/footer";
+import QrCode from "./qrCode";
+import SaoSanPham from "./saoSanPham";
+import WebsiteSanPham from "./websiteSanPham";
+import SuaSanPham from "./thaoTacTheoAuth/suaSanPham";
+import XoaSanPham from "./thaoTacTheoAuth/xoaSanPham";
 
-const temp_SanPham : SanPham[] = [];
+export const temp_SanPham : SanPham[] = [];
 
 export default function Index() {
     const params = useLocalSearchParams();
@@ -102,6 +104,12 @@ export default function Index() {
                                       onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat}})}>
                       <Text>{'Truy xuất sản phẩm'}</Text>
                     </TouchableOpacity>
+                </View>
+                <View style={{height: 10}}></View>
+                <View style={{flexDirection: 'row'}}>
+                    <SuaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                    <View style={{width: 10}}></View>
+                    <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
                 </View>
                 
                 <BlurLine />

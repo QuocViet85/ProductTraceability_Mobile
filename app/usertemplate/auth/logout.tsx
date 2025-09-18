@@ -1,6 +1,6 @@
+import { logOut } from "@/app/Auth/Authentication";
 import { useState } from "react";
 import { Button, Modal, View } from "react-native";
-import { logOut } from "@/app/helpers/LogicHelper/authHelper";
 
 export default function Logout({setUserLogin} : {setUserLogin : any}) {
     const [modalLogout, setModalLogout] = useState<boolean | undefined>(false);

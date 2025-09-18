@@ -1,10 +1,9 @@
-import getBearerToken, { getUserLogin } from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/Auth/Authentication";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
-import { Button, View } from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export const temp_ThongTinTheoDoiUser : ThongTinTheoDoiUserTrongTemp[] = [];
 

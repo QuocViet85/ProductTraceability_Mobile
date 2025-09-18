@@ -1,13 +1,13 @@
-import getBearerToken, { deleteToken, getAccessToken } from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/Auth/Authentication";
+import { generateExactRole } from "@/app/constant/Role";
 import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
-import axios, { AxiosHeaderValue } from "axios";
-import { useEffect, useState } from "react";
-import { Alert, Button, Image, ImageSourcePropType, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import Logout from "../auth/logout";
+import axios from "axios";
+import { useState } from "react";
+import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ChangePassword } from "../auth/changePassword";
+import Logout from "../auth/logout";
 import AvatarUser from "../avatarUser";
-import { generateExactRole } from "@/app/constant/Role";
 import CoverPhotoUser from "../coverPhotoUser";
 
 export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLogin} : {userLogin: AppUser, setUserLogin: any, setRefreshUserLogin: any}) {

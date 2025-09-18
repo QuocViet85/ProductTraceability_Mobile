@@ -1,4 +1,4 @@
-import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/Auth/Authentication";
 import { getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";

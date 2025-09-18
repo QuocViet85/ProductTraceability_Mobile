@@ -1,7 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { getUserLogin } from '../helpers/LogicHelper/authHelper';
-import Header from '../helpers/ViewHelpers/header';
+import { View } from 'react-native';
+import { getUserLogin } from '../Auth/Authentication';
 import AppUser from '../model/AppUser';
 import Login from '../usertemplate/auth/login';
 import Register from '../usertemplate/auth/register';

@@ -1,5 +1,5 @@
+import getBearerToken from "@/app/Auth/Authentication";
 import { ROLE_ADMIN } from "@/app/constant/Role";
-import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
 import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
 import axios from "axios";
@@ -27,8 +27,8 @@ export default function XoaBinhLuan({userLogin, binhLuan, layCacBinhLuans, width
             ? userLogin?.id === binhLuan.bL_NguoiTao_Id || userLogin?.role === ROLE_ADMIN 
                     ? 
             (<View>
-                <TouchableOpacity onPress={xoaBinhLuan}>
-                    <Text style={{backgroundColor: 'red', width: width, borderRadius: 8}}>Xóa</Text>
+                <TouchableOpacity style={{backgroundColor: 'red', width: width, borderRadius: 8, alignItems: 'center'}} onPress={xoaBinhLuan}>
+                    <Text style={{fontWeight: 'bold'}}>Xóa</Text>
                 </TouchableOpacity>
             </View>)
             :

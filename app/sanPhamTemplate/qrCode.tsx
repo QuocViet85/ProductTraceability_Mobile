@@ -33,7 +33,6 @@ export default function QrCode({urlSanPham} : {urlSanPham: string}) {
                         await MediaLibrary.createAlbumAsync('QR Codes', asset, false); // lưu vào thư mục Ảnh riêng theo chỉ định
                         Alert.alert('Thành công', 'QR đã được lưu vào thư viện ảnh!');
                     }catch (e) {
-                        console.log(e);
                         Alert.alert('Lỗi', 'Không thể lưu mã QR');
                     }
                 });

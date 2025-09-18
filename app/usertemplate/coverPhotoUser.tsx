@@ -1,13 +1,13 @@
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
-import { USER } from "../constant/KieuTaiNguyen";
+import getBearerToken from "../Auth/Authentication";
 import { COVER_PHOTO } from "../constant/KieuFile";
-import getBearerToken from "../helpers/LogicHelper/authHelper";
-import { url } from "../server/backend";
-import axios from "axios";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import { USER } from "../constant/KieuTaiNguyen";
 import { STATE_CHANGE } from "../constant/State";
+import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
+import { url } from "../server/backend";
 
 const temp_UriCoverPhotoUser : {
     userId: string,

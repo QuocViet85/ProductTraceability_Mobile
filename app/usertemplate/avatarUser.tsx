@@ -1,11 +1,10 @@
-import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/Auth/Authentication";
 import { getUriAvatarUser, getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Modal, Text } from "react-native";
-import { Alert, Image, TouchableOpacity, View } from "react-native";
+import { Alert, Button, Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { STATE_CHANGE } from "../constant/State";
 
 const temp_UriAvatarUser : {

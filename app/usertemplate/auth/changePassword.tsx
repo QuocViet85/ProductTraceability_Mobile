@@ -1,4 +1,4 @@
-import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/Auth/Authentication";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useState } from "react";

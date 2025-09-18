@@ -1,11 +1,11 @@
-import getBearerToken from "@/app/helpers/LogicHelper/authHelper";
+import getBearerToken from "@/app/Auth/Authentication";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import { url } from "@/app/server/backend";
+import { laySoSaoCuaMotNguoiVoiMotSanPham, temp_SoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
-import { laySoSaoCuaMotNguoiVoiMotSanPham, temp_SoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 
 export default function ChonSaoSanPham({sP_Id, userId} : {sP_Id: string, userId: string}) {
     const [showModalChonSao, setShowModalChonSao] = useState<boolean | undefined>(false);

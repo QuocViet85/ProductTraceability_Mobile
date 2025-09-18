@@ -1,11 +1,10 @@
-import { Button, StyleSheet, Text, View } from "react-native";
-import { url } from "../server/backend";
-import getBearerToken from "../helpers/LogicHelper/authHelper";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import getBearerToken from "../Auth/Authentication";
 import { makePhoneCall } from "../helpers/LogicHelper/helper";
+import { url } from "../server/backend";
 
 export const temp_ThongTinTheoDoiDoanhNghiep : ThongTinTheoDoiDoanhNghiepTrongTemp[] = [];
 
