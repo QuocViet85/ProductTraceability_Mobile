@@ -11,8 +11,10 @@ import CoverPhotoDoanhNghiep from "./coverPhotoDoanhNghiep";
 import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
 import AvatarUser from "../usertemplate/avatarUser";
 import Footer from "../helpers/ViewHelpers/footer";
+import SuaDoanhNghiep from "./thaoTacTheoAuth/suaDoanhNghiep";
+import XoaDoanhNghiep from "./thaoTacTheoAuth/xoaDoanhNghiep";
 
-const temp_DoanhNghiep: {doanhNghiep: DoanhNghiep, soSanPham: number}[] = [];
+export const temp_DoanhNghiep: {doanhNghiep: DoanhNghiep, soSanPham: number}[] = [];
 
 export default function Index() 
 {
@@ -21,12 +23,13 @@ export default function Index()
 
     const [doanhNghiep, setDoanhNghiep] = useState<DoanhNghiep | null>(null);
     const [soSanPhamSoHuu, setSoSanPhamSoHuu] = useState<number>(0);
+    const [reRenderDoanhNghiep, setReRenderDoanhNghiep] = useState<number>(0);
     const router = useRouter();
     
 
     useEffect(() => {
         layDoanhNghiep();
-    }, []);
+    }, [reRenderDoanhNghiep]);
 
     const layDoanhNghiep = async() => {
         const doanhNghiepInTemp = temp_DoanhNghiep.find((dn) => {
@@ -65,11 +68,11 @@ export default function Index()
             {doanhNghiep ? (
             <View style={{flex: 1}}>
                 <ScrollView>
-                    <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} height={300}/>
+                    <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} height={300} canChange={true} />
                     <View style={styles.scrollContainer}>
                         {/* Logo + Name */}
                         <View style={styles.profileHeader}>
-                        <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} width={64} height={64}/>
+                        <AvatarDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} width={64} height={64} canChange={true}/>
                         <View style={styles.nameSection}>
                             <Text style={styles.businessName}>{doanhNghiep.dN_Ten}</Text>
                             <Text style={styles.businessType}>{doanhNghiep.dN_KieuDN == 1 ? 'Hộ kinh doanh cá nhân' : 'Doanh Nghiệp'}</Text>
@@ -88,6 +91,11 @@ export default function Index()
                                 <Text style={styles.statValue}>???</Text>
                                 <Text style={styles.statLabel}>{'Đánh giá'}</Text>
                             </View>
+                        </View>
+
+                        <View style={styles.statsRow}>
+                            <SuaDoanhNghiep doanhNghiep={doanhNghiep} setReRenderDoanhNghiep={setReRenderDoanhNghiep}/>
+                            <XoaDoanhNghiep doanhNghiep={doanhNghiep} setDoanhNghiep={setDoanhNghiep}/>
                         </View>
 
                         {/* Giới thiệu */}

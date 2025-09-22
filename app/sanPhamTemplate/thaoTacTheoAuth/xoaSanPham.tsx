@@ -4,7 +4,7 @@ import SanPham from "@/app/model/SanPham";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
+import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { temp_SanPham } from "..";
 
@@ -23,20 +23,24 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
     }
 
     const xoaSanPham = async() => {
-        const urlXoaSanPham = url(`api/sanpham/${sanPham.sP_Id}`);
+        try {
+            const urlXoaSanPham = url(`api/sanpham/${sanPham.sP_Id}`);
 
-        await axios.delete(urlXoaSanPham, {headers: {Authorization: await getBearerToken()}});
+            await axios.delete(urlXoaSanPham, {headers: {Authorization: await getBearerToken()}});
 
-        const indexSanPhamBiXoaInTemp = temp_SanPham.findIndex((sanPhamInTemp: SanPham) => {
-            return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
-        });
+            const indexSanPhamBiXoaInTemp = temp_SanPham.findIndex((sanPhamInTemp: SanPham) => {
+                return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
+            });
 
-        if (indexSanPhamBiXoaInTemp !== -1) {
-            temp_SanPham.splice(indexSanPhamBiXoaInTemp);
+            if (indexSanPhamBiXoaInTemp !== -1) {
+                temp_SanPham.splice(indexSanPhamBiXoaInTemp);
+            }
+
+            setSanPham(null);
+            setShowModalXoa(false);
+        }catch {
+            Alert.alert('Lỗi', 'Xóa sản phẩm thất bại');
         }
-
-        setSanPham(null);
-        setShowModalXoa(false);
     }
 
     return quyenXoa 
@@ -60,7 +64,6 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
             <View style={{ marginTop: 'auto'}}>
                 <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
             </View>
-
         </Modal>
     </View>) 
     : (<View></View>)

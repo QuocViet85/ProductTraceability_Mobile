@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { temp_SanPham } from "..";
+import { Alert } from "react-native";
 
 export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -63,7 +64,9 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
 
             setReRenderSanPham((value: number) => value + 1);
             setShowModalSua(false);
-        }catch {}
+        }catch {
+            Alert.alert('Lỗi', 'Sửa sản phẩm thất bại')
+        }
     }
 
     return quyenSua 
@@ -81,7 +84,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                     <Text>Tên:</Text>
                     <TextInput
                         style={styles.input}
-                        placeholder="Số điện thoại"
+                        placeholder="Tên sản phẩm"
                         value={ten}
                         onChangeText={setTen}
                     />

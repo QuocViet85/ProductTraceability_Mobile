@@ -144,6 +144,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
 
     return (
         <View style={{height: height}}>
+                {listFileAnhSanPhams.length > 0 ? (
                 <FlatList
                   data={listFileAnhSanPhams}
                   horizontal
@@ -167,7 +168,18 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                       </View>
                 </TouchableOpacity>
                 )}
-            />
+            />) : (<View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                      <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity onPress={() => taiLenAnhSanPham(true)}>
+                          <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => taiLenAnhSanPham(false)}>
+                            <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                        </TouchableOpacity>
+                      </View>
+                      <Text>{'Tải lên thêm ảnh sản phẩm'}</Text>
+                  </View>)}
+                
           <Modal
           visible={showModalTaiLenVaXoaAnh && quyenSuaSP}
           animationType="slide">
@@ -178,7 +190,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                     resizeMode="cover"
                 />
 
-                <View style={{alignItems: 'center'}}>
+                <View>
                       <View style={{flexDirection: 'row'}}>
                         <View>
                             <View style={{flexDirection: 'row'}}>

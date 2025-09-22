@@ -17,17 +17,18 @@ const temp_UriCoverPhotoUser : {
 export default function CoverPhotoUser({userId, height, canChange}: {userId: string, height: DimensionValue | undefined ,canChange: boolean}) {
     const [uriCoverPhoto, setUriCoverPhoto] = useState<string | undefined>(undefined);
     const [showModalChangeCoverPhoto, setShowModalChangeCoverPhoto] = useState<boolean | undefined>(false);
+    const [reRender, setReRender] = useState<number>(0);
     
         useEffect(() => {
             layUriCoverPhoto();
-        }, [uriCoverPhoto]);
+        }, [reRender]);
 
         const layUriCoverPhoto = async() => {
             const uriCoverPhotoInTemp = temp_UriCoverPhotoUser.find((item) => {
                 return item.userId === userId
             });
 
-            if (!uriCoverPhotoInTemp || uriCoverPhoto === STATE_CHANGE) {
+            if (!uriCoverPhotoInTemp) {
                 const listFilesCoverPhoto = await getFileAsync(USER, userId, COVER_PHOTO);
 
                 if (listFilesCoverPhoto.length > 0) {
@@ -35,18 +36,12 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
 
                     setUriCoverPhoto(uri);
 
-                    if (uriCoverPhoto === STATE_CHANGE) {
-                        const indexOldCoverPhotoInTemp = temp_UriCoverPhotoUser.findIndex((item) => {
-                            return item.userId === userId
-                        });
-                        if (indexOldCoverPhotoInTemp !== - 1) {
-                            temp_UriCoverPhotoUser.splice(indexOldCoverPhotoInTemp, 1);
-                        }
-                    }
                     temp_UriCoverPhotoUser.push({
                         userId: userId as string,
                         uri: uri
                     });
+                }else {
+                    setUriCoverPhoto(undefined);
                 }
             }else {
                 setUriCoverPhoto(uriCoverPhotoInTemp.uri);
@@ -82,12 +77,18 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
                                     name: "coverPhoto.jpg",
                                     } as any); //không dùng Blob, phải để thế này thì react native mới hoạt động upload ảnh được
 
-                const uriDeleteCoverPhoto = url('api/auth/cover-photo');
+                const uriUploadCoverPhoto = url('api/auth/cover-photo');
 
                 try {
-                    await axios.put(uriDeleteCoverPhoto, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
+                    await axios.put(uriUploadCoverPhoto, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
                     Alert.alert('Thông báo', 'Đổi ảnh bìa thành công');
-                    setUriCoverPhoto(STATE_CHANGE);
+
+                    for (const tempUri of temp_UriCoverPhotoUser) {
+                        if (tempUri.userId === userId) {
+                            tempUri.userId = '';
+                        }
+                    }
+                    setReRender((value) => value + 1);
                     setShowModalChangeCoverPhoto(false);
                 }catch {
                     Alert.alert('Lỗi', 'Đổi ảnh bìa thất bại');
@@ -105,11 +106,18 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
             try {
                 const uriDeleteCoverPhoto = url('api/auth/cover-photo');
                 await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
+
                 Alert.alert('Thông báo', 'Xóa ảnh bìa thành công');
-                setUriCoverPhoto(undefined);
+                for (const tempUri of temp_UriCoverPhotoUser) {
+                    if (tempUri.userId === userId) {
+                        tempUri.userId = '';
+                    }
+                }
+
+                setReRender((value) => value + 1);
                 setShowModalChangeCoverPhoto(false);
             }catch {
-                Alert.alert('Lỗi', 'Đổi ảnh bìa thất bại');
+                Alert.alert('Lỗi', 'Xóa ảnh bìa thất bại');
             }
         }
     return (

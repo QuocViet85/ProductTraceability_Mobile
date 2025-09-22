@@ -15,28 +15,22 @@ const temp_UriAvatarUser : {
 export default function AvatarUser({userId, width, height, canChange} : {userId : string | undefined, width: number, height: number, canChange: boolean}) {
     const [uriAvatar, setUriAvatar] = useState<string | undefined>(undefined);
     const [showModalChangeAvatar, setShowModalChangeAvatar] = useState<boolean | undefined>(false);
+    const [reRender, setReRender] = useState<number>(0);
 
     useEffect(() => {
         layUriAvatar();
-    }, [uriAvatar])
+    }, [reRender])
 
     const layUriAvatar = async() => {
         const uriAvatarInTemp = temp_UriAvatarUser.find((item) => {
             return item.userId === userId
         });
 
-        if (!uriAvatarInTemp || uriAvatar === STATE_CHANGE) {
+        if (!uriAvatarInTemp) {
             const uri = await getUriAvatarUser(userId as string);
 
             setUriAvatar(uri);
-            if (uriAvatar === STATE_CHANGE) {
-                const indexOldAvatarInTemp = temp_UriAvatarUser.findIndex((item) => {
-                    return item?.userId === userId
-                });
-                if (indexOldAvatarInTemp !== - 1) {
-                    temp_UriAvatarUser.splice(indexOldAvatarInTemp, 1);
-                }
-            }
+
             temp_UriAvatarUser.push({
                     userId: userId as string,
                     uri: uri
@@ -80,7 +74,14 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
             try {
                 await axios.put(uriChangeAvatar, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
                 Alert.alert('Thông báo', 'Đổi avatar thành công');
-                setUriAvatar(STATE_CHANGE);
+
+                for (const tempUri of temp_UriAvatarUser) {
+                    if (tempUri.userId === userId) {
+                        tempUri.userId = '';
+                    }
+                }
+
+                setReRender((value) => value + 1);
                 setShowModalChangeAvatar(false);
             }catch {
                  Alert.alert('Lỗi', 'Đổi avatar thất bại');
@@ -99,7 +100,12 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
             const uriDeleteCoverPhoto = url('api/auth/avatar');
             await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
             Alert.alert('Thông báo', 'Xóa ảnh đại diện thành công');
-            setUriAvatar(undefined);
+            for (const tempUri of temp_UriAvatarUser) {
+                    if (tempUri.userId === userId) {
+                        tempUri.userId = '';
+                    }
+            }
+            setReRender((value) => value + 1);
             setShowModalChangeAvatar(false);
         }catch {
             Alert.alert('Lỗi', 'Đổi ảnh đại diện thất bại');
