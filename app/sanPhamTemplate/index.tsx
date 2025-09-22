@@ -83,7 +83,7 @@ export default function Index() {
           <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
             {sanPham ? 
             (<View style={{flex: 1}}>
-                  <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} />
+                  <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} dN_SoHuu_Id={sanPham.sP_DN_SoHuu_Id as string}/>
                   <Spacer height= {10} />
                   <View style={{flexDirection: 'row'}}>
                         <Text style={{fontWeight: 'bold', fontSize: 25}}>{sanPham.sP_Ten}</Text>

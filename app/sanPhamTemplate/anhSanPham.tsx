@@ -1,39 +1,56 @@
 import { IMAGE } from "@/app/constant/KieuFile";
 import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
-import { getFileAsync, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import File from "@/app/model/File";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useEffect, useState } from "react";
-import { Dimensions, FlatList, Image, StyleSheet, View } from "react-native";
+import { Alert, Button, Dimensions, FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { quyenSuaSanPham } from "../Auth/Authorization/AuthSanPham";
+import { url } from "../server/backend";
+import axios from "axios";
+import getBearerToken from "../Auth/Authentication";
 
-const temp_ListFileAnhSanPhams : {sP_Id: string, listFileAnhSanPhams: File[]}[] = [];
+const temp_ListFilesAnhSanPham : {sP_Id: string, listFilesAnhSanPham: File[]}[] = [];
 
 const { width } = Dimensions.get('window');
 const height = 400;
-export default function AnhSanPham({sP_Id} : {sP_Id : string}) 
+export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_SoHuu_Id: string}) 
 {
     const [listFileAnhSanPhams, setListFileAnhSanPhams] = useState<File[]>([]);
+    const [fileAnhHienTai, setFileAnhHienTai] = useState<File | undefined>(undefined);
+    const [showModalTaiLenVaXoaAnh, setShowModalTaiLenVaXoaAnh] = useState<boolean | undefined>(false);
+
+    const [quyenSuaSP, setQuyenSuaSP] = useState<boolean>(false);
+
+    const [reRender, setReRender] = useState<number>(0);
 
     useEffect(() => {
       layAnhSanPham();
-    }, []);
+      layQuyenSuaSanPham();
+    }, [reRender]);
 
     const layAnhSanPham = async() => {
-      const listFilesInTemp = temp_ListFileAnhSanPhams.find((item) => {
+      const listFilesAnhCuaSanPhamInTemp = temp_ListFilesAnhSanPham.find((item) => {
         return item.sP_Id === sP_Id;
       });
 
-      if (!listFilesInTemp) {
+      if (!listFilesAnhCuaSanPhamInTemp) {
         const listFiles = await getFileAsync(SAN_PHAM, sP_Id, IMAGE);
         setListFileAnhSanPhams(listFiles);
-        temp_ListFileAnhSanPhams.push({
+        temp_ListFilesAnhSanPham.push({
             sP_Id: sP_Id,
-            listFileAnhSanPhams: listFiles
+            listFilesAnhSanPham: listFiles
           });
       }else {
-        setListFileAnhSanPhams(listFilesInTemp.listFileAnhSanPhams);
+        setListFileAnhSanPhams(listFilesAnhCuaSanPhamInTemp.listFilesAnhSanPham);
       }
       
     }
+
+    const layQuyenSuaSanPham = async() => {
+            const quyenSua = await quyenSuaSanPham(dN_SoHuu_Id);
+            setQuyenSuaSP(quyenSua);
+      }
 
     const [activeIndex, setActiveIndex] = useState(0);
 
@@ -42,6 +59,89 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
         setActiveIndex(index);
     };
 
+    const openSuaXoaAnh = (fileAnh: File) => {
+        setFileAnhHienTai(fileAnh);
+        setShowModalTaiLenVaXoaAnh(true);
+    }
+
+    const taiLenAnhSanPham = async(camera: boolean) => {
+      const bearerToken = await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+        let uriArr : string[] = [];
+        if (camera) {
+            uriArr = await getUriImagesFromCamera();
+        }else {
+            uriArr = await getUriImagesPickInDevice(true);
+        }
+        
+
+        if (!uriArr) {
+            Alert.alert("Lỗi", "Không truy cập được ảnh trong thiết bị");
+            return;
+        }
+
+         if (uriArr.length > 0) {
+            const formData = new FormData();
+
+            for (const uriAvatarInDevice of uriArr) {
+                formData.append("listFiles", {
+                            uri: uriAvatarInDevice,
+                            type: "image/jpeg",
+                            name: "anhSanPham.jpg",
+                            } as any); 
+            }
+            
+            const uriTaiLenAnhSP = url(`api/sanpham/photos/${sP_Id}`);
+
+            try {
+                await axios.post(uriTaiLenAnhSP, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
+                Alert.alert('Thông báo', 'Tải lên ảnh thành công');
+                setShowModalTaiLenVaXoaAnh(false);
+
+                const indexFilesAnhCuaSanPhamInTemp = temp_ListFilesAnhSanPham.findIndex((item) => {
+                  return item.sP_Id === sP_Id;
+                });
+                if (indexFilesAnhCuaSanPhamInTemp !== -1) {
+                  temp_ListFilesAnhSanPham.splice(indexFilesAnhCuaSanPhamInTemp);
+                }
+
+                setReRender((value) => value + 1);
+            }catch {
+                 Alert.alert('Lỗi', 'Tải ảnh lên ảnh thất bại');
+            }
+         }
+    }
+
+    const xoaAnhSanPham = async() => {
+      const bearerToken =  await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+
+        try {
+            const uriXoaAnhSanPham = url(`api/sanpham/photos/${sP_Id}?f_id=${fileAnhHienTai?.f_Id}`);
+            await axios.delete(uriXoaAnhSanPham, { headers : {Authorization: bearerToken}});
+            Alert.alert('Thông báo', 'Xóa ảnh sản phẩm thành công');
+            setShowModalTaiLenVaXoaAnh(false);
+
+            const indexFilesAnhCuaSanPhamInTemp = temp_ListFilesAnhSanPham.findIndex((item) => {
+              return item.sP_Id === sP_Id;
+            });
+
+            if (indexFilesAnhCuaSanPhamInTemp !== -1) {
+              temp_ListFilesAnhSanPham.splice(indexFilesAnhCuaSanPhamInTemp);
+            }
+
+            setReRender((value) => value + 1);
+        }catch {
+            Alert.alert('Lỗi', 'Xóa ảnh đại diện thất bại');
+        }
+    }
+
     return (
         <View style={{height: height}}>
                 <FlatList
@@ -49,10 +149,10 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
                   horizontal
                   pagingEnabled
                   showsHorizontalScrollIndicator={false}
-                  keyExtractor={(item, index) => index.toString()}
+                  keyExtractor={(item, index) => item.f_Id + '-' + index.toString()}
                   onScroll={onScroll}
                   renderItem={({ item }) => (
-                  <View>
+                  <TouchableOpacity onPress={() => openSuaXoaAnh(item)}>
                       <Image source={{ uri: getUriFile(item) }} style={styles.image} />
                       <View style={styles.indicatorContainer}>
                           {listFileAnhSanPhams.map((_, i) => (
@@ -65,9 +165,45 @@ export default function AnhSanPham({sP_Id} : {sP_Id : string})
                           />
                           ))}
                       </View>
-                </View>
+                </TouchableOpacity>
                 )}
             />
+          <Modal
+          visible={showModalTaiLenVaXoaAnh && quyenSuaSP}
+          animationType="slide">
+            <View style={{marginTop: 'auto'}}>
+              <Image
+                    source={{ uri: getUriFile(fileAnhHienTai as File) as string }}
+                    style={{width: '100%', height: "77%", marginBottom: 40}}
+                    resizeMode="cover"
+                />
+
+                <View style={{alignItems: 'center'}}>
+                      <View style={{flexDirection: 'row'}}>
+                        <View>
+                            <View style={{flexDirection: 'row'}}>
+                              <TouchableOpacity onPress={() => taiLenAnhSanPham(true)}>
+                                <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={() => taiLenAnhSanPham(false)}>
+                                  <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                              </TouchableOpacity>
+                            </View>
+                            <Text>{'Tải lên thêm ảnh sản phẩm'}</Text>
+                        </View>
+                        <View style={{width: 40}}></View>
+                        <View>
+                            <TouchableOpacity onPress={xoaAnhSanPham}>
+                              <IconSymbol name={'delete'} size={50} color={'red'}/>
+                            </TouchableOpacity>
+                            <Text>Xóa ảnh sản phẩm này</Text>
+                        </View>
+                      </View>
+                  </View>
+
+                <Button title="Đóng" onPress={() => setShowModalTaiLenVaXoaAnh(false)}></Button>
+            </View>
+          </Modal>
         </View>
     );
 }

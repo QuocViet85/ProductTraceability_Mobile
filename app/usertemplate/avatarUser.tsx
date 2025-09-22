@@ -103,7 +103,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
             setShowModalChangeAvatar(false);
         }catch {
             Alert.alert('Lỗi', 'Đổi ảnh đại diện thất bại');
-            }
+        }
     }
 
     const handleTouchAvatar = () => {
