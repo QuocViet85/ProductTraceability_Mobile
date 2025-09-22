@@ -31,6 +31,7 @@ export default function Index() {
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
     const [sanPham, setSanPham] = useState<SanPham | null>(null);
     const [userLogin, setUserLogin] = useState<AppUser | null>(null);
+    const [reRenderSanPham, setReRenderSanPham] = useState<number>(0);
 
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
   
@@ -44,7 +45,7 @@ export default function Index() {
             setUserLogin(userLogin);
           }
         })
-    }, []);
+    }, [reRenderSanPham]);
 
     const laySanPham = async () => {
       try {
@@ -107,7 +108,7 @@ export default function Index() {
                 </View>
                 <View style={{height: 10}}></View>
                 <View style={{flexDirection: 'row'}}>
-                    <SuaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                    <SuaSanPham sanPham={sanPham} setReRenderSanPham={setReRenderSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
                     <View style={{width: 10}}></View>
                     <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
                 </View>

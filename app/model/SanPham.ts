@@ -17,7 +17,9 @@ export default class SanPham
 
     sP_Gia: number | undefined;
 
-    sP_MaQUocGia: string | undefined;
+    sP_MaQuocGia: string | undefined;
+
+    sP_HangSanXuat: string | undefined;
 
     sP_NgayTao: Date | undefined;
 
