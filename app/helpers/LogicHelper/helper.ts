@@ -1,7 +1,7 @@
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { Link } from "expo-router";
-import { Alert, Linking } from "react-native";
+import { Alert, Dimensions, Linking } from "react-native";
 
 export function layMaTruyXuatTuUrl(url: string) {
     const indexGachCheoCuoi : number = url.lastIndexOf('/');
@@ -65,4 +65,12 @@ export function paginate(resource: any[], pageNumber: number, limit: number) : a
   const start = (pageNumber - 1) * limit;
   const end = start + limit;
   return resource.slice(start, end);
+}
+
+export function getWidthScreen() : number {
+  return Dimensions.get('window').width;
+}
+
+export function getHeightScreen() : number {
+  return Dimensions.get('window').height;
 }

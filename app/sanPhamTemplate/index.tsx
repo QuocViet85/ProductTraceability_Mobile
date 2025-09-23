@@ -1,5 +1,5 @@
 import { getUserLogin } from "@/app/Auth/Authentication";
-import { formatCurrency } from "@/app/helpers/LogicHelper/helper";
+import { formatCurrency, getWidthScreen } from "@/app/helpers/LogicHelper/helper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { Updating } from "@/app/helpers/ViewHelpers/updating";
@@ -23,6 +23,7 @@ import SaoSanPham from "./saoSanPham";
 import WebsiteSanPham from "./websiteSanPham";
 import SuaSanPham from "./thaoTacTheoAuth/suaSanPham";
 import XoaSanPham from "./thaoTacTheoAuth/xoaSanPham";
+import { HEIGHT_SMARTPHONE } from "../constant/SizeScreen";
 
 export const temp_SanPham : SanPham[] = [];
 
@@ -129,7 +130,7 @@ export default function Index() {
                 <Text>Không tồn tại sản phẩm</Text>
             </View>)}
         </ScrollView>
-        <Footer backgroundColor={'black'} height={'6%'}/>
+         <Footer height={getWidthScreen() <= HEIGHT_SMARTPHONE ? '6%' : '4%'} backgroundColor={'white'} />
       </KeyboardAvoidingView>
     )
 }

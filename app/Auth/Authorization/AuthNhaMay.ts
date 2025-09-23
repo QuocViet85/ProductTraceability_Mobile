@@ -21,7 +21,7 @@ export async function quyenThemNhaMay() {
   return false;
 }
 
-export async function quyenSuaDoanhNghiep(
+export async function quyenSuaNhaMay(
   nM_Id: string | undefined
 ): Promise<boolean> {
   if (!nM_Id) {
@@ -52,7 +52,7 @@ export async function quyenSuaDoanhNghiep(
   return false;
 }
 
-export async function quyenXoaDoanhNghiep(
+export async function quyenXoaNhaMay(
   nM_Id: string | undefined
 ): Promise<boolean> {
   if (!nM_Id) {

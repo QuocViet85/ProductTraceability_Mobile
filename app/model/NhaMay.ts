@@ -5,7 +5,7 @@ export default class NhaMay {
     
     nM_Ten: string | undefined;
 
-    nM_MaNhaMay: string | undefined;
+    nM_MaNM: string | undefined;
 
     nM_DiaChi: string | undefined;
 

@@ -9,24 +9,43 @@ import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import AvatarDoanhNghiep from "../doanhNghiepTemplate/avatarDoanhNghiep";
 import AnhNhaMay from "./anhNhaMay";
 import Footer from "../helpers/ViewHelpers/footer";
+import { getWidthScreen } from "../helpers/LogicHelper/helper";
+import { HEIGHT_SMARTPHONE } from "../constant/SizeScreen";
+import SuaNhaMay from "./thaoTacTheoAuth/suaNhaMay";
+import XoaNhaMay from "./thaoTacTheoAuth/xoaNhaMay";
+
+export const temp_NhaMay: NhaMay[] = [];
 
 export default function NhaMayChiTiet() {
     const params = useLocalSearchParams();
     const nM_Id = params.nM_Id;
     const [nhaMay, setNhaMay] = useState<NhaMay | null>(null);
+    const [reRenderNhaMay, setReRenderNhaMay] = useState<number>(0);
     const router = useRouter();
 
     useEffect(() => {
-        const urlNhaMay = url(`api/nhamay/${nM_Id}`);
+        layNhaMay();
+    }, [reRenderNhaMay]);
 
-        console.log(urlNhaMay)
+    const layNhaMay = async() => {
 
-        axios.get(urlNhaMay).then((res) => {
-            if (res.data) {
-                setNhaMay(res.data);
+        try {
+            const nhaMayTrongTemp = temp_NhaMay.find((item: NhaMay) => item.nM_Id === nM_Id);
+
+            if (!nhaMayTrongTemp) {
+                const urlNhaMay = url(`api/nhamay/${nM_Id}`);
+                const res = await axios.get(urlNhaMay);
+
+                if (res.data) {
+                    const nhaMay = res.data;
+                    setNhaMay(nhaMay);
+                    temp_NhaMay.push(nhaMay);
+                }
+            }else {
+                setNhaMay(nhaMayTrongTemp);
             }
-        });
-    }, []);
+        }catch {}
+    }
 
     return (
         <View style={styles.container}>
@@ -75,13 +94,18 @@ export default function NhaMayChiTiet() {
                         </TouchableOpacity>
                     </View>
 
+                    <View style={styles.statsRow}>
+                        <SuaNhaMay nhaMay={nhaMay} setReRenderNhaMay={setReRenderNhaMay} />
+                        <XoaNhaMay nhaMay={nhaMay} setNhaMay={setNhaMay} />
+                    </View>
+
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>Doanh Nghiệp Sở Hữu Nhà Máy</Text>
                         {nhaMay.nM_DN ? (<View>
                             <Link href={{pathname: '/doanhNghiepTemplate', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
                             <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
                                 <View>
-                                    <AvatarDoanhNghiep dN_Id={nhaMay.nM_DN?.dN_Id as string} width={40} height={40} />
+                                    <AvatarDoanhNghiep dN_Id={nhaMay.nM_DN?.dN_Id as string} width={40} height={40} canChange={false}/>
                                 </View>
                                 <View style={{marginLeft: 10}}>
                                     <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{nhaMay.nM_DN?.dN_Ten}</Text>
@@ -100,7 +124,7 @@ export default function NhaMayChiTiet() {
             <View>
                 <Text>Không tồn tại nhà máy</Text>
             </View>)}
-            <Footer backgroundColor={'black'} />
+            <Footer height={getWidthScreen() <= HEIGHT_SMARTPHONE ? '6%' : '4%'} backgroundColor={'black'} />
         </View>
   );
 }

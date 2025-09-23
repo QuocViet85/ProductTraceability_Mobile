@@ -8,6 +8,7 @@ import { Alert, Button, TextInput } from "react-native";
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { StyleSheet } from "react-native";
 import { temp_DoanhNghiep } from "..";
+import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
 
 export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {doanhNghiep: DoanhNghiep, setReRenderDoanhNghiep: Function}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -110,7 +111,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 style={styles.input}
                                 placeholder="Mô tả"
                                 value={soDienThoai}
-                                onChangeText={setSoDienThoai}
+                                onChangeText={(text) => handleInputNumber(text, setSoDienThoai)}
                             />
         
                             <Text>Email:</Text>

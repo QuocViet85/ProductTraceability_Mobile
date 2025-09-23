@@ -12,6 +12,8 @@ import Loading from "@/app/helpers/ViewHelpers/loading";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import DanhMuc from "@/app/model/DanhMuc";
 import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
+import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
+import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();
@@ -120,7 +122,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const renderItem = ({ item } : {item: SanPham}) => (
         <Link href={{pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
           <TouchableOpacity style={styles.card}>
-            <AvatarSanPham sP_Id={item.sP_Id as string} height={80} width={'100%'} marginBottom={8}/>
+            <AvatarSanPham sP_Id={item.sP_Id as string} height={getHeightScreen() <= HEIGHT_SMARTPHONE ? 80 : 130} width={'100%'} marginBottom={8}/>
             <Text style={styles.text}>{item.sP_Ten}</Text>
           </TouchableOpacity>
         </Link>

@@ -9,6 +9,7 @@ import { quyenSuaSanPham } from "../Auth/Authorization/AuthSanPham";
 import { url } from "../server/backend";
 import axios from "axios";
 import getBearerToken from "../Auth/Authentication";
+import { quyenSuaNhaMay } from "../Auth/Authorization/AuthNhaMay";
 
 const temp_ListFilesAnhSanPham : {sP_Id: string, listFilesAnhSanPham: File[]}[] = [];
 
@@ -19,9 +20,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
     const [listFileAnhSanPhams, setListFileAnhSanPhams] = useState<File[]>([]);
     const [fileAnhHienTai, setFileAnhHienTai] = useState<File | undefined>(undefined);
     const [showModalTaiLenVaXoaAnh, setShowModalTaiLenVaXoaAnh] = useState<boolean | undefined>(false);
-
     const [quyenSuaSP, setQuyenSuaSP] = useState<boolean>(false);
-
     const [reRender, setReRender] = useState<number>(0);
 
     useEffect(() => {
@@ -50,18 +49,13 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
     const layQuyenSuaSanPham = async() => {
             const quyenSua = await quyenSuaSanPham(dN_SoHuu_Id);
             setQuyenSuaSP(quyenSua);
-      }
-
-    const [activeIndex, setActiveIndex] = useState(0);
-
-    const onScroll = (event: any) => {
-        const index = Math.round(event.nativeEvent.contentOffset.x / width);
-        setActiveIndex(index);
-    };
+    }
 
     const openSuaXoaAnh = (fileAnh: File) => {
+      if (quyenSuaSP) {
         setFileAnhHienTai(fileAnh);
         setShowModalTaiLenVaXoaAnh(true);
+      }
     }
 
     const taiLenAnhSanPham = async(camera: boolean) => {
@@ -142,6 +136,13 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
         }
     }
 
+    const [activeIndex, setActiveIndex] = useState(0);
+
+    const onScroll = (event: any) => {
+        const index = Math.round(event.nativeEvent.contentOffset.x / width);
+        setActiveIndex(index);
+    };
+
     return (
         <View style={{height: height}}>
                 {listFileAnhSanPhams.length > 0 ? (
@@ -168,17 +169,20 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                       </View>
                 </TouchableOpacity>
                 )}
-            />) : (<View style={{marginTop: 'auto', flexDirection: 'row'}}>
-                      <View style={{flexDirection: 'row'}}>
-                        <TouchableOpacity onPress={() => taiLenAnhSanPham(true)}>
-                          <IconSymbol name={'camera'} size={50} color={'blue'}/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => taiLenAnhSanPham(false)}>
-                            <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
-                        </TouchableOpacity>
-                      </View>
-                      <Text>{'Tải lên thêm ảnh sản phẩm'}</Text>
-                  </View>)}
+            />) : (quyenSuaSP ? (
+            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                  <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => taiLenAnhSanPham(true)}>
+                      <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => taiLenAnhSanPham(false)}>
+                        <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                    </TouchableOpacity>
+                  </View>
+                  <Text>{'Tải lên thêm ảnh sản phẩm'}</Text>
+              </View>
+              ) : (<View></View>))
+              }
                 
           <Modal
           visible={showModalTaiLenVaXoaAnh && quyenSuaSP}

@@ -12,9 +12,8 @@ export default class BinhLuan
 
     bL_NguoiTao_Client: {
         id: string,
-        name: string,
+        name: string | undefined,
         soSao: number,
-        tongSoBL: number | undefined
     } | undefined;
 
     bL_SP: {

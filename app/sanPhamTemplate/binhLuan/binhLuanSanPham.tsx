@@ -119,9 +119,9 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                 </View>
             </View>
             
-            {listBinhLuans.map((item, indexBig) => {
+            {listBinhLuans.map((item) => {
                 return (
-                    <View key={item.bL_SP_Id}>
+                    <View key={item.bL_Id}>
                         <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => router.push({pathname: '/usertemplate/user', params: {userId: item.bL_NguoiTao_Client?.id}})}>
                             <AvatarUser userId={item.bL_NguoiTao_Client?.id} width={40} height={40} canChange={false} />
                             <View>
@@ -133,11 +133,11 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                                     {Array.from({length: 5}).map((_, index) => {
                                         if (index + 1 <= (item.bL_NguoiTao_Client?.soSao as number)) {
                                             return (
-                                                <IconSymbol key={index + '' + indexBig} name="star" size={20} color="#FFD700" />
+                                                <IconSymbol key={index + '' + item.bL_Id} name="star" size={20} color="#FFD700" />
                                             )
                                         }else {
                                             return (
-                                                <IconSymbol key={index + '' + indexBig} name="star" size={20} color="grey" />
+                                                <IconSymbol key={index + '' + item.bL_Id} name="star" size={20} color="grey" />
                                             )
                                         }
                                     })}

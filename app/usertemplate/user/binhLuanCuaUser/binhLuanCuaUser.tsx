@@ -57,10 +57,8 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                         binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
                     }
                     try {
-                        if (binhLuan.bL_NguoiTao_Client) {
-                            const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(binhLuan.bL_SP_Id as string, binhLuan.bL_NguoiTao_Client.id);
-                            binhLuan.bL_NguoiTao_Client.soSao = soSao;
-                        }
+                        const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(binhLuan.bL_SP_Id as string, userId);
+                        binhLuan.bL_NguoiTao_Client = {id: userId, soSao: soSao, name: undefined}
                     }catch {}
                 }
                 setListBinhLuans(listBinhLuans);
