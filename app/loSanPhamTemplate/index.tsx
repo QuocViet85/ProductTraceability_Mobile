@@ -12,7 +12,7 @@ import Footer from "../helpers/ViewHelpers/footer";
 import Loading from "../helpers/ViewHelpers/loading";
 import { paginate } from "../helpers/LogicHelper/helper";
 
-const temp_ListLoSanPhams : {tongSo: number, listLoSanPhams: LoSanPham[]} = {tongSo: 0, listLoSanPhams: []};
+export const temp_ListLoSanPhams : {tongSo: number, listLoSanPhams: LoSanPham[]} = {tongSo: 0, listLoSanPhams: []};
 
 export default function DanhSachLoSanPham() {
     const params = useLocalSearchParams();
@@ -24,12 +24,13 @@ export default function DanhSachLoSanPham() {
     const [tongSoLoSanPham, setTongSoLoSanPham] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
+    const [reRender, setReRender] = useState<number>(0);
 
     const tongSoTrang : number = Math.ceil(tongSoLoSanPham / LIMIT_LO_SANPHAM);
 
     useEffect(() => {
         layListLoSanPham();
-    }, [pageNumber]);
+    }, [pageNumber, reRender]);
 
     const layListLoSanPham = async() => {
         setLoading(true);
@@ -53,7 +54,7 @@ export default function DanhSachLoSanPham() {
                 }   
 
                 if (res.data.listLoSanPhams) {
-                    const listLoSanPhamsTuBackEnd = res.data.listLoSanPhams;
+                    const listLoSanPhamsTuBackEnd : LoSanPham[] = res.data.listLoSanPhams;
 
                     if (pageNumber > 1) {
                         newListLoSanPhams.push(...listLoSanPhams, ...listLoSanPhamsTuBackEnd);
@@ -62,7 +63,14 @@ export default function DanhSachLoSanPham() {
                     }
                     setListLoSanPhams(newListLoSanPhams);
                     temp_ListLoSanPhams.listLoSanPhams.push(...listLoSanPhamsTuBackEnd);
+
+                    for (const loSanPham of listLoSanPhamsTuBackEnd) {
+                        try {
+                            const doanhNghiepSoHuuId = (await axios.get(url(`api/sanpham/doanh-nghiep-so-huu-id/${loSanPham.lsP_SP_Id}`))).data;
+                            loSanPham.lsp_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
+                        }catch {}
                     }
+                }
             }catch {}
         }else {
             if (pageNumber > 1) {
@@ -91,7 +99,7 @@ export default function DanhSachLoSanPham() {
                 keyExtractor={(item: LoSanPham, index) => `${item.lsP_Id}-${index}`}
                 renderItem={({item}: {item: LoSanPham}) => {
                     return (
-                        <LoSanPhamRender loSanPham={item} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} />
+                        <LoSanPhamRender loSanPham={item} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} setReRenderLoSanPham={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}

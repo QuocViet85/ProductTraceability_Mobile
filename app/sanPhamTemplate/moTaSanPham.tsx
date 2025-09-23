@@ -18,7 +18,7 @@ export default function MoTaSanPham({moTa} : {moTa: string}) {
                     <View style={{height: 5}}></View>
                     <TouchableOpacity style={{alignItems: 'center'}} onPress={() => {setShowModalMoTa(true)}}>
                         <Text style={{ color: 'grey', marginTop: 5, fontSize: 15}}>
-                            Xem toàn màn hình
+                            {'Xem toàn màn hình'}
                         </Text>
                     </TouchableOpacity>
                     <Modal

@@ -1,46 +1,158 @@
 import { useEffect, useState } from "react";
-import { getFileAsync, getUriFile } from "../helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { LO_SAN_PHAM } from "../constant/KieuTaiNguyen";
 import { IMAGE } from "../constant/KieuFile";
 import File from "../model/File";
-import { Button, Dimensions, FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Button, Dimensions, FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Updating } from "../helpers/ViewHelpers/updating";
+import LoSanPham from "../model/LoSanPham";
+import { quyenSuaSanPham } from "../Auth/Authorization/AuthSanPham";
+import getBearerToken from "../Auth/Authentication";
+import { url } from "../server/backend";
+import axios from "axios";
 
 const temp_ListAnhLoSanPhams: {lsP_Id: string | undefined, listAnhLoSanPhams: File[]}[] = [];
 
 const { width } = Dimensions.get('window');
-export default function AnhLoSanPham({lsP_Id}: {lsP_Id: string}) {
+export default function AnhLoSanPham({loSanPham}: {loSanPham: LoSanPham}) {
     const [listFileAnhLoSanPhams, setListFileAnhLoSanPhams] = useState<File[]>([]);
     const [showModalAnhLoSanPham, setShowModalAnhLoSanPham] = useState<boolean | undefined>(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
 
+    const [fileAnhHienTai, setFileAnhHienTai] = useState<File | undefined>(undefined);
+    const [quyenSuaSP, setQuyenSuaSP] = useState<boolean>(false);
+    const [showModalXoaAnh, setShowModalXoaAnh] = useState<boolean | undefined>(false);
+    const [reRender, setReRender] = useState<number>(0);
+
     useEffect(() => {
         layListFileAnhLoSanPham();
-    }, []);
+        layQuyenSuaSanPham();
+    }, [reRender]);
 
     const layListFileAnhLoSanPham = async() => {
         const listFilesInTemp = temp_ListAnhLoSanPhams.find((item) => {
-                return item.lsP_Id === lsP_Id;
+                return item.lsP_Id === loSanPham.lsP_Id;
         });
 
         if (!listFilesInTemp) {
-            const listFileAnhLoSanPhams = await getFileAsync(LO_SAN_PHAM, lsP_Id, IMAGE);
+            const listFileAnhLoSanPhams = await getFileAsync(LO_SAN_PHAM, loSanPham.lsP_Id as string, IMAGE);
             setListFileAnhLoSanPhams(listFileAnhLoSanPhams);
             temp_ListAnhLoSanPhams.push({
-                lsP_Id: lsP_Id,
+                lsP_Id: loSanPham.lsP_Id,
                 listAnhLoSanPhams: listFileAnhLoSanPhams,
             })
         }else {
             setListFileAnhLoSanPhams(listFilesInTemp.listAnhLoSanPhams);
         }
+    }
+
+    const layQuyenSuaSanPham = async() => {
+        const quyenSua = await quyenSuaSanPham(loSanPham.lsp_DoanhNghiepSoHuu_Id);
+        setQuyenSuaSP(quyenSua);
+    }
+
+    const openXoaAnh = (fileAnh: File) => {
+        if (quyenSuaSP) {
+            setFileAnhHienTai(fileAnh);
+            setShowModalXoaAnh(true);
+        }
+    }
+
+    const taiLenAnhLoSanPham = async(camera: boolean) => {
+        const bearerToken = await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+        let uriArr : string[] = [];
+        if (camera) {
+            uriArr = await getUriImagesFromCamera();
+        }else {
+            uriArr = await getUriImagesPickInDevice(true);
+        }
         
+
+        if (!uriArr) {
+            Alert.alert("Lỗi", "Không truy cập được ảnh trong thiết bị");
+            return;
+        }
+
+        if (uriArr.length > 0) {
+            const formData = new FormData();
+
+            for (const uriAvatarInDevice of uriArr) {
+                formData.append("listFiles", {
+                            uri: uriAvatarInDevice,
+                            type: "image/jpeg",
+                            name: "anhLoSanPham.jpg",
+                            } as any); 
+            }
+            
+            const uriTaiLenAnhLSP = url(`api/losanpham/photos/${loSanPham.lsP_Id}`);
+
+            try {
+                await axios.post(uriTaiLenAnhLSP, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
+                Alert.alert('Thông báo', 'Tải lên ảnh thành công');
+
+                const indexFilesAnhCuaLoSanPhamInTemp = temp_ListAnhLoSanPhams.findIndex((item) => {
+                    return item.lsP_Id === loSanPham.lsP_Id;
+                });
+                if (indexFilesAnhCuaLoSanPhamInTemp !== -1) {
+                    temp_ListAnhLoSanPhams.splice(indexFilesAnhCuaLoSanPhamInTemp);
+                }
+
+                setReRender((value) => value + 1);
+            }catch {
+                Alert.alert('Lỗi', 'Tải ảnh lên ảnh thất bại');
+            }
+        }
+    }
+
+    const xoaAnhLoSanPham = async() => {
+    const bearerToken =  await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+
+        try {
+            const uriXoaAnhLoSanPham = url(`api/losanpham/photos/${loSanPham.lsP_Id}?f_id=${fileAnhHienTai?.f_Id}`);
+            await axios.delete(uriXoaAnhLoSanPham, { headers : {Authorization: bearerToken}});
+            Alert.alert('Thông báo', 'Xóa ảnh lô sản phẩm thành công');
+            setShowModalXoaAnh(false);
+
+            const indexFilesAnhCuaLoSanPhamInTemp = temp_ListAnhLoSanPhams.findIndex((item) => {
+                return item.lsP_Id === loSanPham.lsP_Id;
+            });
+            if (indexFilesAnhCuaLoSanPhamInTemp !== -1) {
+                temp_ListAnhLoSanPhams.splice(indexFilesAnhCuaLoSanPhamInTemp);
+            }
+
+            setReRender((value) => value + 1);
+        }catch {
+            Alert.alert('Lỗi', 'Xóa ảnh lô sản phẩm thất bại');
+        }
     }
 
     const onScroll = (event: any) => {
         const index = Math.round(event.nativeEvent.contentOffset.x / width);
         setActiveIndex(index);
     };
+
+    const renderTaiLenAnhLoSanPham = (size: number | undefined) => quyenSuaSP ? (
+                            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                                <View style={{flexDirection: 'row'}}>
+                                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(true)}>
+                                    <IconSymbol name={'camera'} size={size} color={'blue'}/>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(false)}>
+                                        <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text>{'Tải lên ảnh lô sản phẩm'}</Text>
+                            </View>
+                            ) :  null
 
     return (
         <View>
@@ -68,6 +180,7 @@ export default function AnhLoSanPham({lsP_Id}: {lsP_Id: string}) {
                 <View style={{flexDirection: 'row'}}>
                     <Text style={{fontWeight: 'bold'}}>{'Hình ảnh lô sản phẩm: '}</Text>
                     <Updating />
+                    {renderTaiLenAnhLoSanPham(30)}
                 </View>
             )}
 
@@ -85,22 +198,39 @@ export default function AnhLoSanPham({lsP_Id}: {lsP_Id: string}) {
                             onScroll={onScroll}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({ item }) => (
-                            <View>
-                                <Image source={{ uri: getUriFile(item) }} style={styles.image} />
-                                <View style={styles.indicatorContainer}>
-                                    {listFileAnhLoSanPhams.map((_, i) => (
-                                    <View
-                                        key={i}
-                                        style={[
-                                        styles.dot,
-                                            { backgroundColor: i === activeIndex ? '#333' : '#aaa' },
-                                        ]}
-                                    />
-                                    ))}
-                                </View>
+                                    <TouchableOpacity onPress={() => openXoaAnh(item)}>
+                                        <Image source={{ uri: getUriFile(item) }} style={styles.image} />
+                                        <View style={styles.indicatorContainer}>
+                                            {listFileAnhLoSanPhams.map((_, i) => (
+                                            <View
+                                                key={i}
+                                                style={[
+                                                styles.dot,
+                                                    { backgroundColor: i === activeIndex ? '#333' : '#aaa' },
+                                                ]}
+                                            />
+                                            ))}
+                                        </View>
+                                    </TouchableOpacity>
+                                )}
+                            />
+                            <View style={{alignItems: 'center'}}>
+                                {renderTaiLenAnhLoSanPham(50)}
                             </View>
-                                    )}
-                        />
+                            
+                            <Modal
+                            visible={showModalXoaAnh}
+                            animationType="slide">
+                                <View style={{marginTop: 'auto'}}>
+                                    <View>
+                                        <TouchableOpacity onPress={xoaAnhLoSanPham}>
+                                        <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                        </TouchableOpacity>
+                                        <Text>Xóa ảnh vừa chọn?</Text>
+                                    </View>
+                                    <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
+                                </View>
+                            </Modal>
                     </View>
                     <View style={{marginTop: 'auto'}}>
                         <Button title="Đóng" onPress={() => setShowModalAnhLoSanPham(false)}></Button>

@@ -100,7 +100,7 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                     <View>
                         {listBinhLuans.map((item: BinhLuan, key) => {
                             return (
-                                <View key={key}>
+                                <View key={item.bL_Id}>
                                         <View>
                                             <View style={{flexDirection: 'row'}}>
                                                 <Text style={{fontStyle: 'italic', fontSize: 10}}>{new Date(item.bL_NgayTao as Date).toLocaleString()}</Text>
@@ -108,11 +108,11 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                                     {Array.from({length: 5}).map((_, index) => {
                                                         if (index + 1 <= (item.bL_NguoiTao_Client?.soSao as number)) {
                                                             return (
-                                                                <IconSymbol key={index + key} name="star" size={20} color="#FFD700" />
+                                                                <IconSymbol key={index + '' + item.bL_Id} name="star" size={20} color="#FFD700" />
                                                             )
                                                         }else {
                                                             return (
-                                                                <IconSymbol key={index + key} name="star" size={20} color="grey" />
+                                                                <IconSymbol key={index + '' + item.bL_Id} name="star" size={20} color="grey" />
                                                             )
                                                         }
                                                     })}

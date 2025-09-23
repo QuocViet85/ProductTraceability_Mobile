@@ -5,8 +5,10 @@ import Spacer from "../helpers/ViewHelpers/spacer";
 import { useRouter } from "expo-router";
 import AnhLoSanPham from "./anhLoSanPham";
 import MoTaLoSanPham from "./moTaLoSanPham";
+import SuaLoSanPham from "./thaoTacTheoAuth/suaLoSanPham";
+import XoaLoSanPham from "./thaoTacTheoAuth/xoaLoSanPham";
 
-export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat}: {loSanPham: LoSanPham, sP_Id: string | undefined, sP_Ten: string | undefined, sP_MaTruyXuat: string | undefined}) {
+export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat, setReRenderLoSanPham}: {loSanPham: LoSanPham, sP_Id: string | undefined, sP_Ten: string | undefined, sP_MaTruyXuat: string | undefined, setReRenderLoSanPham: Function}) {
     const router = useRouter();
     return (
         <View>
@@ -39,7 +41,12 @@ export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat
                     </TouchableOpacity>
                     ) : (<Updating />)}
             </View>
-            <AnhLoSanPham lsP_Id={loSanPham.lsP_Id as string}/>
+            <AnhLoSanPham loSanPham={loSanPham}/>
+            <View style={{flexDirection: 'row'}}>
+                <SuaLoSanPham loSanPham={loSanPham} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                <View style={{width: 10}}></View>
+                <XoaLoSanPham loSanPham={loSanPham} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+            </View>
             <View style={{height: 10}}></View>
             
             <View style={{alignItems: 'center'}}>

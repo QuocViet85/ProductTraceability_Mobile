@@ -12,10 +12,6 @@ const PREFIX_XOA_SANPHAM = "sp.dn.xoa.";
 export async function quyenThemSanPham(
   dN_Id: string | undefined
 ): Promise<boolean> {
-  if (!dN_Id) {
-    return false;
-  }
-
   const userLogin = await getUserLogin();
 
   if (!userLogin) {
@@ -24,6 +20,10 @@ export async function quyenThemSanPham(
 
   if (isUserAdmin(userLogin)) {
     return true;
+  }
+
+  if (!dN_Id) {
+    return false;
   }
 
   for (const permission of userLogin.permissions as string[]) {
@@ -43,10 +43,6 @@ export async function quyenThemSanPham(
 export async function quyenSuaSanPham(
   dN_Id: string | undefined
 ): Promise<boolean> {
-  if (!dN_Id) {
-    return false;
-  }
-
   const userLogin = await getUserLogin();
 
   if (!userLogin) {
@@ -55,6 +51,10 @@ export async function quyenSuaSanPham(
 
   if (isUserAdmin(userLogin)) {
     return true;
+  }
+
+  if (!dN_Id) {
+    return false;
   }
 
   for (const permission of userLogin.permissions as string[]) {
@@ -74,10 +74,6 @@ export async function quyenSuaSanPham(
 export async function quyenXoaSanPham(
   dN_Id: string | undefined
 ): Promise<boolean> {
-  if (!dN_Id) {
-    return false;
-  }
-
   const userLogin = await getUserLogin();
 
   if (!userLogin) {
@@ -86,6 +82,10 @@ export async function quyenXoaSanPham(
 
   if (isUserAdmin(userLogin)) {
     return true;
+  }
+
+  if (!dN_Id) {
+    return false;
   }
 
   for (const permission of userLogin.permissions as string[]) {

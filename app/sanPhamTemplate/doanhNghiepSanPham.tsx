@@ -13,7 +13,7 @@ export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep:
                 <TouchableOpacity>
                     <View style={{height: 80, backgroundColor: 'white', flexDirection: 'row'}}>
                         <View>
-                            <AvatarDoanhNghiep dN_Id={doanhNghiep?.dN_Id as string} width={40} height={40}/>
+                            <AvatarDoanhNghiep dN_Id={doanhNghiep?.dN_Id as string} width={40} height={40} canChange={false}/>
                         </View>
                         <View>
                             <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{doanhNghiep.dN_Ten}</Text>

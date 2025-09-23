@@ -93,11 +93,11 @@ export default function Index() {
                         </TouchableOpacity>
                   </View>
                   
-                  {sanPham.sP_Gia ? (<Text style={styles.textGia}>Giá: {formatCurrency(sanPham.sP_Gia)}</Text>) : (
+                  {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.textGia}>Giá: <Updating /></Text> 
+                    <Text style={styles.textGia}>{'Giá:'} <Updating /></Text> 
                 </View>)}
-                <Text style = {{fontSize: 15}}>Mã vạch: 
+                <Text style = {{fontSize: 15}}>{'Mã vạch: '}
                     {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
                 </Text>
                 <View style={{flexDirection: 'row'}}>
@@ -127,7 +127,7 @@ export default function Index() {
                   <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>
             </View>) 
             : (<View style={{backgroundColor: '#fff'}}>
-                <Text>Không tồn tại sản phẩm</Text>
+                <Text>{'Không tồn tại sản phẩm'}</Text>
             </View>)}
         </ScrollView>
          <Footer height={getWidthScreen() <= HEIGHT_SMARTPHONE ? '6%' : '4%'} backgroundColor={'white'} />
