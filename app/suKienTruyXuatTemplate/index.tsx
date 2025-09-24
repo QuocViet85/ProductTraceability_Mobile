@@ -24,6 +24,15 @@ export default function DanhSachSuKienTruyXuat() {
     const [tongSoSuKiens, setTongSoSuKiens] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
+    const [reRender, setReRender] = useState<number>(0);
+
+    useEffect(() => {
+        layCacSuKiens();
+    },[pageNumber]);
+
+    useEffect(() => {
+        setPageNumber(1); //re render theo lệnh thì load lại từ đầu
+    }, [reRender])
 
     const isNotMainScreen = () => {
       return lsP_Id;
@@ -62,6 +71,11 @@ export default function DanhSachSuKienTruyXuat() {
                             suKien.sK_LSP.lsP_SP.sP_UriAvatar = (await getUriAvatarSanPham(suKien.sK_LSP.lsP_SP.sP_Id)) as string;
                         }
                     }
+
+                    try {
+                        const doanhNghiepSoHuuId = (await axios.get(url(`api/losanpham/doanh-nghiep-so-huu-id/${suKien.sK_LSP_Id}`))).data;
+                        suKien.sK_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
+                    }catch {}
                 }
 
                 const newListSuKiens = [];
@@ -81,10 +95,6 @@ export default function DanhSachSuKienTruyXuat() {
         }catch {}
     }
 
-    useEffect(() => {
-        layCacSuKiens();
-    },[pageNumber])
-
     const tongSoTrang : number = Math.ceil(tongSoSuKiens / LIMIT_SU_KIEN_TRUY_XUAT);
 
     const handleLoadMore = () => {
@@ -98,10 +108,10 @@ export default function DanhSachSuKienTruyXuat() {
             <Header title={('Nhật ký truy xuất' + (isNotMainScreen() ? ' của lô sản phẩm' :  '')) as string} fontSize={isNotMainScreen() ? 20 : 30} resource={(isNotMainScreen() ? lsP_MaLSP : '') as string | undefined | null}></Header>
             <FlatList
                 data={listSuKiens}
-                keyExtractor={(item: SuKienTruyXuat) => item.sK_Id as string}
+                keyExtractor={(item: SuKienTruyXuat, index) => item.sK_Id as string + '-' + index}
                 renderItem={({item}: {item: SuKienTruyXuat}) => {
                     return (
-                        <SuKienTruyXuatRender suKien={item} isNotMainScreen={isNotMainScreen}/>
+                        <SuKienTruyXuatRender suKien={item} isNotMainScreen={isNotMainScreen} setReRenderSuKien={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}

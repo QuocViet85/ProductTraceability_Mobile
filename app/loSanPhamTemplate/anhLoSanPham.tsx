@@ -135,24 +135,24 @@ export default function AnhLoSanPham({loSanPham}: {loSanPham: LoSanPham}) {
         }
     }
 
+    const renderTaiLenAnhLoSanPham = (size: number | undefined) => quyenSuaSP ? (
+            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(true)}>
+                    <IconSymbol name={'camera'} size={size} color={'blue'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(false)}>
+                        <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
+                    </TouchableOpacity>
+                </View>
+                <Text>{'Tải lên ảnh lô sản phẩm'}</Text>
+            </View>
+            ) :  null
+
     const onScroll = (event: any) => {
         const index = Math.round(event.nativeEvent.contentOffset.x / width);
         setActiveIndex(index);
     };
-
-    const renderTaiLenAnhLoSanPham = (size: number | undefined) => quyenSuaSP ? (
-                            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
-                                <View style={{flexDirection: 'row'}}>
-                                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(true)}>
-                                    <IconSymbol name={'camera'} size={size} color={'blue'}/>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(false)}>
-                                        <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
-                                    </TouchableOpacity>
-                                </View>
-                                <Text>{'Tải lên ảnh lô sản phẩm'}</Text>
-                            </View>
-                            ) :  null
 
     return (
         <View>

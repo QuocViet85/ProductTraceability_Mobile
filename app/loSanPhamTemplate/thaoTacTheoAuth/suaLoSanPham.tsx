@@ -117,7 +117,7 @@ export default function SuaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
                         <TextInput
                             style={styles.input}
                             placeholder="Ngày sản xuất"
-                            value={ngaySanXuat?.toLocaleDateString()}
+                            value={ngaySanXuat ? (ngaySanXuat instanceof Date ? ngaySanXuat.toLocaleDateString() : ngaySanXuat) : undefined}
                             editable={false}
                         />
                     </TouchableOpacity>
@@ -132,14 +132,17 @@ export default function SuaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
                         <TextInput
                             style={styles.input}
                             placeholder="Ngày hết hạn"
-                            value={ngayHetHan?.toLocaleDateString()}
+                            value={ngayHetHan ? (ngayHetHan instanceof Date ? ngayHetHan.toLocaleDateString() : ngayHetHan) : undefined}
                             editable={false}
                         />
                     </TouchableOpacity>
 
                     {showChonNgay ? (
                         <DateTimePicker
-                            value={modeChonNgaySanXuat ? (ngaySanXuat ? ngaySanXuat : new Date()) : (ngayHetHan ? ngayHetHan : new Date())}
+                            value={
+                                modeChonNgaySanXuat ? 
+                                (ngaySanXuat ? (ngaySanXuat instanceof Date ? ngaySanXuat : new Date(ngaySanXuat)) : new Date()) :                                                              (ngayHetHan ? (ngayHetHan instanceof Date ? ngayHetHan : new Date(ngayHetHan)) : new Date())
+                            }
                             mode="date" 
                             display="default" 
                             onChange={chonNgay}

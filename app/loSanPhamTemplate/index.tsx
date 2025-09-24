@@ -30,7 +30,11 @@ export default function DanhSachLoSanPham() {
 
     useEffect(() => {
         layListLoSanPham();
-    }, [pageNumber, reRender]);
+    }, [pageNumber]);
+
+    useEffect(() => {
+        setPageNumber(1);
+    }, [reRender])
 
     const layListLoSanPham = async() => {
         setLoading(true);
@@ -66,7 +70,7 @@ export default function DanhSachLoSanPham() {
 
                     for (const loSanPham of listLoSanPhamsTuBackEnd) {
                         try {
-                            const doanhNghiepSoHuuId = (await axios.get(url(`api/sanpham/doanh-nghiep-so-huu-id/${loSanPham.lsP_SP_Id}`))).data;
+                            const doanhNghiepSoHuuId = (await axios.get(url(`api/losanpham/doanh-nghiep-so-huu-id/${loSanPham.lsP_Id}`))).data;
                             loSanPham.lsp_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
                         }catch {}
                     }

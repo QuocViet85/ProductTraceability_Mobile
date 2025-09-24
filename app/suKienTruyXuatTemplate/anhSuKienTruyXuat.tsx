@@ -1,42 +1,155 @@
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useEffect, useState } from "react";
-import { Button, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Alert, Button, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Dimensions, Text, View } from "react-native";
 import { Updating } from "../helpers/ViewHelpers/updating";
 import { Modal } from "react-native";
-import { getFileAsync, getUriFile } from "../helpers/LogicHelper/fileHelper";
+import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { IMAGE } from "../constant/KieuFile";
 import { SK_TRUY_XUAT } from "../constant/KieuTaiNguyen";
 import File from "../model/File";
+import SuKienTruyXuat from "../model/SuKienTruyXuat";
+import { quyenSuaSanPham } from "../Auth/Authorization/AuthSanPham";
+import getBearerToken from "../Auth/Authentication";
+import { url } from "../server/backend";
+import axios from "axios";
 
-const temp_ListFileAnhSuKiens : {sK_Id: string, listFileAnhSuKiens: File[]}[] = [];
+const temp_ListFilesAnhSuKien : {sK_Id: string, listFilesAnhSuKien: File[]}[] = [];
 
 const { width } = Dimensions.get('window');
-export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
-    const [listFileAnhSuKiens, setListFileAnhSuKiens] = useState<File[]>([]);
+export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
+    const [listFilesAnhSuKien, setListFilesAnhSuKien] = useState<File[]>([]);
     const [showModalAnhSuKien, setShowModalAnhSuKien] = useState<boolean | undefined>(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
 
+    const [fileAnhHienTai, setFileAnhHienTai] = useState<File | undefined>(undefined);
+    const [quyenSuaSP, setQuyenSuaSP] = useState<boolean>(false);
+    const [showModalXoaAnh, setShowModalXoaAnh] = useState<boolean | undefined>(false);
+    const [reRender, setReRender] = useState<number>(0);
+
     useEffect(() => {
         layListFileAnhSuKien();
-    }, []);
+        layQuyenSuaSanPham();
+    }, [reRender]);
 
     const layListFileAnhSuKien = async() => {
-        const listFilesInTemp = temp_ListFileAnhSuKiens.find((item) => {
-            return item.sK_Id === sK_Id;
+        const listFilesInTemp = temp_ListFilesAnhSuKien.find((item) => {
+            return item.sK_Id === suKien.sK_Id;
         });
 
         if (!listFilesInTemp) {
-            const listFileAnhSuKiens = await getFileAsync(SK_TRUY_XUAT, sK_Id, IMAGE);
-            setListFileAnhSuKiens(listFileAnhSuKiens);
-            temp_ListFileAnhSuKiens.push({
-                sK_Id: sK_Id,
-                listFileAnhSuKiens: listFileAnhSuKiens
+            const listFileAnhSuKiens = await getFileAsync(SK_TRUY_XUAT, suKien.sK_Id as string, IMAGE);
+            setListFilesAnhSuKien(listFileAnhSuKiens);
+            temp_ListFilesAnhSuKien.push({
+                sK_Id: suKien.sK_Id as string,
+                listFilesAnhSuKien: listFileAnhSuKiens
             })
         }else {
-            setListFileAnhSuKiens(listFilesInTemp.listFileAnhSuKiens);
+            setListFilesAnhSuKien(listFilesInTemp.listFilesAnhSuKien);
         }
     }
+
+    const layQuyenSuaSanPham = async() => {
+        const quyenSua = await quyenSuaSanPham(suKien.sK_DoanhNghiepSoHuu_Id);
+        setQuyenSuaSP(quyenSua);
+    }
+
+    const openXoaAnh = (fileAnh: File) => {
+        if (quyenSuaSP) {
+            setFileAnhHienTai(fileAnh);
+            setShowModalXoaAnh(true);
+        }
+    }
+
+    const taiLenAnhSuKien = async(camera: boolean) => {
+        const bearerToken = await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+        let uriArr : string[] = [];
+        if (camera) {
+            uriArr = await getUriImagesFromCamera();
+        }else {
+            uriArr = await getUriImagesPickInDevice(true);
+        }
+        
+
+        if (!uriArr) {
+            Alert.alert("Lỗi", "Không truy cập được ảnh trong thiết bị");
+            return;
+        }
+
+        if (uriArr.length > 0) {
+            const formData = new FormData();
+
+            for (const uriAvatarInDevice of uriArr) {
+                formData.append("listFiles", {
+                            uri: uriAvatarInDevice,
+                            type: "image/jpeg",
+                            name: "anhSuKienTruyXuat.jpg",
+                            } as any); 
+            }
+            
+            const uriTaiLenAnhSK = url(`api/sukientruyxuat/photos/${suKien.sK_Id}`);
+
+            try {
+                await axios.post(uriTaiLenAnhSK, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
+                Alert.alert('Thông báo', 'Tải lên ảnh thành công');
+
+                const indexFilesAnhCuaSuKienInTemp = temp_ListFilesAnhSuKien.findIndex((item) => {
+                    return item.sK_Id === suKien.sK_Id;
+                });
+                if (indexFilesAnhCuaSuKienInTemp !== -1) {
+                    temp_ListFilesAnhSuKien.splice(indexFilesAnhCuaSuKienInTemp);
+                }
+
+                setReRender((value) => value + 1);
+            }catch {
+                Alert.alert('Lỗi', 'Tải ảnh lên ảnh thất bại');
+            }
+        }
+    }
+
+    const xoaAnhSuKien = async() => {
+    const bearerToken =  await getBearerToken();
+
+        if (!bearerToken) {
+            Alert.alert("Lỗi", "Lỗi xác thực đăng nhập");
+        }
+
+        try {
+            const uriXoaAnhSuKien = url(`api/sukientruyxuat/photos/${suKien.sK_Id}?f_id=${fileAnhHienTai?.f_Id}`);
+            await axios.delete(uriXoaAnhSuKien, { headers : {Authorization: bearerToken}});
+            Alert.alert('Thông báo', 'Xóa ảnh thành công');
+            setShowModalXoaAnh(false);
+
+            const indexFilesAnhCuaSuKienInTemp = temp_ListFilesAnhSuKien.findIndex((item) => {
+                    return item.sK_Id === suKien.sK_Id;
+            });
+            if (indexFilesAnhCuaSuKienInTemp !== -1) {
+                temp_ListFilesAnhSuKien.splice(indexFilesAnhCuaSuKienInTemp);
+            }
+
+            setReRender((value) => value + 1);
+        }catch {
+            Alert.alert('Lỗi', 'Xóa ảnh lô sản phẩm thất bại');
+        }
+    }
+
+    const renderTaiLenAnhSuKien = (size: number | undefined) => quyenSuaSP ? (
+            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => taiLenAnhSuKien(true)}>
+                    <IconSymbol name={'camera'} size={size} color={'blue'}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => taiLenAnhSuKien(false)}>
+                        <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
+                    </TouchableOpacity>
+                </View>
+                <Text>{'Tải lên ảnh sự kiện'}</Text>
+            </View>
+            ) :  null
 
     const onScroll = (event: any) => {
         const index = Math.round(event.nativeEvent.contentOffset.x / width);
@@ -45,17 +158,17 @@ export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
 
     return (
             <View>
-                {listFileAnhSuKiens.length > 0 ? 
+                {listFilesAnhSuKien.length > 0 ? 
                 (<View>
                     <Text style={{fontWeight: 'bold'}}>{'Hình ảnh sự kiện truy xuất: '}</Text>
                     <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setShowModalAnhSuKien(true)}>
-                        {listFileAnhSuKiens.map((item, key) => {
+                        {listFilesAnhSuKien.map((item, key) => {
                             if (key <= 2) {
-                                return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
+                                return (<Image key={item.f_Id + '_' + key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
                             }else if (key === 3) {
                                 return (
                                     <View key={key} style={{backgroundColor: 'grey'}}>
-                                        <IconSymbol key={key} name="more-horiz" size={80} color="white" />
+                                        <IconSymbol key={item.f_Id + '_' + key} name="more-horiz" size={80} color="white" />
                                     </View>
                             )
                             }
@@ -69,6 +182,7 @@ export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
                     <View style={{flexDirection: 'row'}}>
                         <Text style={{fontWeight: 'bold'}}>{'Hình ảnh sự kiện truy xuất: '}</Text>
                         <Updating />
+                        {renderTaiLenAnhSuKien(30)}
                     </View>
                 )}
     
@@ -79,17 +193,17 @@ export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
                     >
                         <View>
                             <FlatList
-                                data={listFileAnhSuKiens}
+                                data={listFilesAnhSuKien}
                                 horizontal
                                 pagingEnabled
                                 showsHorizontalScrollIndicator={false}
                                 onScroll={onScroll}
-                                keyExtractor={(item, index) => index.toString()}
+                                keyExtractor={(item, index) => item.f_Id + '_' + index}
                                 renderItem={({ item }) => (
-                                <View>
+                                <TouchableOpacity onPress={() => openXoaAnh(item)}>
                                     <Image source={{ uri: getUriFile(item) }} style={styles.image} />
                                     <View style={styles.indicatorContainer}>
-                                        {listFileAnhSuKiens.map((_, i) => (
+                                        {listFilesAnhSuKien.map((_, i) => (
                                         <View
                                             key={i}
                                             style={[
@@ -99,9 +213,26 @@ export default function AnhSuKienTruyXuat({sK_Id}: {sK_Id: string}) {
                                         />
                                         ))}
                                     </View>
-                                </View>
+                                </TouchableOpacity>
                                         )}
                             />
+                            <View style={{alignItems: 'center'}}>
+                                {renderTaiLenAnhSuKien(50)}
+                            </View>
+                            
+                            <Modal
+                            visible={showModalXoaAnh}
+                            animationType="slide">
+                                <View style={{marginTop: 'auto'}}>
+                                    <View>
+                                        <TouchableOpacity onPress={xoaAnhSuKien}>
+                                        <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                        </TouchableOpacity>
+                                        <Text>Xóa ảnh vừa chọn?</Text>
+                                    </View>
+                                    <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
+                                </View>
+                            </Modal>
                         </View>
                         <View style={{marginTop: 'auto'}}>
                             <Button title="Đóng" onPress={() => setShowModalAnhSuKien(false)}></Button>

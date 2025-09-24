@@ -7,8 +7,10 @@ import LoSanPhamCuaSuKienTruyXuat from "./loSanPhamCuaSuKienTruyXuat";
 import { useRouter } from "expo-router";
 import AvatarSanPham from "../sanPhamTemplate/avatarSanPham";
 import MoTaSuKienTruyXuat from "./moTaSuKienTruyXuat";
+import SuaSuKienTruyXuat from "./thaoTacTheoAuth/suaSuKienTruyXuat";
+import XoaSuKienTruyXuat from "./thaoTacTheoAuth/xoaSuKienTruyXuat";
 
-export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien: SuKienTruyXuat, isNotMainScreen: Function}) {
+export default function SuKienTruyXuatRender({suKien, isNotMainScreen, setReRenderSuKien}: {suKien: SuKienTruyXuat, isNotMainScreen: Function, setReRenderSuKien: Function}) {
     const router = useRouter();
     return (
         <View>
@@ -33,7 +35,7 @@ export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien:
             : (
                 <LoSanPhamCuaSuKienTruyXuat loSanPham={suKien.sK_LSP}/>
             )}
-            <AnhSuKienTruyXuat sK_Id={suKien.sK_Id as string} />
+            <AnhSuKienTruyXuat suKien={suKien} />
             {isNotMainScreen() ? (<View></View>) 
             : (
                 <View>
@@ -47,8 +49,12 @@ export default function SuKienTruyXuatRender({suKien, isNotMainScreen}: {suKien:
                         </TouchableOpacity>
                     </View>
                 </View>
-                
             )}
+            <View style={{flexDirection: 'row'}}>
+                <SuaSuKienTruyXuat suKien={suKien} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                <View style={{width: 10}}></View>
+                <XoaSuKienTruyXuat suKien={suKien} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
+            </View>
             <Spacer height={10}/>
         </View>
     )

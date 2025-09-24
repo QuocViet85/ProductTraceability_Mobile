@@ -25,4 +25,6 @@ export default class SuKienTruyXuat
     sK_NguoiSua_Id: string | undefined;
 
     sK_LSP: LoSanPham | undefined;
+
+    sK_DoanhNghiepSoHuu_Id: string | undefined;
 }

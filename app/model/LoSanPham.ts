@@ -26,6 +26,13 @@ export default class LoSanPham
 
     lsP_NguoiSua_Id: Date | undefined;
 
+     lsP_SP: {
+        sP_Id: string, 
+        sP_Ten: string, 
+        sP_MaTruyXuat: string,
+        sP_UriAvatar: string
+    } | undefined;
+
     lsP_NM: {
         nM_Id: string,
         nM_Ten: string
