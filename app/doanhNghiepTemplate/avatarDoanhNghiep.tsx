@@ -166,7 +166,7 @@ export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN
                                         <TouchableOpacity onPress={deleteAvatar}>
                                         <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
-                                        <Text>Xóa ảnh đại diện</Text>
+                                        <Text>{'Xóa ảnh đại diện'}</Text>
                                     </View>
                                     ) : (<View></View>)}
                                 

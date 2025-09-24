@@ -159,7 +159,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
                                     <TouchableOpacity onPress={deleteAvatar}>
                                     <IconSymbol name={'delete'} size={50} color={'red'}/>
                                     </TouchableOpacity>
-                                    <Text>Xóa ảnh đại diện</Text>
+                                    <Text>{'Xóa ảnh đại diện'}</Text>
                                 </View>
                                 ) : (<View></View>)}
                             

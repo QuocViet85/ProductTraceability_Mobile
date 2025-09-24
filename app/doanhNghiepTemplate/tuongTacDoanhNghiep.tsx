@@ -108,7 +108,7 @@ export default function TuongTacDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_Id: str
                     <IconSymbol name="more-horiz" size={24} color="green" />
                 </TouchableOpacity>
             </View>
-            <Text style={styles.followerText}>{soTheoDoi} người đang theo dõi trang này</Text>
+            <Text style={styles.followerText}>{soTheoDoi}{' người đang theo dõi trang này'}</Text>
         </View>
         
     )

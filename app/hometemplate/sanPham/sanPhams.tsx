@@ -142,7 +142,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
                 </TouchableOpacity>
           </View>
           <View style={{flexDirection: 'row'}}>
-              {modeTimKiem ? (<Text>Kết quả tìm kiếm với từ khóa: <Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
+              {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
           </View>
           <FlatList
               data={listSanPhams}

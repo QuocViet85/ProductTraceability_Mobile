@@ -39,4 +39,6 @@ export default class LoSanPham
     } | undefined
 
     lsp_DoanhNghiepSoHuu_Id: string | undefined;
+
+    temp_TongSoVoiSanPham: number = 0;
 }

@@ -5,7 +5,6 @@ import { Alert, Button, DimensionValue, Image, Modal, StyleSheet, Text, Touchabl
 import getBearerToken from "../Auth/Authentication";
 import { COVER_PHOTO } from "../constant/KieuFile";
 import { USER } from "../constant/KieuTaiNguyen";
-import { STATE_CHANGE } from "../constant/State";
 import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { url } from "../server/backend";
 
@@ -172,7 +171,7 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
                                     <TouchableOpacity onPress={deleteCoverPhoto}>
                                     <IconSymbol name={'delete'} size={50} color={'red'}/>
                                     </TouchableOpacity>
-                                    <Text>Xóa ảnh bìa</Text>
+                                    <Text>{'Xóa ảnh bìa'}</Text>
                                 </View>
                                 ) : (<View></View>)}
                         </View>

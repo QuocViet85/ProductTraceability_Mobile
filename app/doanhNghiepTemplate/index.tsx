@@ -88,7 +88,7 @@ export default function Index()
                                 <Text style={styles.statLabel}>{'Sản phẩm'}</Text>
                             </TouchableOpacity>
                             <View style={styles.statBox}>
-                                <Text style={styles.statValue}>???</Text>
+                                <Text style={styles.statValue}>{'???'}</Text>
                                 <Text style={styles.statLabel}>{'Đánh giá'}</Text>
                             </View>
                         </View>
@@ -100,38 +100,38 @@ export default function Index()
 
                         {/* Giới thiệu */}
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Giới thiệu</Text>
+                            <Text style={styles.sectionTitle}>{'Giới thiệu'}</Text>
                             <View style={styles.addressRow}>
                                 <MaterialIcons name="contact-phone" size={20} color="#555" />
                                 <Text style={styles.addressText}>
-                                    Số điện thoại: {doanhNghiep.dN_SoDienThoai ? doanhNghiep.dN_SoDienThoai : (<Updating />)}
+                                    {'Số điện thoại: '}{doanhNghiep.dN_SoDienThoai ? doanhNghiep.dN_SoDienThoai : (<Updating />)}
                                 </Text>
                             </View>
 
                             <View style={styles.addressRow}>
                                 <MaterialIcons name="email" size={20} color="#555" />
                                 <Text style={styles.addressText}>
-                                    Email: {doanhNghiep.dN_Email ? doanhNghiep.dN_Email : (<Updating />)}
+                                    {'Email: '}{doanhNghiep.dN_Email ? doanhNghiep.dN_Email : (<Updating />)}
                                 </Text>
                             </View>
 
                             <View style={styles.addressRow}>
                                 <MaterialIcons name="code" size={20} color="#555" />
                                 <Text style={styles.addressText}>
-                                    Mã số thuế: {doanhNghiep.dN_MaSoThue ? doanhNghiep.dN_MaSoThue : (<Updating />)}
+                                    {'Mã số thuế: '}{doanhNghiep.dN_MaSoThue ? doanhNghiep.dN_MaSoThue : (<Updating />)}
                                 </Text>
                             </View>
 
                             <View style={styles.addressRow}>
                                 <MaterialIcons name="location-on" size={20} color="#555" />
                                 <Text style={styles.addressText}>
-                                    Địa chỉ: {doanhNghiep.dN_DiaChi ? doanhNghiep.dN_DiaChi : (<Updating />)}
+                                    {'Địa chỉ: '}{doanhNghiep.dN_DiaChi ? doanhNghiep.dN_DiaChi : (<Updating />)}
                                 </Text>
                             </View>
                         </View>
 
                         <View style={styles.section}>
-                            <Text style={styles.sectionTitle}>Chủ doanh nghiệp</Text>
+                            <Text style={styles.sectionTitle}>{'Chủ doanh nghiệp'}</Text>
                             {doanhNghiep.dN_List_CDN?.map((item, key) => {
                                 return (
                                     <View key={key}>
@@ -155,7 +155,7 @@ export default function Index()
             </View>
         ) : (
             <View>
-                <Text>Không tồn tại doanh nghiệp</Text>
+                <Text>{'Không tồn tại doanh nghiệp'}</Text>
             </View>)}
             <Footer backgroundColor={'black'} height={'6%'}/>
         </View>

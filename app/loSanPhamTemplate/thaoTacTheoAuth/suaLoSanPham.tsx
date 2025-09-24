@@ -49,7 +49,7 @@ export default function SuaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
                 lsP_MoTa: moTa
             }, {headers: {Authorization: await getBearerToken()}});
 
-            const loSanPhamInTemp = temp_ListLoSanPhams.listLoSanPhams.find((loSanPhamInTemp: LoSanPham) => {
+            const loSanPhamInTemp = temp_ListLoSanPhams.find((loSanPhamInTemp: LoSanPham) => {
                 return loSanPhamInTemp.lsP_Id === loSanPham.lsP_Id;
             });
 

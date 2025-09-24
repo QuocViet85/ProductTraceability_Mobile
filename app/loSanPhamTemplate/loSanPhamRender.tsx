@@ -13,28 +13,28 @@ export default function LoSanPhamRender({loSanPham, sP_Id, sP_Ten, sP_MaTruyXuat
     return (
         <View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Tên lô sản phẩm: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Tên lô sản phẩm:'}</Text>
                 {loSanPham.lsP_Ten ? <Text>{loSanPham.lsP_Ten}</Text> : (<Updating />)}
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Mã lô sản phẩm: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Mã lô sản phẩm:'}</Text>
                 <Text>{loSanPham.lsP_MaLSP}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Số lượng: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Số lượng:'}</Text>
                 {loSanPham.lsP_SoLuong ? <Text>{loSanPham.lsP_SoLuong.toLocaleString()}</Text> : (<Updating />)}
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Ngày sản xuất: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Ngày sản xuất:'}</Text>
                 {loSanPham.lsP_NgaySanXuat ? <Text>{loSanPham.lsP_NgaySanXuat.toLocaleString()}</Text> : (<Updating />)}
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Ngày hết hạn: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Ngày hết hạn:'}</Text>
                 {loSanPham.lsP_NgayHetHan ? (<Text>{loSanPham.lsP_NgayHetHan.toLocaleString()}</Text>) : (<Text>{'Không có'}</Text>)}
             </View>
             <MoTaLoSanPham moTa={loSanPham.lsP_MoTa}/>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Nhà máy: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Nhà máy:'}</Text>
                 {loSanPham.lsP_NM ? (
                     <TouchableOpacity style={{backgroundColor: '#f2f2f2'}} onPress={() => router.push({pathname: '/nhaMayTemplate', params: {nM_Id: loSanPham.lsP_NM?.nM_Id} })}>
                         <Text>{loSanPham.lsP_NM.nM_Ten}</Text>

@@ -71,7 +71,7 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                     animationType={'slide'}>
                         <View style={{height: '90%'}}>
                             <ScrollView>
-                                <Text>Tên:</Text>
+                                <Text>{'Tên:'}</Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Tên doanh nghiệp"
@@ -79,7 +79,7 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                                     onChangeText={setTen}
                                 />
             
-                                <Text>Mã nhà máy:</Text>
+                                <Text>{'Mã nhà máy:'}</Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Mã nhà máy"
@@ -87,7 +87,7 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                                     onChangeText={setMaNhaMay}
                                 />
             
-                                <Text>Số điện thoại:</Text>
+                                <Text>{'Số điện thoại:'}</Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Mô tả"
@@ -95,7 +95,7 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                                     onChangeText={(text) => handleInputNumber(text, setSoDienThoai)}
                                 />
 
-                                <Text>Email:</Text>
+                                <Text>{'Email:'}</Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Email"
@@ -103,7 +103,7 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                                     onChangeText={setEmail}
                                 />
             
-                                <Text>Địa chỉ:</Text>
+                                <Text>{'Địa chỉ:'}</Text>
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Giá"

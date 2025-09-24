@@ -74,7 +74,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                 animationType={'slide'}>
                     <View style={{height: '90%'}}>
                         <ScrollView>
-                            <Text>Tên:</Text>
+                            <Text>{'Tên:'}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Tên doanh nghiệp"
@@ -82,7 +82,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 onChangeText={setTen}
                             />
         
-                            <Text>Mã số thuế:</Text>
+                            <Text>{'Mã số thuế:'}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Mã số thuế"
@@ -90,7 +90,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 onChangeText={setMaSoThue}
                             />
         
-                            <Text>Mã GLN:</Text>
+                            <Text>{'Mã GLN:'}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Mã GLN"
@@ -98,7 +98,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 onChangeText={setMaGLN}
                             />
         
-                            <Text>Địa chỉ:</Text>
+                            <Text>{'Địa chỉ:'}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Giá"
@@ -106,7 +106,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 onChangeText={setDiaChi}
                             />
         
-                            <Text>Số điện thoại:</Text>
+                            <Text>{'Số điện thoại:'}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Mô tả"
@@ -114,7 +114,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 onChangeText={(text) => handleInputNumber(text, setSoDienThoai)}
                             />
         
-                            <Text>Email:</Text>
+                            <Text>{'Email:'}</Text>
                             <TextInput
                                 style={styles.input}
                                 placeholder="Email"

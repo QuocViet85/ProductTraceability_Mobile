@@ -39,7 +39,7 @@ export default function XoaNhaMay({nhaMay, setNhaMay}: {nhaMay: NhaMay, setNhaMa
             setNhaMay(null);
             setShowModalXoa(false);
         }catch {
-            Alert.alert('Lỗi', 'Xóa doanh nghiệp thất bại');
+            Alert.alert('Lỗi', 'Xóa nhà máy thất bại');
         }
     }
     return quyenXoa ? (
@@ -53,7 +53,7 @@ export default function XoaNhaMay({nhaMay, setNhaMay}: {nhaMay: NhaMay, setNhaMa
                     animationType={'slide'}>
         
                     <View style={{marginTop: '90%', alignItems: 'center', borderRadius: 8}}>
-                        <Text>{'Chắc chắn xóa sản phẩm ?'}</Text>
+                        <Text>{'Chắc chắn xóa nhà máy ?'}</Text>
                         <View style={{width: 50}}>
                             <Button title="Xóa" color={'red'} onPress={xoaNhaMay}></Button>
                         </View>

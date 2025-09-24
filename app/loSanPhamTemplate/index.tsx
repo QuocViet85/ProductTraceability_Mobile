@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, View } from "react-native";
 import { LIMIT_LO_SANPHAM } from "../constant/Limit";
 import Header from "../helpers/ViewHelpers/header";
 import LoSanPham from "../model/LoSanPham";
@@ -12,7 +12,7 @@ import Footer from "../helpers/ViewHelpers/footer";
 import Loading from "../helpers/ViewHelpers/loading";
 import { paginate } from "../helpers/LogicHelper/helper";
 
-export const temp_ListLoSanPhams : {tongSo: number, listLoSanPhams: LoSanPham[]} = {tongSo: 0, listLoSanPhams: []};
+export const temp_ListLoSanPhams : LoSanPham[] = [];
 
 export default function DanhSachLoSanPham() {
     const params = useLocalSearchParams();
@@ -39,7 +39,7 @@ export default function DanhSachLoSanPham() {
     const layListLoSanPham = async() => {
         setLoading(true);
 
-        const listLoSanPhamsTrongTemp = temp_ListLoSanPhams.listLoSanPhams.filter((item) => {
+        const listLoSanPhamsTrongTemp = temp_ListLoSanPhams.filter((item) => {
             return item.lsP_SP_Id === sP_Id;
         });
 
@@ -54,7 +54,6 @@ export default function DanhSachLoSanPham() {
                 const res = await axios.get(urlLoSanPham);
                 if (res.data.tongSo) {
                     setTongSoLoSanPham(res.data.tongSo);
-                    temp_ListLoSanPhams.tongSo = res.data.tongSo;
                 }   
 
                 if (res.data.listLoSanPhams) {
@@ -66,13 +65,14 @@ export default function DanhSachLoSanPham() {
                         newListLoSanPhams.push(...listLoSanPhamsTuBackEnd);
                     }
                     setListLoSanPhams(newListLoSanPhams);
-                    temp_ListLoSanPhams.listLoSanPhams.push(...listLoSanPhamsTuBackEnd);
+                    temp_ListLoSanPhams.push(...listLoSanPhamsTuBackEnd);
 
                     for (const loSanPham of listLoSanPhamsTuBackEnd) {
                         try {
                             const doanhNghiepSoHuuId = (await axios.get(url(`api/losanpham/doanh-nghiep-so-huu-id/${loSanPham.lsP_Id}`))).data;
                             loSanPham.lsp_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
                         }catch {}
+                        loSanPham.temp_TongSoVoiSanPham = res.data.tongSo ? res.data.tongSo : 0;
                     }
                 }
             }catch {}
@@ -83,7 +83,7 @@ export default function DanhSachLoSanPham() {
                 newListLoSanPhams.push(...listLoSanPhamsTrongTempCanLay);
             }
             setListLoSanPhams(newListLoSanPhams);
-            setTongSoLoSanPham(temp_ListLoSanPhams.tongSo);
+            setTongSoLoSanPham(temp_ListLoSanPhams[0].temp_TongSoVoiSanPham);
         }
         setLoading(false);
     }

@@ -11,6 +11,9 @@ import Loading from "../helpers/ViewHelpers/loading";
 import Footer from "../helpers/ViewHelpers/footer";
 import SuKienTruyXuatRender from "./suKienTruyXuatRender";
 import Header from "@/app/helpers/ViewHelpers/header";
+import { paginate } from "../helpers/LogicHelper/helper";
+
+export const temp_ListSuKienTruyXuats: SuKienTruyXuat[] = []; //temp not main screen
 
 export default function DanhSachSuKienTruyXuat() {
     const params = useLocalSearchParams();
@@ -32,7 +35,7 @@ export default function DanhSachSuKienTruyXuat() {
 
     useEffect(() => {
         setPageNumber(1); //re render theo lệnh thì load lại từ đầu
-    }, [reRender])
+    }, [reRender]);
 
     const isNotMainScreen = () => {
       return lsP_Id;
@@ -40,16 +43,41 @@ export default function DanhSachSuKienTruyXuat() {
 
     const layCacSuKiens = async() => {
         setLoading(true);
+
+        const newListSuKiens = [];
+
         let urlSuKien = url('api/sukientruyxuat');
 
         if (isNotMainScreen()) {
-            urlSuKien +=`/lo-san-pham/${lsP_Id}`;
+            const listSuKiensTrongTemp = temp_ListSuKienTruyXuats.filter((item) => {
+                return item.sK_LSP_Id === lsP_Id;
+            });
+    
+            const listSuKiensTrongTempCanLay = paginate(listSuKiensTrongTemp, pageNumber, LIMIT_SU_KIEN_TRUY_XUAT) as SuKienTruyXuat[];
+
+            if (listSuKiensTrongTempCanLay.length < 1) {
+                urlSuKien +=`/lo-san-pham/${lsP_Id}`;
+            }else {
+                if (pageNumber > 1) {
+                    newListSuKiens.push(...listSuKiens, ...listSuKiensTrongTempCanLay);
+                }else {
+                    newListSuKiens.push(...listSuKiensTrongTempCanLay);
+                }
+                setListSuKiens(newListSuKiens);
+                setTongSoSuKiens(temp_ListSuKienTruyXuats[0].temp_TongSoVoiLoSanPham);
+                setLoading(false);
+                return;
+            }
         }
 
         urlSuKien += `?pageNumber=${pageNumber}&limit=${LIMIT_SU_KIEN_TRUY_XUAT}`;
 
         try {
             const res = await axios.get(urlSuKien);
+
+            if (res.data.tongSo) {
+                setTongSoSuKiens(res.data.tongSo);
+            }
 
             if (res.data.listSuKienTruyXuats) {
                 const listSuKiensTuBackEnd: SuKienTruyXuat[] = res.data.listSuKienTruyXuats;
@@ -66,6 +94,8 @@ export default function DanhSachSuKienTruyXuat() {
                                 sP_UriAvatar: await getUriAvatarSanPham(sP_Id as string)
                             }
                         } as LoSanPham;
+
+                        suKien.temp_TongSoVoiLoSanPham = res.data.tongSo ? res.data.tongSo : 0;
                     }else {
                         if (suKien.sK_LSP?.lsP_SP) {
                             suKien.sK_LSP.lsP_SP.sP_UriAvatar = (await getUriAvatarSanPham(suKien.sK_LSP.lsP_SP.sP_Id)) as string;
@@ -78,19 +108,17 @@ export default function DanhSachSuKienTruyXuat() {
                     }catch {}
                 }
 
-                const newListSuKiens = [];
+                if (isNotMainScreen()) {
+                    temp_ListSuKienTruyXuats.push(...listSuKiensTuBackEnd);
+                }
+
                 if (pageNumber > 1) {
                     newListSuKiens.push(...listSuKiens, ...listSuKiensTuBackEnd);
                 }else {
                     newListSuKiens.push(...listSuKiensTuBackEnd);
                 }
-
                 setListSuKiens(newListSuKiens);
                 setLoading(false);
-            }
-
-            if (res.data.tongSo) {
-                setTongSoSuKiens(res.data.tongSo);
             }
         }catch {}
     }

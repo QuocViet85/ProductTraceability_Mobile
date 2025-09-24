@@ -51,7 +51,7 @@ export default function UserInfo() {
                     <AvatarUser userId={user.id as string} width={64} height={64} canChange={false}/>
                     <View style={styles.nameSection}>
                         <Text style={styles.businessName}>{user.name}</Text>
-                        <Text style={styles.businessType}>Tài khoản {generateExactRole(user.role as string)}</Text>
+                        <Text style={styles.businessType}>{'Tài khoản'} {generateExactRole(user.role as string)}</Text>
                     </View>
                     </View>
 
@@ -59,31 +59,31 @@ export default function UserInfo() {
 
                     {/* Giới thiệu */}
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Giới thiệu</Text>
+                        <Text style={styles.sectionTitle}>{'Giới thiệu'}</Text>
                         <View style={styles.addressRow}>
                             <MaterialIcons name="location-on" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Số điện thoại: {user.phoneNumber ? user.phoneNumber : (<Updating />)}
+                                {'Số điện thoại: '}{user.phoneNumber ? user.phoneNumber : (<Updating />)}
                             </Text>
                         </View>
 
                         <View style={styles.addressRow}>
                             <MaterialIcons name="email" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Email: {user.email ? user.email : (<Updating />)}
+                                {'Email: '}{user.email ? user.email : (<Updating />)}
                             </Text>
                         </View>
 
                         <View style={styles.addressRow}>
                             <MaterialIcons name="location-on" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Địa chỉ: {user.address ? user.address : (<Updating />)}
+                                {'Địa chỉ: '}{user.address ? user.address : (<Updating />)}
                             </Text>
                         </View>
                     </View>
 
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Đánh giá sản phẩm</Text>
+                        <Text style={styles.sectionTitle}>{'Đánh giá sản phẩm'}</Text>
                         <BinhLuanCuaUser userId={userId as string}/>
                     </View>
 
@@ -95,7 +95,7 @@ export default function UserInfo() {
             </View>
         ) : (
             <View>
-                <Text>Không tồn tại người dùng</Text>
+                <Text>{'Không tồn tại người dùng'}</Text>
             </View>)}
             <Footer backgroundColor={'black'} height={'6%'}/>
         </View>

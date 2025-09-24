@@ -208,7 +208,7 @@ export default function AnhNhaMay({nM_Id}: {nM_Id: string}) {
                                 <TouchableOpacity onPress={xoaAnhNhaMay}>
                                   <IconSymbol name={'delete'} size={50} color={'red'}/>
                                 </TouchableOpacity>
-                                <Text>Xóa ảnh nhà máy này</Text>
+                                <Text>{'Xóa ảnh nhà máy này'}</Text>
                             </View>
                           </View>
                       </View>

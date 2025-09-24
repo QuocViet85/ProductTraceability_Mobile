@@ -80,7 +80,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
                         </View>
 
 
-                        <Text>Số điện thoại:</Text>
+                        <Text>{'Số điện thoại:'}</Text>
                         <TextInput
                             style={{...styles.input, backgroundColor: 'grey'}}
                             placeholder="Số điện thoại"
@@ -88,7 +88,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
                             editable={false}
                         />
                         
-                        <Text>Tên người dùng:</Text>
+                        <Text>{'Tên người dùng:'}</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Tên"
@@ -96,7 +96,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
                             onChangeText={setName}
                         />
 
-                        <Text>Email:</Text>
+                        <Text>{'Email:'}</Text>
                         <TextInput
                                 style={styles.input}
                                 placeholder="Email"
@@ -104,7 +104,7 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
                                 onChangeText={setEmail}
                         />
                         
-                        <Text>Địa chỉ:</Text>
+                        <Text>{'Địa chỉ:'}</Text>
                         <TextInput
                             style={styles.input}
                             placeholder="Địa chỉ"

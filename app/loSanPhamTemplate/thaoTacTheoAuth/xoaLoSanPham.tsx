@@ -29,12 +29,12 @@ export default function XoaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
 
             await axios.delete(urlXoaSanPham, {headers: {Authorization: await getBearerToken()}});
 
-            const indexLoSanPhamBiXoaInTemp = temp_ListLoSanPhams.listLoSanPhams.findIndex((loSanPhamInTemp: LoSanPham) => {
+            const indexLoSanPhamBiXoaInTemp = temp_ListLoSanPhams.findIndex((loSanPhamInTemp: LoSanPham) => {
                 return loSanPhamInTemp.lsP_Id === loSanPham.lsP_Id;
             });
 
             if (indexLoSanPhamBiXoaInTemp !== -1) {
-                temp_ListLoSanPhams.listLoSanPhams.splice(indexLoSanPhamBiXoaInTemp);
+                temp_ListLoSanPhams.splice(indexLoSanPhamBiXoaInTemp);
             }
 
             setReRenderLoSanPham((value: number) => value + 1);
@@ -48,7 +48,7 @@ export default function XoaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
     ? (
     <View>
         <TouchableOpacity style={{backgroundColor: 'red', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalXoa(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>Xóa</Text>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Xóa'}</Text>
         </TouchableOpacity>
 
         <Modal

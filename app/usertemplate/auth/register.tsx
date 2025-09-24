@@ -135,8 +135,6 @@ export default function Register({setFormDangNhap} : {setFormDangNhap : any}) {
               </Picker>
           </View>
           
-            
-          
             <Button title="Đăng kí" onPress={onRegister} color={'green'}/>
             <View style={{marginBottom: 20}}></View>
             <Button title="Đã có tài khoản? Đăng nhập" onPress={() => setFormDangNhap(true)} />

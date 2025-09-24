@@ -109,7 +109,7 @@ export default function TuongTacUser({userId}: {userId: string}) {
                     <IconSymbol name="factory" size={22} color="business" />
                 </TouchableOpacity>
             </View>
-            <Text style={styles.followerText}>{soTheoDoi} người đang theo dõi trang này</Text>
+            <Text style={styles.followerText}>{soTheoDoi}{' người đang theo dõi trang này'}</Text>
         </View>
     )
 }

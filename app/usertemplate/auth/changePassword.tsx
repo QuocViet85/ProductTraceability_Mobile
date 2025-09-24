@@ -62,7 +62,7 @@ export function ChangePassword() {
                 presentationStyle='formSheet'
                 >
                 <View style={styles.container}>
-                    <Text style={styles.title}>Đổi mật khẩu</Text>
+                    <Text style={styles.title}>{'Đổi mật khẩu'}</Text>
 
                     <TextInput
                             style={styles.input}

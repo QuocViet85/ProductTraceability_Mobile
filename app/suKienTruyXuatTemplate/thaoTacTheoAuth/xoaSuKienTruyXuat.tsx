@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
+import { temp_ListSuKienTruyXuats } from "..";
 
 export default function XoaSuKienTruyXuat({suKien, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -27,13 +28,13 @@ export default function XoaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
 
             await axios.delete(urlXoaSuKien, {headers: {Authorization: await getBearerToken()}});
 
-            // const indexLoSanPhamBiXoaInTemp = temp_ListLoSanPhams.listLoSanPhams.findIndex((loSanPhamInTemp: LoSanPham) => {
-            //     return loSanPhamInTemp.lsP_Id === loSanPham.lsP_Id;
-            // });
+            const indexSuKienInTemp = temp_ListSuKienTruyXuats.findIndex((suKienInTemp: SuKienTruyXuat) => {
+                return suKienInTemp.sK_Id === suKien.sK_Id;
+            });
 
-            // if (indexLoSanPhamBiXoaInTemp !== -1) {
-            //     temp_ListLoSanPhams.listLoSanPhams.splice(indexLoSanPhamBiXoaInTemp);
-            // }
+            if (indexSuKienInTemp !== -1) {
+                temp_ListSuKienTruyXuats.splice(indexSuKienInTemp, 1);
+            }
 
             setReRenderSuKien((value: number) => value + 1);
             setShowModalXoa(false);
@@ -47,7 +48,7 @@ export default function XoaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
     ? (
     <View>
         <TouchableOpacity style={{backgroundColor: 'red', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalXoa(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>Xóa</Text>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Xóa'}</Text>
         </TouchableOpacity>
 
         <Modal

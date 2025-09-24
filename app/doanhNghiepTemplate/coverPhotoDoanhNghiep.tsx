@@ -172,7 +172,7 @@ export default function CoverPhotoDoanhNghiep({dN_Id, height, canChange}:{dN_Id:
                                         <TouchableOpacity onPress={deleteCoverPhoto}>
                                         <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
-                                        <Text>Xóa ảnh bìa</Text>
+                                        <Text>{'Xóa ảnh bìa'}</Text>
                                     </View>
                                     ) : (<View></View>)}
                             </View>

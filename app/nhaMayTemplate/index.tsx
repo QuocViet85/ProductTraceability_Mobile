@@ -68,21 +68,21 @@ export default function NhaMayChiTiet() {
                         <View style={styles.addressRow}>
                             <MaterialIcons name="contact-phone" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Số điện thoại: {nhaMay.nM_SoDienThoai ? nhaMay.nM_SoDienThoai: (<Updating />)}
+                                {'Số điện thoại: '}{nhaMay.nM_SoDienThoai ? nhaMay.nM_SoDienThoai: (<Updating />)}
                             </Text>
                         </View>
 
                         <View style={styles.addressRow}>
                             <MaterialIcons name="email" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Email: {nhaMay.nM_Email ? nhaMay.nM_Email: (<Updating />)}
+                                {'Email: '}{nhaMay.nM_Email ? nhaMay.nM_Email: (<Updating />)}
                             </Text>
                         </View>
 
                         <View style={styles.addressRow}>
                             <MaterialIcons name="location-on" size={20} color="#555" />
                             <Text style={styles.addressText}>
-                                Địa chỉ: {nhaMay.nM_DiaChi ? nhaMay.nM_DiaChi : (<Updating />)}
+                                {'Địa chỉ: '}{nhaMay.nM_DiaChi ? nhaMay.nM_DiaChi : (<Updating />)}
                             </Text>
                         </View>
                     </View>
@@ -100,7 +100,7 @@ export default function NhaMayChiTiet() {
                     </View>
 
                     <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Doanh Nghiệp Sở Hữu Nhà Máy</Text>
+                        <Text style={styles.sectionTitle}>{'Doanh Nghiệp Sở Hữu Nhà Máy'}</Text>
                         {nhaMay.nM_DN ? (<View>
                             <Link href={{pathname: '/doanhNghiepTemplate', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
                             <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
@@ -122,7 +122,7 @@ export default function NhaMayChiTiet() {
             </View>
         ) : (
             <View>
-                <Text>Không tồn tại nhà máy</Text>
+                <Text>{'Không tồn tại nhà máy'}</Text>
             </View>)}
             <Footer height={getWidthScreen() <= HEIGHT_SMARTPHONE ? '6%' : '4%'} backgroundColor={'black'} />
         </View>

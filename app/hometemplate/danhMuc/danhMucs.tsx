@@ -54,7 +54,7 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
                 </TouchableOpacity>) : (<View></View>)}
                 
             <View style={{alignItems: 'center'}}>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Chọn danh mục</Text>
+                <Text style={{fontWeight: 'bold', fontSize: 20}}>{'Chọn danh mục'}</Text>
             </View>
             <ListDanhMucs listDanhMucs={listDanhMucsHienTai} setDanhMucHienTai={setDanhMucHienTai} setShowModal={setShowModal} moListDanhMucCon={moListDanhMucCon} />
 

@@ -15,19 +15,19 @@ export default function SuKienTruyXuatRender({suKien, isNotMainScreen, setReRend
     return (
         <View>
             <View style={{flexDirection: 'row'}}>
-            <Text style={{fontWeight: 'bold'}}>Tên lô sự kiện: </Text>
+            <Text style={{fontWeight: 'bold'}}>{'Tên lô sự kiện:'}</Text>
             {suKien.sK_Ten ? <Text>{suKien.sK_Ten}</Text> : (<Updating />)}
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Mã lô sự kiện: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Mã lô sự kiện:'}</Text>
                 <Text>{suKien.sK_MaSK}</Text>
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Địa điểm: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Địa điểm:'}</Text>
                 {suKien.sK_DiaDiem ? <Text>{suKien.sK_DiaDiem}</Text> : (<Updating />)}
             </View>
             <View style={{flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold'}}>Ngày thực hiện: </Text>
+                <Text style={{fontWeight: 'bold'}}>{'Ngày thực hiện:'}</Text>
                 {suKien.sK_ThoiGian ? (<Text>{suKien.sK_ThoiGian.toLocaleString()}</Text>) : (<Updating />)}
             </View>
             <MoTaSuKienTruyXuat moTa={suKien.sK_MoTa}/>
@@ -39,7 +39,7 @@ export default function SuKienTruyXuatRender({suKien, isNotMainScreen, setReRend
             {isNotMainScreen() ? (<View></View>) 
             : (
                 <View>
-                    <Text style={{fontWeight: 'bold'}}>Thuộc sản phẩm: </Text>
+                    <Text style={{fontWeight: 'bold'}}>{'Thuộc sản phẩm:'}</Text>
                     <View style={styles.viewSanPham}>
                         <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: suKien.sK_LSP?.lsP_SP?.sP_MaTruyXuat as string} })}>
                             <AvatarSanPham sP_Id={suKien.sK_LSP?.lsP_SP_Id as string} width={50} height={50} marginBottom={undefined}/>

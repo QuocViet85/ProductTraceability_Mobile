@@ -35,8 +35,7 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
 
-  function handleBarCodeScanned({type, data}: {type: any, data: any}) {
-    setScanned(true);
+  function handleBarCodeScanned({data}: {data: string}) {
     const maTruyXuat = layMaTruyXuatTuUrl(data);
     router.push({
       pathname: '/sanPhamTemplate', 
@@ -50,13 +49,13 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
         style={styles.camera} 
         facing={facing} 
         barcodeScannerSettings={{ barcodeTypes: ["qr"], }}
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        onBarcodeScanned={handleBarCodeScanned}
         />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
           <Text style={styles.text}>Đảo Camera</Text>
         </TouchableOpacity>
-        <Button title='Scan' onPress={() => setScanned(false)}></Button>
+        <Button title='Scan' onPress={() => scanned ? setScanned(false) : setScanned(true)}></Button>
       </View>
     </View>
   );

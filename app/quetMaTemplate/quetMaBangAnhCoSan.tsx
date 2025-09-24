@@ -31,7 +31,7 @@ export default function QuetMaBangAnhCoSan() {
             <TouchableOpacity onPress={chonVaGiaiMaAnh}>
                 <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
             </TouchableOpacity>
-            <Text>Ảnh có sẵn</Text>
+            <Text>{'Ảnh có sẵn'}</Text>
         </View>
     )
 }

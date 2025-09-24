@@ -10,6 +10,7 @@ import { Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput,
 import { View } from "react-native";
 import { Alert } from "react-native";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import { temp_ListSuKienTruyXuats } from "..";
 
 export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -43,20 +44,17 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
                 sK_ThoiGian: thoiGian,
             }, {headers: {Authorization: await getBearerToken()}});
 
-            // const sanPhamInTemp = temp_SanPham.find((sanPhamInTemp: SanPham) => {
-            //     return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
-            // });
+            const suKienInTemp = temp_ListSuKienTruyXuats.find((suKienInTemp: SuKienTruyXuat) => {
+                return suKienInTemp.sK_Id === suKien.sK_Id;
+            });
 
-            // if (sanPhamInTemp) {
-            //     sanPhamInTemp.sP_Ten = ten;
-            //     sanPhamInTemp.sP_MaTruyXuat = maTruyXuat;
-            //     sanPhamInTemp.sP_MaVach = maVach;
-            //     sanPhamInTemp.sP_MoTa = moTa;
-            //     sanPhamInTemp.sP_Website = website;
-            //     sanPhamInTemp.sP_Gia = Number.parseFloat(gia as string);
-            //     sanPhamInTemp.sP_MaQuocGia = maQuocGia;
-            //     sanPhamInTemp.sP_HangSanXuat = hangSanXuat;
-            // }
+            if (suKienInTemp) {
+                suKien.sK_Ten = ten;
+                suKien.sK_MaSK = maSK;
+                suKien.sK_ThoiGian = thoiGian;
+                suKien.sK_MoTa = moTa;
+                suKien.sK_DiaDiem = diaDiem;
+            }
 
             setReRenderSuKien((value: number) => value + 1);
             setShowModalSua(false);
@@ -84,7 +82,7 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
         animationType={'slide'}>
             <View style={{height: '90%'}}>
                 <ScrollView>
-                    <Text>Tên:</Text>
+                    <Text>{'Tên:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Tên sản phẩm"
@@ -92,7 +90,7 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
                         onChangeText={setTen}
                     />
 
-                    <Text>Mã sự kiện:</Text>
+                    <Text>{'Mã sự kiện:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Mã truy xuất"
@@ -100,7 +98,7 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
                         onChangeText={setMaSK}
                     />
 
-                    <Text>Địa điểm:</Text>
+                    <Text>{'Địa điểm:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Địa điểm"
@@ -108,7 +106,7 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
                         onChangeText={setDiaDiem}
                     />
 
-                    <Text>Thời gian:</Text>
+                    <Text>{'Thời gian:'}</Text>
                     <TouchableOpacity onPress={() => {
                         setShowChonThoiGian(true);
                     }}>
@@ -129,7 +127,7 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
                             />
                     ) : null}
 
-                    <Text>Mô tả:</Text>
+                    <Text>{'Mô tả:'}</Text>
                     <TextInput
                         multiline={true}
                         style={styles.inputMoTa}

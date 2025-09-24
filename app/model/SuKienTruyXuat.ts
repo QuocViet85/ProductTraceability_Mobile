@@ -27,4 +27,6 @@ export default class SuKienTruyXuat
     sK_LSP: LoSanPham | undefined;
 
     sK_DoanhNghiepSoHuu_Id: string | undefined;
+
+    temp_TongSoVoiLoSanPham: number = 0;
 }
