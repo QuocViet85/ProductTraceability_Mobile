@@ -23,4 +23,6 @@ export default class DoanhNghiep
     dN_NguoiTao_Id: string | undefined;
 
     dN_List_CDN: {cdN_ChuDN: {id: string, name: string}}[] | undefined;
+
+    temp_TongSo: number = 0;
 }

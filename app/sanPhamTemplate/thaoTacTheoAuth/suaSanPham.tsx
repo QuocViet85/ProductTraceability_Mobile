@@ -73,7 +73,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
     ? (
     <View>
         <TouchableOpacity style={{backgroundColor: 'yellow', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>Sửa</Text>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Sửa'}</Text>
         </TouchableOpacity>
 
         <Modal
@@ -81,7 +81,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
         animationType={'slide'}>
             <View style={{height: '90%'}}>
                 <ScrollView>
-                    <Text>Tên:</Text>
+                    <Text>{'Tên:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Tên sản phẩm"
@@ -89,7 +89,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={setTen}
                     />
 
-                    <Text>Mã truy xuất:</Text>
+                    <Text>{'Mã truy xuất:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Mã truy xuất"
@@ -97,7 +97,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={setMaTruyXuat}
                     />
 
-                    <Text>Mã vạch:</Text>
+                    <Text>{'Mã vạch:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Mã vạch"
@@ -105,7 +105,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={setMaVach}
                     />
 
-                    <Text>Giá:</Text>
+                    <Text>{'Giá:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Giá"
@@ -113,7 +113,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={(value) => {handleInputNumber(value, setGia)}}
                     />
 
-                    <Text>Mô tả:</Text>
+                    <Text>{'Mô tả:'}</Text>
                     <TextInput
                         multiline={true}
                         style={styles.inputMoTa}
@@ -122,7 +122,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={setMoTa}
                     />
 
-                    <Text>Website:</Text>
+                    <Text>{'Website:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Website"
@@ -130,7 +130,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={setWebsite}
                     />
 
-                    <Text>Hãng sản xuất:</Text>
+                    <Text>{'Hãng sản xuất:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Hãng sản xuất"
@@ -138,7 +138,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         onChangeText={setHangSanXuat}
                     />
 
-                    <Text>Mã quốc gia:</Text>
+                    <Text>{'Mã quốc gia:'}</Text>
                     <TextInput
                         style={styles.input}
                         placeholder="Mã quốc gia"

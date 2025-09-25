@@ -12,6 +12,10 @@ const PREFIX_XOA_SANPHAM = "sp.dn.xoa.";
 export async function quyenThemSanPham(
   dN_Id: string | undefined
 ): Promise<boolean> {
+  if (!dN_Id) {
+    return false;
+  }
+  
   const userLogin = await getUserLogin();
 
   if (!userLogin) {
@@ -20,10 +24,6 @@ export async function quyenThemSanPham(
 
   if (isUserAdmin(userLogin)) {
     return true;
-  }
-
-  if (!dN_Id) {
-    return false;
   }
 
   for (const permission of userLogin.permissions as string[]) {

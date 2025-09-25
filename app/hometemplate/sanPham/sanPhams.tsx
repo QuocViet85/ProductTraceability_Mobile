@@ -14,6 +14,7 @@ import DanhMuc from "@/app/model/DanhMuc";
 import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
 import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
 import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
+import ThemSanPham from "@/app/sanPhamTemplate/thaoTacTheoAuth/themSanPham";
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();
@@ -143,6 +144,9 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
           </View>
           <View style={{flexDirection: 'row'}}>
               {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
+          </View>
+          <View style={{marginTop: 10}}>
+            <ThemSanPham setReRenderSanPham={setForceReRender} width={100} height={30} paddingVertical={5} fontSize={12}/>
           </View>
           <FlatList
               data={listSanPhams}
