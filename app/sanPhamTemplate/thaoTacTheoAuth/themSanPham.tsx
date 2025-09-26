@@ -10,6 +10,10 @@ import { View } from "react-native";
 import { Alert } from "react-native";
 import DoanhNghiep from "@/app/model/DoanhNghiep";
 import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
+import NhaMay from "@/app/model/NhaMay";
+import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
+import DanhMuc from "@/app/model/DanhMuc";
+import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
 
 export default function ThemSanPham({setReRenderSanPham, width, height, paddingVertical, fontSize}: { setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [showModalThem, setShowModalThem] = useState<boolean | undefined>(false);
@@ -22,18 +26,48 @@ export default function ThemSanPham({setReRenderSanPham, width, height, paddingV
     const [gia, setGia] = useState<string | undefined>(undefined);
     const [hangSanXuat, setHangSanXuat] = useState<string | undefined>(undefined)
     const [maQuocGia, setMaQuocGia] = useState<string | undefined>(undefined);
-    const [showLuaChonDoanhNghiepSoHuu, setShowLuaChonDoanhNghiepSoHuu] = useState<boolean>(false);
 
+    const [showLuaChonDoanhNghiepSoHuu, setShowLuaChonDoanhNghiepSoHuu] = useState<boolean>(false);
     const [doanhNghiepSoHuu, setDoanhNghiepSoHuu] = useState<DoanhNghiep | undefined>(undefined);
 
+    const [showLuaChonDoanhNghiepSanXuat, setShowLuaChonDoanhNghiepSanXuat] = useState<boolean>(false);
+    const [doanhNghiepSanXuat, setDoanhNghiepSanXuat] = useState<DoanhNghiep | undefined>(undefined);
+
+    const [showLuaChonDoanhNghiepVanTai, setShowLuaChonDoanhNghiepVanTai] = useState<boolean>(false);
+    const [doanhNghiepVanTai, setDoanhNghiepVanTai] = useState<DoanhNghiep | undefined>(undefined);
+
+    const [showLuaChonNhaMay, setShowLuaChonNhaMay] = useState<boolean>(false);
+    const [nhaMay, setNhaMay] = useState<NhaMay | undefined>(undefined);
+
+    const [danhMuc, setDanhMuc] = useState<DanhMuc>(khongChonDanhMuc as DanhMuc);
+
     const setChonDoanhNghiepSoHuu = async(doanhNghiep: DoanhNghiep) => {
-        const quyenThem = await quyenThemSanPham(doanhNghiepSoHuu?.dN_Id);
+        if (!doanhNghiep) {
+            Alert.alert('Lỗi', 'Phải có doanh nghiệp sở hữu');
+            return;
+        }
+        const quyenThem = await quyenThemSanPham(doanhNghiep.dN_Id);
 
         if (!quyenThem) {
             Alert.alert('Lỗi', 'Bạn không có quyền thêm sản phẩm cho doanh nghiệp này');
         }
         setDoanhNghiepSoHuu(doanhNghiep);
         setShowLuaChonDoanhNghiepSoHuu(false);
+    }
+
+    const setChonDoanhNghiepSanXuat = (doanhNghiep: DoanhNghiep) => {
+        setDoanhNghiepSanXuat(doanhNghiep);
+        setShowLuaChonDoanhNghiepSanXuat(false);
+    }
+
+    const setChonDoanhNghiepVanTai= (doanhNghiep: DoanhNghiep) => {
+        setDoanhNghiepVanTai(doanhNghiep);
+        setShowLuaChonDoanhNghiepVanTai(false);
+    }
+
+    const setChonNhaMay= (nhaMay: NhaMay) => {
+        setNhaMay(nhaMay);
+        setShowLuaChonNhaMay(false);
     }
 
     const themSanPham = async() => {
@@ -50,8 +84,12 @@ export default function ThemSanPham({setReRenderSanPham, width, height, paddingV
                     sP_Gia: gia,
                     sP_MaQuocGia: maQuocGia,
                     sP_HangSanXuat: hangSanXuat,
-                    sP_DN_SoHuu_Id: doanhNghiepSoHuu?.dN_Id
-                }, {headers: {Authorization: await getBearerToken()}});
+                    sP_DN_SoHuu_Id: doanhNghiepSoHuu?.dN_Id,
+                    sP_DN_SanXuat_Id: doanhNghiepSanXuat?.dN_Id,
+                    sP_DN_VanTai_Id: doanhNghiepVanTai?.dN_Id,
+                    sP_NM_Id: nhaMay?.nM_Id,
+                    sP_DM_Id: danhMuc.dM_Id ? danhMuc.dM_Id : null
+                } as SanPham, {headers: {Authorization: await getBearerToken()}});
 
                 setReRenderSanPham((value: number) => value + 1);
                 setShowModalThem(false);
@@ -163,6 +201,10 @@ export default function ThemSanPham({setReRenderSanPham, width, height, paddingV
                             onChangeText={setMaQuocGia}
                         />
 
+                        <Text>{'Danh mục:'}</Text>
+                        <DanhMucs danhMucHienTai={danhMuc} setDanhMucHienTai={setDanhMuc} height={30} alignItems={undefined}/>
+                        <View style={{height: 10}}></View>
+
                         <Text>{'Doanh nghiệp sở hữu:'}</Text>
                             <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiepSoHuu(true)}>
                                 <TextInput
@@ -173,6 +215,39 @@ export default function ThemSanPham({setReRenderSanPham, width, height, paddingV
                             />
                         </TouchableOpacity>
                         <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiepSoHuu} setShowLuaChon={setShowLuaChonDoanhNghiepSoHuu} setChonDoanhNghiep={setChonDoanhNghiepSoHuu}/>
+
+                        <Text>{'Doanh nghiệp sản xuất:'}</Text>
+                            <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiepSanXuat(true)}>
+                                <TextInput
+                                style={styles.input}
+                                placeholder="Doanh nghiệp sản xuất"
+                                editable={false}
+                                value={doanhNghiepSanXuat?.dN_Ten}
+                            />
+                        </TouchableOpacity>
+                        <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiepSanXuat} setShowLuaChon={setShowLuaChonDoanhNghiepSanXuat} setChonDoanhNghiep={setChonDoanhNghiepSanXuat}/>
+
+                        <Text>{'Doanh nghiệp vận tải:'}</Text>
+                            <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiepVanTai(true)}>
+                                <TextInput
+                                style={styles.input}
+                                placeholder="Doanh nghiệp vận tải"
+                                editable={false}
+                                value={doanhNghiepVanTai?.dN_Ten}
+                            />
+                        </TouchableOpacity>
+                        <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiepVanTai} setShowLuaChon={setShowLuaChonDoanhNghiepVanTai} setChonDoanhNghiep={setChonDoanhNghiepVanTai}/>
+
+                        <Text>{'Nhà máy:'}</Text>
+                            <TouchableOpacity onPress={() => setShowLuaChonNhaMay(true)}>
+                                <TextInput
+                                style={styles.input}
+                                placeholder="Nhà máy"
+                                editable={false}
+                                value={nhaMay?.nM_Ten}
+                            />
+                        </TouchableOpacity>
+                        <LuaChonNhaMayHelper showLuaChon={showLuaChonNhaMay} setShowLuaChon={setShowLuaChonNhaMay} setChonNhaMay={setChonNhaMay}/>
                     </ScrollView>
                 </View>
                 

@@ -1,18 +1,17 @@
-import { LIMIT_DOANHNGHIEP } from "@/app/constant/Limit";
-import DoanhNghiep from "@/app/model/DoanhNghiep";
+import { LIMIT_NHAMAY } from "@/app/constant/Limit";
+import NhaMay from "@/app/model/NhaMay";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { paginate } from "../LogicHelper/helper";
 import { Button, FlatList, Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Loading from "../ViewHelpers/loading";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 
-export default function LuaChonDoanhNghiepHelper({showLuaChon, setShowLuaChon, setChonDoanhNghiep}: {showLuaChon: boolean, setShowLuaChon: Function, setChonDoanhNghiep: Function}) 
+export default function LuaChonNhaMayHelper({showLuaChon, setShowLuaChon, setChonNhaMay}: {showLuaChon: boolean, setShowLuaChon: Function, setChonNhaMay: Function}) 
 {
-    const [listDoanhNghieps, setListDoanhNghieps] = useState<DoanhNghiep[]>([]);
-    const [tongSoDoanhNghiep, setTongSoDoanhNghiep] = useState<number>(0);
-    const [textTimKiemDoanhNghiep, setTextTimKiemDoanhNghiep] = useState<string>('');
+    const [listNhaMays, setListNhaMays] = useState<NhaMay[]>([]);
+    const [tongSoNhaMay, setTongSoNhaMay] = useState<number>(0);
+    const [textTimKiemNhaMay, setTextTimKiemNhaMay] = useState<string>('');
     const [modeTimKiem, setModeTimKiem] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
@@ -21,42 +20,42 @@ export default function LuaChonDoanhNghiepHelper({showLuaChon, setShowLuaChon, s
 
     useEffect(() => {
         if (showLuaChon) {
-            layCacDoanhNghieps();
+            layCacNhaMays();
         }
     }, [pageNumber, reRender, showLuaChon, descending]);
 
-    const layCacDoanhNghieps = async() => {
+    const layCacNhaMays = async() => {
         setLoading(true);
-        const newListDoanhNghieps: DoanhNghiep[] = [];
-            let urlDoanhNghiep = url(`api/doanhnghiep/co-ban?pageNumber=${pageNumber}&limit=${LIMIT_DOANHNGHIEP}&descending=${descending}`);
+        const newListNhaMays: NhaMay[] = [];
+            let urlNhaMay = url(`api/NhaMay/co-ban?pageNumber=${pageNumber}&limit=${LIMIT_NHAMAY}&descending=${descending}`);
             if (modeTimKiem) {
-                if (textTimKiemDoanhNghiep) {
-                    urlDoanhNghiep += `&search=${encodeURIComponent(textTimKiemDoanhNghiep)}`
+                if (textTimKiemNhaMay) {
+                    urlNhaMay += `&search=${encodeURIComponent(textTimKiemNhaMay)}`
                 }
             }
 
             try {
-                const res = await axios.get(urlDoanhNghiep);
+                const res = await axios.get(urlNhaMay);
                 if (res.data.tongSo) {
-                    setTongSoDoanhNghiep(res.data.tongSo);
+                    setTongSoNhaMay(res.data.tongSo);
                 }
 
-                if (res.data.listDoanhNghieps) {
-                    const listDoanhNghiepsTuBackEnd: DoanhNghiep[] = res.data.listDoanhNghieps;
+                if (res.data.listNhaMays) {
+                    const listNhaMaysTuBackEnd: NhaMay[] = res.data.listNhaMays;
 
                     if (pageNumber > 1) {
-                        newListDoanhNghieps.push(...listDoanhNghieps, ...listDoanhNghiepsTuBackEnd);
+                        newListNhaMays.push(...listNhaMays, ...listNhaMaysTuBackEnd);
                     }else {
-                        newListDoanhNghieps.push(...listDoanhNghiepsTuBackEnd);
+                        newListNhaMays.push(...listNhaMaysTuBackEnd);
                     }
-                    setListDoanhNghieps(newListDoanhNghieps);
+                    setListNhaMays(newListNhaMays);
                 }
             }catch {}
             setLoading(false);
         }
     
 
-    const layCacDoanhNghiepTuDau = () => {
+    const layCacNhaMayTuDau = () => {
       if (pageNumber !== 1) {
         setPageNumber(1); 
       }else {
@@ -64,7 +63,7 @@ export default function LuaChonDoanhNghiepHelper({showLuaChon, setShowLuaChon, s
       }
     }
 
-    const tongSoTrang : number = Math.ceil(tongSoDoanhNghiep / LIMIT_DOANHNGHIEP);
+    const tongSoTrang : number = Math.ceil(tongSoNhaMay / LIMIT_NHAMAY);
 
     const handleLoadMore = () => {
       if (pageNumber < tongSoTrang) {
@@ -73,25 +72,25 @@ export default function LuaChonDoanhNghiepHelper({showLuaChon, setShowLuaChon, s
     };
 
     const handleTextInputSearch = (text: string) => {
-      setTextTimKiemDoanhNghiep(text);
+      setTextTimKiemNhaMay(text);
       if (!text) {
         setModeTimKiem(false);
-        layCacDoanhNghiepTuDau();
+        layCacNhaMayTuDau();
       }
     }
 
     const handleTouchSearch = () => {
-      if (textTimKiemDoanhNghiep) {
+      if (textTimKiemNhaMay) {
         setModeTimKiem(true);
-        layCacDoanhNghiepTuDau(); 
+        layCacNhaMayTuDau(); 
       }
     }
 
     const handleTouchDestroySearch = () => {
-      if (textTimKiemDoanhNghiep) {
-        setTextTimKiemDoanhNghiep('');
+      if (textTimKiemNhaMay) {
+        setTextTimKiemNhaMay('');
         setModeTimKiem(false);
-        layCacDoanhNghiepTuDau();
+        layCacNhaMayTuDau();
       }
     }
 
@@ -100,7 +99,7 @@ export default function LuaChonDoanhNghiepHelper({showLuaChon, setShowLuaChon, s
         visible={showLuaChon}
         animationType="slide">
           <View style={{width: '100%', flexDirection: 'row'}}>
-              <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={textTimKiemDoanhNghiep} onChangeText={handleTextInputSearch}></TextInput>
+              <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={textTimKiemNhaMay} onChangeText={handleTextInputSearch}></TextInput>
               <TouchableOpacity style={styles.touchDestroySearch} onPress={handleTouchDestroySearch}>
                   <Text>{'X'}</Text>
               </TouchableOpacity>
@@ -119,16 +118,17 @@ export default function LuaChonDoanhNghiepHelper({showLuaChon, setShowLuaChon, s
               </TouchableOpacity>)}
           </View>
             
-            <TouchableOpacity style={{borderRadius: 8, borderWidth: 1, width: '100%', padding: 10}} onPress={() => setChonDoanhNghiep(undefined)}>
+            <TouchableOpacity style={{borderRadius: 8, borderWidth: 1, width: '100%', padding: 10}} onPress={() => setChonNhaMay(undefined)}>
                 <Text style={{fontSize: 16}}>{'Không chọn'}</Text>
             </TouchableOpacity>
+
             <FlatList
-                data={listDoanhNghieps}
-                keyExtractor={(item: DoanhNghiep, index) => `${item.dN_Id}-${index}`}
-                renderItem={({item}: {item: DoanhNghiep}) => {
+                data={listNhaMays}
+                keyExtractor={(item: NhaMay, index) => `${item.nM_Id}-${index}`}
+                renderItem={({item}: {item: NhaMay}) => {
                     return (
-                        <TouchableOpacity style={{borderRadius: 8, borderWidth: 1, width: '100%', padding: 10}} onPress={() => setChonDoanhNghiep(item)}>
-                            <Text style={{fontSize: 16}}>{item.dN_Ten}</Text>
+                        <TouchableOpacity style={{borderRadius: 8, borderWidth: 1, width: '100%', padding: 10}} onPress={() => setChonNhaMay(item)}>
+                            <Text style={{fontSize: 16}}>{item.nM_Ten}</Text>
                         </TouchableOpacity>
                     )
                 }}

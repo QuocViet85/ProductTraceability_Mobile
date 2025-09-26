@@ -9,6 +9,30 @@ const PREFIX_SUA_SANPHAM = "sp.dn.sua.";
 
 const PREFIX_XOA_SANPHAM = "sp.dn.xoa.";
 
+export async function quyenAdminSanPham(
+  dN_Id: string | undefined
+) {
+  const userLogin = await getUserLogin();
+
+  if (!userLogin) {
+    return false;
+  }
+
+  if (isUserAdmin(userLogin)) {
+    return true;
+  }
+
+  if (!dN_Id) {
+    return false;
+  }
+
+  for (const permission of userLogin.permissions as string[]) {
+    if (isAdminSanPham(permission, dN_Id)) {
+      return true;
+    }
+  }
+}
+
 export async function quyenThemSanPham(
   dN_Id: string | undefined
 ): Promise<boolean> {

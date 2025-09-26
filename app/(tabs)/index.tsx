@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Header from '../helpers/ViewHelpers/header';
-import DanhMucs, { tatCaDanhMuc } from '../hometemplate/danhMuc/danhMucs';
+import DanhMucs, { khongChonDanhMuc } from '../hometemplate/danhMuc/danhMucs';
 import DanhSachSanPham from '../hometemplate/sanPham/sanPhams';
 import DanhMuc from '../model/DanhMuc';
 
 
 export default function HomeScreen() {
-  const [danhMucHienTai, setDanhMucHienTai] = useState<DanhMuc>(tatCaDanhMuc as DanhMuc);
+  const [danhMucHienTai, setDanhMucHienTai] = useState<DanhMuc>(khongChonDanhMuc as DanhMuc);
   
   return (
     <View style={styles.container}>
       <Header title={"Sản phẩm"} fontSize={30} resource={null}></Header>
-      <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} />
+      <View style={{height: 10}}></View>
+      <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} height={25} alignItems='center'/>
+      <View style={{height: 10}}></View>
       <DanhSachSanPham danhMucHienTai={danhMucHienTai} />
     </View>
   );

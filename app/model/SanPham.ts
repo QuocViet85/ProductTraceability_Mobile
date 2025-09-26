@@ -1,3 +1,4 @@
+import DanhMuc from "./DanhMuc";
 import DoanhNghiep from "./DoanhNghiep";
 import NhaMay from "./NhaMay";
 
@@ -31,8 +32,6 @@ export default class SanPham
 
     sP_DM_Id: string | undefined;
 
-    sP_NguoiPhuTrach_Id: string | undefined;
-
     sP_DN_SoHuu_Id: string | undefined;
 
     sP_DN_VanTai_Id: string | undefined;
@@ -41,13 +40,17 @@ export default class SanPham
 
     sP_NM_Id: string | undefined;
 
+    sP_DM: DanhMuc | undefined;
+
     sP_DN_SoHuu: DoanhNghiep | undefined;
 
     sP_DN_SanXuat: DoanhNghiep | undefined;
 
     sP_DN_VanTai: DoanhNghiep | undefined;
 
+    sP_NM: NhaMay | undefined;
+
     uriAvatar: string | undefined | null;
 
-    sP_NM: NhaMay | undefined;
+    
 }

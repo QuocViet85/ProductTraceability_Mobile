@@ -7,6 +7,8 @@ export const LIMIT_BINHLUAN = 5;
 
 export const LIMIT_DOANHNGHIEP = getHeightScreen() <= HEIGHT_SMARTPHONE ? 15 : 30;
 
+export const LIMIT_NHAMAY = getHeightScreen() <= HEIGHT_SMARTPHONE ? 15 : 30;
+
 //FLAT LIST LIMIT
 
 export const LIMIT_SANPHAM = 12; 

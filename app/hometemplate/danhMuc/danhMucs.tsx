@@ -1,14 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Button, DimensionValue, FlexAlignType, Modal, Text, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
 import ListDanhMucs from "./listDanhMucs";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import DanhMuc from "@/app/model/DanhMuc";
 
-export const tatCaDanhMuc = {dM_Id: '', dM_Ten: 'Tất cả'};
+export const khongChonDanhMuc = {dM_Id: undefined, dM_Ten: 'Không Chọn'};
 
-export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucHienTai: any, setDanhMucHienTai: any}){
+export default function DanhMucs({danhMucHienTai, setDanhMucHienTai, height, alignItems} : {danhMucHienTai: DanhMuc, setDanhMucHienTai: any, height: DimensionValue | undefined, alignItems: FlexAlignType | undefined}){
     const [showModal, setShowModal] = useState(false);
     const [listDanhMucsCha, setListDanhMucsCha] = useState<(DanhMuc | DanhMuc[])[]>([]);
     const [listDanhMucsHienTai, setListDanhMucsHienTai] = useState<DanhMuc[]>([]);
@@ -16,7 +16,7 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
     useEffect(() => {
             axios.get(url('api/danhmuc')).then((res: any) => {
             const listDanhMucs = res.data.listDanhMucs;
-            listDanhMucs.unshift(tatCaDanhMuc);
+            listDanhMucs.unshift(khongChonDanhMuc);
             setListDanhMucsHienTai(listDanhMucs);
         })
         .catch((err) => {
@@ -38,8 +38,8 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai} : {danhMucH
 
     return (
         <View style={{width: '100%'}}>
-            <View style={{alignItems: 'center', margin: 10}}>
-                <Text style={{borderWidth: 1, borderColor: 'grey', borderRadius: 8}} onPress={() => setShowModal(true)}>{danhMucHienTai.dM_Ten === 'Tất cả' ? 'Danh mục ▼' : danhMucHienTai.dM_Ten + ' ▼'}</Text>
+            <View style={{alignItems: alignItems}}>
+                <Text style={{borderWidth: 1, borderColor: 'grey', borderRadius: 8, height: height}} onPress={() => setShowModal(true)}>{danhMucHienTai.dM_Id === undefined ? 'Danh mục ▼' : danhMucHienTai.dM_Ten + ' ▼'}</Text>
             </View>
                   
             <Modal

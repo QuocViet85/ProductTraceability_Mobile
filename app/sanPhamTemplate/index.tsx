@@ -16,7 +16,6 @@ import AnhSanPham from "./anhSanPham";
 import BinhLuanSanPhan from "./binhLuan/binhLuanSanPham";
 import DoanhNghiepSanPham from "./doanhNghiepSanPham";
 import MoTaSanPham from "./moTaSanPham";
-import NguoiPhuTrach from "./nguoiPhuTrach";
 import NhaMaySanPham from "./nhaMaySanPham";
 import QrCode from "./qrCode";
 import SaoSanPham from "./saoSanPham";
@@ -35,6 +34,7 @@ export default function Index() {
     const [reRenderSanPham, setReRenderSanPham] = useState<number>(0);
 
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
+    console.log(urlSanPham);
   
     const router = useRouter();
 
@@ -92,6 +92,9 @@ export default function Index() {
                             <IconSymbol name="share" size={30} color="#007AFF" />
                         </TouchableOpacity>
                   </View>
+                  <View style={{flexDirection: 'row'}}>
+                    <Text style={{fontSize: 15}}>{'Danh mục: '}</Text> {sanPham.sP_DM?.dM_Ten ? (<Text style={{fontSize: 15, fontWeight: 'bold'}}>{sanPham.sP_DM?.dM_Ten}</Text>) : (<Updating />)}
+                  </View>
                   
                   {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
                 <View style={{flexDirection: 'row'}}>
@@ -120,7 +123,6 @@ export default function Index() {
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SoHuu} vaiTro={"sở hữu"} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SanXuat} vaiTro={"sản xuất"} />
                   <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
-                  <NguoiPhuTrach userId={sanPham.sP_NguoiPhuTrach_Id as string} />
                   <NhaMaySanPham nhaMay={sanPham.sP_NM}/>
                   <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
                   <WebsiteSanPham sP_Website={sanPham.sP_Website} />

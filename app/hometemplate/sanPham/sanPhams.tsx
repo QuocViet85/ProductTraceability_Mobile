@@ -31,6 +31,16 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const [loading, setLoading] = useState<boolean>(false);
     const [forceReRender, setForceReRender]  = useState<number>(0);
 
+    useEffect(() => {
+      layCacSanPhams();
+    }, [pageNumber, forceReRender]);
+
+    useEffect(() => {
+      layCacSanPhamsTuDau();
+    },[danhMucHienTai])
+
+    const tongSoTrang : number = Math.ceil(tongSoSanPham / LIMIT_SANPHAM);
+
     const layCacSanPhams = async() => {
         setLoading(true);
         let urlSanPham = url('api/sanpham');
@@ -73,18 +83,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
         }catch {}
     }
 
-    useEffect(() => {
-      layCacSanPhams();
-    }, [danhMucHienTai, pageNumber, forceReRender]);
-
-    const tongSoTrang : number = Math.ceil(tongSoSanPham / LIMIT_SANPHAM);
-
-    const handleLoadMore = () => {
-      if (pageNumber < tongSoTrang) {
-        setPageNumber(pageNumber + 1);
-      }
-    };
-
     const layCacSanPhamsTuDau = () => {
       if (pageNumber !== 1) {
         setPageNumber(1); // thay đổi khác thì chắc chắn re-render và gọi lại layLaiSanPhams() nên không cần gọi ở đây
@@ -92,6 +90,12 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
         setForceReRender(forceReRender + 1);
       }
     }
+
+    const handleLoadMore = () => {
+      if (pageNumber < tongSoTrang) {
+        setPageNumber(pageNumber + 1);
+      }
+    };
 
     const handleTextInputSearch = (text: string) => {
       setTextTimKiemSanPham(text);

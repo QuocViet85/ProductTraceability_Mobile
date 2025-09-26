@@ -1,5 +1,5 @@
 import getBearerToken from "@/app/Auth/Authentication";
-import { quyenSuaSanPham } from "@/app/Auth/Authorization/AuthSanPham";
+import { quyenAdminSanPham, quyenSuaSanPham, quyenThemSanPham } from "@/app/Auth/Authorization/AuthSanPham";
 import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
 import SanPham from "@/app/model/SanPham";
 import { url } from "@/app/server/backend";
@@ -9,6 +9,13 @@ import { Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput,
 import { View } from "react-native";
 import { temp_SanPham } from "..";
 import { Alert } from "react-native";
+import DoanhNghiep from "@/app/model/DoanhNghiep";
+import NhaMay from "@/app/model/NhaMay";
+import { quyenSuaDoanhNghiep } from "@/app/Auth/Authorization/AuthDoanhNghiep";
+import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
+import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
+import DanhMuc from "@/app/model/DanhMuc";
+import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
 
 export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -23,6 +30,61 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
     const [hangSanXuat, setHangSanXuat] = useState<string | undefined>(sanPham.sP_HangSanXuat)
     const [maQuocGia, setMaQuocGia] = useState<string | undefined>(sanPham.sP_MaQuocGia);
 
+    const [showLuaChonDoanhNghiepSoHuu, setShowLuaChonDoanhNghiepSoHuu] = useState<boolean>(false);
+    const [doanhNghiepSoHuu, setDoanhNghiepSoHuu] = useState<DoanhNghiep | undefined>(sanPham.sP_DN_SoHuu);
+
+    const [showLuaChonDoanhNghiepSanXuat, setShowLuaChonDoanhNghiepSanXuat] = useState<boolean>(false);
+    const [doanhNghiepSanXuat, setDoanhNghiepSanXuat] = useState<DoanhNghiep | undefined>(sanPham.sP_DN_SanXuat);
+
+    const [showLuaChonDoanhNghiepVanTai, setShowLuaChonDoanhNghiepVanTai] = useState<boolean>(false);
+    const [doanhNghiepVanTai, setDoanhNghiepVanTai] = useState<DoanhNghiep | undefined>(sanPham.sP_DN_VanTai);
+
+    const [showLuaChonNhaMay, setShowLuaChonNhaMay] = useState<boolean>(false);
+    const [nhaMay, setNhaMay] = useState<NhaMay | undefined>(sanPham.sP_NM);
+
+    const [danhMuc, setDanhMuc] = useState<DanhMuc>(sanPham.sP_DM ? sanPham.sP_DM : khongChonDanhMuc as DanhMuc);
+
+    const setChonDoanhNghiepSoHuu = async(doanhNghiep: DoanhNghiep) => {
+        if (!doanhNghiep) {
+            Alert.alert('Lỗi', 'Sản phẩm phải có doanh nghiệp sở hữu');
+            return;
+        }
+        const quyenAdmin = await quyenAdminSanPham(sanPham.sP_DN_SoHuu_Id);
+
+        if (!quyenAdmin) {
+            Alert.alert('Lỗi', 'Bạn không có quyền sửa doanh nghiệp sở hữu cho sản phẩm này');
+        }
+        setDoanhNghiepSoHuu(doanhNghiep);
+        setShowLuaChonDoanhNghiepSoHuu(false);
+    }
+
+    const setChonDoanhNghiepSanXuat = async (doanhNghiep: DoanhNghiep) => {
+        if (quyenSua) {
+            setDoanhNghiepSanXuat(doanhNghiep);
+            setShowLuaChonDoanhNghiepSanXuat(false);
+        }else {
+            Alert.alert('Lỗi', 'Bạn không có quyền sửa doanh nghiệp sản xuất cho sản phẩm này');
+        }
+    }
+
+    const setChonDoanhNghiepVanTai= async (doanhNghiep: DoanhNghiep) => {
+        if (quyenSua) {
+            setDoanhNghiepVanTai(doanhNghiep);
+            setShowLuaChonDoanhNghiepVanTai(false);
+        }else {
+            Alert.alert('Lỗi', 'Bạn không có quyền sửa doanh nghiệp vận tải cho sản phẩm này');
+        }
+    }
+
+    const setChonNhaMay= async (nhaMay: NhaMay) => {
+        if (quyenSua) {
+            setNhaMay(nhaMay);
+            setShowLuaChonNhaMay(false);
+        }else {
+            Alert.alert('Lỗi', 'Bạn không có quyền sửa nhà máy cho sản phẩm này');
+        }
+    }
+
     useEffect(() => {
         layQuyenSua();
     }, [])
@@ -34,39 +96,70 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
 
     const suaSanPham = async() => {
         try {
-            const urlSuaSanPham = url(`api/sanpham/${sanPham.sP_Id}`);
+            if (validate()) {
+                const urlSuaSanPham = url(`api/sanpham/${sanPham.sP_Id}`);
 
-            await axios.put(urlSuaSanPham, {
-                sP_Ten: ten,
-                sP_MaTruyXuat: maTruyXuat,
-                sP_MaVach: maVach,
-                sP_MoTa: moTa,
-                sP_Website: website,
-                sP_Gia: gia,
-                sP_MaQuocGia: maQuocGia,
-                sP_HangSanXuat: hangSanXuat
-            }, {headers: {Authorization: await getBearerToken()}});
+                await axios.put(urlSuaSanPham, {
+                    sP_Ten: ten,
+                    sP_MaTruyXuat: maTruyXuat,
+                    sP_MaVach: maVach,
+                    sP_MoTa: moTa,
+                    sP_Website: website,
+                    sP_Gia: gia,
+                    sP_MaQuocGia: maQuocGia,
+                    sP_HangSanXuat: hangSanXuat,
+                    sP_DN_SoHuu_Id: doanhNghiepSoHuu?.dN_Id,
+                    sP_DN_SanXuat_Id: doanhNghiepSanXuat?.dN_Id,
+                    sP_DN_VanTai_Id: doanhNghiepVanTai?.dN_Id,
+                    sP_NM_Id: nhaMay?.nM_Id,
+                    sP_DM_Id: danhMuc.dM_Id ? danhMuc.dM_Id : null
+                } as SanPham, {headers: {Authorization: await getBearerToken()}});
 
-            const sanPhamInTemp = temp_SanPham.find((sanPhamInTemp: SanPham) => {
-                return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
-            });
+                const sanPhamInTemp = temp_SanPham.find((sanPhamInTemp: SanPham) => {
+                    return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
+                });
 
-            if (sanPhamInTemp) {
-                sanPhamInTemp.sP_Ten = ten;
-                sanPhamInTemp.sP_MaTruyXuat = maTruyXuat;
-                sanPhamInTemp.sP_MaVach = maVach;
-                sanPhamInTemp.sP_MoTa = moTa;
-                sanPhamInTemp.sP_Website = website;
-                sanPhamInTemp.sP_Gia = Number.parseFloat(gia as string);
-                sanPhamInTemp.sP_MaQuocGia = maQuocGia;
-                sanPhamInTemp.sP_HangSanXuat = hangSanXuat;
+                if (sanPhamInTemp) {
+                    sanPhamInTemp.sP_Ten = ten;
+                    sanPhamInTemp.sP_MaTruyXuat = maTruyXuat;
+                    sanPhamInTemp.sP_MaVach = maVach;
+                    sanPhamInTemp.sP_MoTa = moTa;
+                    sanPhamInTemp.sP_Website = website;
+                    sanPhamInTemp.sP_Gia = Number.parseFloat(gia as string);
+                    sanPhamInTemp.sP_MaQuocGia = maQuocGia;
+                    sanPhamInTemp.sP_HangSanXuat = hangSanXuat;
+                    sanPhamInTemp.sP_DN_SoHuu_Id = doanhNghiepSoHuu?.dN_Id;
+                    sanPhamInTemp.sP_DN_SoHuu = doanhNghiepSoHuu;
+                    sanPhamInTemp.sP_DN_SanXuat_Id = doanhNghiepSanXuat?.dN_Id;
+                    sanPhamInTemp.sP_DN_SanXuat = doanhNghiepSanXuat;
+                    sanPhamInTemp.sP_DN_VanTai_Id = doanhNghiepVanTai?.dN_Id;
+                    sanPhamInTemp.sP_DN_VanTai = doanhNghiepVanTai;
+                    sanPhamInTemp.sP_NM_Id = nhaMay?.nM_Id;
+                    sanPhamInTemp.sP_NM = nhaMay;
+                    sanPhamInTemp.sP_DM_Id = danhMuc?.dM_Id ? danhMuc.dM_Id : undefined;
+                    sanPhamInTemp.sP_DM = danhMuc.dM_Id ? danhMuc : undefined; 
+                }
+
+                setReRenderSanPham((value: number) => value + 1);
+                setShowModalSua(false);
             }
-
-            setReRenderSanPham((value: number) => value + 1);
-            setShowModalSua(false);
+            
         }catch {
             Alert.alert('Lỗi', 'Sửa sản phẩm thất bại')
         }
+    }
+
+    const validate = () : boolean => {
+        if (!ten) {
+            Alert.alert('Lỗi', 'Tên không được để trống');
+            return false;
+        }
+
+        if (!doanhNghiepSoHuu) {
+            Alert.alert('Lỗi', 'Phải có doanh nghiệp sở hữu');
+            return false;
+        }
+        return true;
     }
 
     return quyenSua 
@@ -145,6 +238,54 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                         value={maQuocGia}
                         onChangeText={setMaQuocGia}
                     />
+
+                    <Text>{'Danh mục:'}</Text>
+                    <DanhMucs danhMucHienTai={danhMuc} setDanhMucHienTai={setDanhMuc} height={30} alignItems={undefined}/>
+                    <View style={{height: 10}}></View>
+
+                    <Text>{'Doanh nghiệp sở hữu:'}</Text>
+                    <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiepSoHuu(true)}>
+                            <TextInput
+                            style={styles.input}
+                            placeholder="Doanh nghiệp sở hữu"
+                            editable={false}
+                            value={doanhNghiepSoHuu?.dN_Ten}
+                        />
+                    </TouchableOpacity>
+                    <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiepSoHuu} setShowLuaChon={setShowLuaChonDoanhNghiepSoHuu} setChonDoanhNghiep={setChonDoanhNghiepSoHuu}/>
+
+                    <Text>{'Doanh nghiệp sản xuất:'}</Text>
+                    <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiepSanXuat(true)}>
+                            <TextInput
+                            style={styles.input}
+                            placeholder="Doanh nghiệp sản xuất"
+                            editable={false}
+                            value={doanhNghiepSanXuat?.dN_Ten}
+                        />
+                    </TouchableOpacity>
+                    <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiepSanXuat} setShowLuaChon={setShowLuaChonDoanhNghiepSanXuat} setChonDoanhNghiep={setChonDoanhNghiepSanXuat}/>
+
+                    <Text>{'Doanh nghiệp vận tải:'}</Text>
+                    <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiepVanTai(true)}>
+                            <TextInput
+                            style={styles.input}
+                            placeholder="Doanh nghiệp vận tải"
+                            editable={false}
+                            value={doanhNghiepVanTai?.dN_Ten}
+                        />
+                    </TouchableOpacity>
+                    <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiepVanTai} setShowLuaChon={setShowLuaChonDoanhNghiepVanTai} setChonDoanhNghiep={setChonDoanhNghiepVanTai}/>
+
+                    <Text>{'Nhà máy:'}</Text>
+                    <TouchableOpacity onPress={() => setShowLuaChonNhaMay(true)}>
+                            <TextInput
+                            style={styles.input}
+                            placeholder="Nhà máy"
+                            editable={false}
+                            value={nhaMay?.nM_Ten}
+                        />
+                    </TouchableOpacity>
+                    <LuaChonNhaMayHelper showLuaChon={showLuaChonNhaMay} setShowLuaChon={setShowLuaChonNhaMay} setChonNhaMay={setChonNhaMay}/>
                 </ScrollView>
             </View>
             
