@@ -15,6 +15,7 @@ import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
 import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
 import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
 import ThemSanPham from "@/app/sanPhamTemplate/thaoTacTheoAuth/themSanPham";
+import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();

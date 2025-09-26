@@ -22,6 +22,7 @@ export default function DanhSachSuKienTruyXuat() {
     const sP_Id = params.sP_Id;
     const sP_Ten = params.nM_Ten;
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
+    const sP_DN_SoHuu_Id = params.sP_DN_SoHuu_Id;
 
     const [listSuKiens, setListSuKiens] = useState<SuKienTruyXuat[]>([]);
     const [tongSoSuKiens, setTongSoSuKiens] = useState<number>(0);
@@ -32,10 +33,6 @@ export default function DanhSachSuKienTruyXuat() {
     useEffect(() => {
         layCacSuKiens();
     },[pageNumber]);
-
-    useEffect(() => {
-        setPageNumber(1); //re render theo lệnh thì load lại từ đầu
-    }, [reRender]);
 
     const isNotMainScreen = () => {
       return lsP_Id;
@@ -101,15 +98,19 @@ export default function DanhSachSuKienTruyXuat() {
                             suKien.sK_LSP.lsP_SP.sP_UriAvatar = (await getUriAvatarSanPham(suKien.sK_LSP.lsP_SP.sP_Id)) as string;
                         }
                     }
-
-                    try {
+                    
+                    if (!isNotMainScreen()) {
+                        try {
                         const doanhNghiepSoHuuId = (await axios.get(url(`api/losanpham/doanh-nghiep-so-huu-id/${suKien.sK_LSP_Id}`))).data;
                         suKien.sK_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
-                    }catch {}
+                        }catch {}
+                    }else {
+                        suKien.sK_DoanhNghiepSoHuu_Id = sP_DN_SoHuu_Id as string;
+                    }
                 }
 
-                if (isNotMainScreen()) {
-                    temp_ListSuKienTruyXuats.push(...listSuKiensTuBackEnd);
+                if (isNotMainScreen()) { 
+                    temp_ListSuKienTruyXuats.push(...listSuKiensTuBackEnd); //không phải màn hình chính thì cache
                 }
 
                 if (pageNumber > 1) {
@@ -121,6 +122,14 @@ export default function DanhSachSuKienTruyXuat() {
                 setLoading(false);
             }
         }catch {}
+    }
+
+    const layCacSuKiensTuDau = () => {
+        if (pageNumber !== 1) {
+            setPageNumber(1);
+        }else {
+            setReRender(value => value + 1);
+        }
     }
 
     const tongSoTrang : number = Math.ceil(tongSoSuKiens / LIMIT_SU_KIEN_TRUY_XUAT);

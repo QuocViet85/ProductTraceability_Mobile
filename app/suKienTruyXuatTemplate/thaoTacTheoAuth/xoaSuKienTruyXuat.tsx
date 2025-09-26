@@ -37,6 +37,11 @@ export default function XoaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
             }
 
             setReRenderSuKien((value: number) => value + 1);
+            for (const suKien of temp_ListSuKienTruyXuats) {
+                if (suKien.temp_TongSoVoiLoSanPham) {
+                    suKien.temp_TongSoVoiLoSanPham -= 1;
+                }
+            }
             setShowModalXoa(false);
             Alert.alert('Thông báo', 'Xóa sự kiện truy xuất thành công');
         }catch {

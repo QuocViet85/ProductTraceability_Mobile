@@ -18,7 +18,7 @@ import BinhLuan from "@/app/model/BinhLuan";
 import { paginate } from "@/app/helpers/LogicHelper/helper";
 import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 
-const temp_ListBinhLuans: BinhLuan[] = [];
+export const temp_ListBinhLuans: BinhLuan[] = [];
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);

@@ -8,12 +8,11 @@ import { useEffect, useState } from "react";
 import { Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { Alert } from "react-native";
-import { temp_ListLoSanPhams } from "..";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import NhaMay from "@/app/model/NhaMay";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
 
-export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, layLaiListLoSanPhamsTuDau, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, layLaiListLoSanPhamsTuDau: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
 
@@ -21,15 +20,15 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
     const [modeChonNgaySanXuat, setModeChonNgaySanXuat] = useState<boolean>(false);
     const [modeChonNgayHetHan, setModeChonNgayHetHan] = useState<boolean>(false);
 
-    const [ten, setTen] = useState<string | undefined>(loSanPham.lsP_Ten);
-    const [maLSP, setMaLSP] = useState<string | undefined>(loSanPham.lsP_MaLSP);
-    const [ngaySanXuat, setNgaySanXuat] = useState<Date | undefined>(loSanPham.lsP_NgaySanXuat);
-    const [ngayHetHan, setNgayHetHan] = useState<Date | undefined>(loSanPham.lsP_NgayHetHan);
-    const [soLuong, setSoLuong] = useState<string | undefined>(loSanPham.lsP_SoLuong?.toString());
-    const [moTa, setMoTa] = useState<string | undefined>(loSanPham.lsP_MoTa);
+    const [ten, setTen] = useState<string | undefined>(undefined);
+    const [maLSP, setMaLSP] = useState<string | undefined>(undefined);
+    const [ngaySanXuat, setNgaySanXuat] = useState<Date | undefined>(undefined);
+    const [ngayHetHan, setNgayHetHan] = useState<Date | undefined>(undefined);
+    const [soLuong, setSoLuong] = useState<string | undefined>(undefined);
+    const [moTa, setMoTa] = useState<string | undefined>(undefined);
 
     const [showLuaChonNhaMay, setShowLuaChonNhaMay] = useState<boolean>(false);
-    const [nhaMay, setNhaMay] = useState<NhaMay | undefined>(loSanPham.lsP_NM);
+    const [nhaMay, setNhaMay] = useState<NhaMay | undefined>(undefined);
 
     useEffect(() => {
         layQuyenSua();
@@ -40,12 +39,13 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
         setQuyenSua(quyenSua);
     }
 
-    const suaLoSanPham = async() => {
+    const themLoSanPham = async() => {
         try {
-            const urlSuaSanPham = url(`api/losanpham/${loSanPham.lsP_Id}`);
+            const urlThemLoSanPham = url(`api/losanpham`);
 
-            await axios.put(urlSuaSanPham, {
+            await axios.post(urlThemLoSanPham, {
                 lsP_Ten: ten,
+                lsP_SP_Id: sanPhamId,
                 lsP_MaLSP: maLSP,
                 lsP_NgaySanXuat: ngaySanXuat,
                 lsP_NgayHetHan: ngayHetHan,
@@ -54,40 +54,10 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
                 lsP_NM_Id: nhaMay?.nM_Id
             } as LoSanPham, {headers: {Authorization: await getBearerToken()}});
 
-            const loSanPhamInTemp = temp_ListLoSanPhams.find((loSanPhamInTemp: LoSanPham) => {
-                return loSanPhamInTemp.lsP_Id === loSanPham.lsP_Id;
-            });
-
-            if (loSanPhamInTemp) {
-                loSanPhamInTemp.lsP_Ten = ten;
-                loSanPhamInTemp.lsP_MaLSP = maLSP;
-                loSanPhamInTemp.lsP_NgaySanXuat = ngaySanXuat;
-                loSanPhamInTemp.lsP_NgayHetHan = ngayHetHan;
-                loSanPhamInTemp.lsP_SoLuong = +(soLuong as string);
-                loSanPhamInTemp.lsP_MoTa = moTa;
-                loSanPhamInTemp.lsP_NM_Id = nhaMay?.nM_Id;
-                loSanPhamInTemp.lsP_NM = nhaMay;
-            }
-
-            const loSanPhamHienThi = listLoSanPhamsHienThi.find((loSanPhamHienThi: LoSanPham) => {
-                return loSanPhamHienThi.lsP_Id === loSanPham.lsP_Id;
-            });
-
-            if (loSanPhamHienThi) {
-                loSanPhamHienThi.lsP_Ten = ten;
-                loSanPhamHienThi.lsP_MaLSP = maLSP;
-                loSanPhamHienThi.lsP_NgaySanXuat = ngaySanXuat;
-                loSanPhamHienThi.lsP_NgayHetHan = ngayHetHan;
-                loSanPhamHienThi.lsP_SoLuong = +(soLuong as string);
-                loSanPhamHienThi.lsP_MoTa = moTa;
-                loSanPhamHienThi.lsP_NM_Id = nhaMay?.nM_Id;
-                loSanPhamHienThi.lsP_NM = nhaMay;
-            }
-
-            setReRenderLoSanPham((value: number) => value + 1);
+            layLaiListLoSanPhamsTuDau();
             setShowModalSua(false);
         }catch {
-            Alert.alert('Lỗi', 'Sửa lô sản phẩm thất bại')
+            Alert.alert('Lỗi', 'Thêm lô sản phẩm thất bại')
         }
     }
 
@@ -114,8 +84,8 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
     return quyenSua 
     ? (
     <View>
-        <TouchableOpacity style={{backgroundColor: 'yellow', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Sửa'}</Text>
+        <TouchableOpacity style={{backgroundColor: 'blue', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize, color:'white'}}>{'Thêm lô sản phẩm cho sản phẩm hiện tại'}</Text>
         </TouchableOpacity>
 
         <Modal
@@ -213,7 +183,7 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
             
             <View style={{flexDirection:'row', width: '100%', alignItems: 'center', marginTop: 'auto'}}>
                 <View style={{width: '50%'}}>
-                    <Button title="Sửa" color={'red'} onPress={suaLoSanPham}></Button>
+                    <Button title="Thêm" color={'red'} onPress={themLoSanPham}></Button>
                 </View>
                 <View style={{width: '50%'}}>
                     <Button title="Đóng" onPress={() => setShowModalSua(false)}></Button>

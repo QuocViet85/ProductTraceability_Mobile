@@ -13,7 +13,7 @@ export default function AvatarSanPham({sP_Id, width, height, marginBottom}: {sP_
 
     useEffect(() => {
         layUriAvatar();
-    }, []);
+    }, [sP_Id]);
 
     const layUriAvatar = async() => {
         const uriInTemp = temp_AvatarSanPham.find((item) => {

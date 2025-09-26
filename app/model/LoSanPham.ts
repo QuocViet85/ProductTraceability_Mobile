@@ -1,3 +1,5 @@
+import NhaMay from "./NhaMay";
+
 export default class LoSanPham
 {
     lsP_Id: string | undefined;
@@ -33,12 +35,7 @@ export default class LoSanPham
         sP_UriAvatar: string
     } | undefined;
 
-    lsP_NM: {
-        nM_Id: string,
-        nM_Ten: string
-    } | undefined
-
-    lsp_DoanhNghiepSoHuu_Id: string | undefined;
+    lsP_NM: NhaMay | undefined
 
     temp_TongSoVoiSanPham: number = 0;
 }

@@ -9,6 +9,8 @@ import { temp_NhaMay } from "..";
 import { TouchableOpacity } from "react-native";
 import { Modal } from "react-native";
 import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
+import DoanhNghiep from "@/app/model/DoanhNghiep";
+import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
 
 export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, setReRenderNhaMay: Function}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -19,6 +21,9 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
     const [soDienThoai, setSoDienThoai] = useState<string | undefined>(nhaMay.nM_SoDienThoai);
     const [email, setEmail] = useState<string | undefined>(nhaMay.nM_Email);
     const [diaChi, setDiaChi] = useState<string | undefined>(nhaMay.nM_DiaChi);
+
+    const [showLuaChonDoanhNghiep, setShowLuaChonDoanhNghiep] = useState<boolean>(false);
+    const [doanhNghiep, setDoanhNghiep] = useState<DoanhNghiep | undefined>(nhaMay.nM_DN);
 
     useEffect(() => {
         layQuyenSua();
@@ -38,8 +43,9 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                 nM_MaNM: maNhaMay,
                 nM_SoDienThoai: soDienThoai,
                 nM_Email: email,
-                nM_DiaChi: diaChi
-            }, {headers: {Authorization: await getBearerToken()}});
+                nM_DiaChi: diaChi,
+                nM_DN_Id: doanhNghiep?.dN_Id
+            } as NhaMay, {headers: {Authorization: await getBearerToken()}});
 
             const nhaMayInTemp = temp_NhaMay.find((nhaMayInTemp: NhaMay) => {
                 return nhaMayInTemp.nM_Id === nhaMay.nM_Id;
@@ -51,12 +57,23 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                 nhaMayInTemp.nM_SoDienThoai = soDienThoai;
                 nhaMayInTemp.nM_Email = email;
                 nhaMayInTemp.nM_DiaChi = diaChi;
+                nhaMayInTemp.nM_DN_Id = doanhNghiep?.dN_Id;
+                nhaMayInTemp.nM_DN = doanhNghiep;
             }
 
             setReRenderNhaMay((value: number) => value + 1);
             setShowModalSua(false);
         }catch {
             Alert.alert('Lỗi', 'Sửa doanh nghiệp thất bại');
+        }
+    }
+
+    const setChonDoanhNghiep = async (doanhNghiep: DoanhNghiep) => {
+        if (quyenSua) {
+            setDoanhNghiep(doanhNghiep);
+            setShowLuaChonDoanhNghiep(false);
+        }else {
+            Alert.alert('Lỗi', 'Bạn không có quyền sửa doanh nghiệp cho nhà máy này');
         }
     }
 
@@ -110,6 +127,17 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                                     value={diaChi}
                                     onChangeText={setDiaChi}
                                 />
+
+                                <Text>{'Doanh nghiệp:'}</Text>
+                                <TouchableOpacity onPress={() => setShowLuaChonDoanhNghiep(true)}>
+                                        <TextInput
+                                        style={styles.input}
+                                        placeholder="Doanh nghiệp sản xuất"
+                                        editable={false}
+                                        value={doanhNghiep?.dN_Ten}
+                                    />
+                                </TouchableOpacity>
+                                <LuaChonDoanhNghiepHelper showLuaChon={showLuaChonDoanhNghiep} setShowLuaChon={setShowLuaChonDoanhNghiep} setChonDoanhNghiep={setChonDoanhNghiep}/>
                             </ScrollView>
                         </View>
                         

@@ -34,7 +34,6 @@ export default function Index() {
     const [reRenderSanPham, setReRenderSanPham] = useState<number>(0);
 
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
-    console.log(urlSanPham);
   
     const router = useRouter();
 
@@ -106,7 +105,7 @@ export default function Index() {
                 <View style={{flexDirection: 'row'}}>
                     <QrCode urlSanPham={urlSanPham} />
                     <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40, marginLeft: 'auto'}}
-                                      onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat}})}>
+                                      onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
                       <Text>{'Truy xuất sản phẩm'}</Text>
                     </TouchableOpacity>
                 </View>

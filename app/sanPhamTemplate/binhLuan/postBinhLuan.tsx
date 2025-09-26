@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useState } from "react";
 import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { temp_ListBinhLuans } from "./binhLuanSanPham";
 
 export default function PostBinhLuan({sP_Id, layCacBinhLuans}: {sP_Id: string, layCacBinhLuans: () => void}) {
     const [noiDungBinhLuan, setNoiDungBinhLuan] = useState<string>('');
@@ -40,6 +41,7 @@ export default function PostBinhLuan({sP_Id, layCacBinhLuans}: {sP_Id: string, l
                 }})
 
                 setNoiDungBinhLuan('');
+                temp_ListBinhLuans.length = 0;
                 layCacBinhLuans();
                 setListUriAnhBinhLuan([]);
             }catch {

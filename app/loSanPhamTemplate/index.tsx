@@ -11,6 +11,8 @@ import LoSanPhamRender from "./loSanPhamRender";
 import Footer from "../helpers/ViewHelpers/footer";
 import Loading from "../helpers/ViewHelpers/loading";
 import { paginate } from "../helpers/LogicHelper/helper";
+import ThemLoSanPham from "./thaoTacTheoAuth/themLoSanPham";
+import BlurLine from "../helpers/ViewHelpers/blurLine";
 
 export const temp_ListLoSanPhams : LoSanPham[] = [];
 
@@ -19,6 +21,7 @@ export default function DanhSachLoSanPham() {
     const sP_Id: string = params.sP_Id as string;
     const sP_Ten: string = params.sP_Ten as string;
     const sP_MaTruyXuat: string = params.sP_MaTruyXuat as string;
+    const sP_DN_SoHuu_Id: string = params.sP_DN_SoHuu_Id as string;
 
     const [listLoSanPhams, setListLoSanPhams] = useState<LoSanPham[]>([]);
     const [tongSoLoSanPham, setTongSoLoSanPham] = useState<number>(0);
@@ -29,14 +32,10 @@ export default function DanhSachLoSanPham() {
     const tongSoTrang : number = Math.ceil(tongSoLoSanPham / LIMIT_LO_SANPHAM);
 
     useEffect(() => {
-        layListLoSanPham();
+        layListLoSanPhams();
     }, [pageNumber]);
 
-    useEffect(() => {
-        setPageNumber(1);
-    }, [reRender])
-
-    const layListLoSanPham = async() => {
+    const layListLoSanPhams = async() => {
         setLoading(true);
 
         const listLoSanPhamsTrongTemp = temp_ListLoSanPhams.filter((item) => {
@@ -67,13 +66,7 @@ export default function DanhSachLoSanPham() {
                     setListLoSanPhams(newListLoSanPhams);
                     temp_ListLoSanPhams.push(...listLoSanPhamsTuBackEnd);
 
-                    for (const loSanPham of listLoSanPhamsTuBackEnd) {
-                        try {
-                            const doanhNghiepSoHuuId = (await axios.get(url(`api/losanpham/doanh-nghiep-so-huu-id/${loSanPham.lsP_Id}`))).data;
-                            loSanPham.lsp_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
-                        }catch {}
-                        loSanPham.temp_TongSoVoiSanPham = res.data.tongSo ? res.data.tongSo : 0;
-                    }
+                    listLoSanPhamsTuBackEnd[0].temp_TongSoVoiSanPham = res.data.tongSo ? res.data.tongSo : 0;
                 }
             }catch {}
         }else {
@@ -98,12 +91,16 @@ export default function DanhSachLoSanPham() {
     return (
         <View style={styles.container}>
             <Header title={'Lô sản phẩm'} fontSize={20} resource={sP_Ten}/>
+            <View style={{marginTop: 10}}>
+                <ThemLoSanPham sanPhamId={sP_Id} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} layLaiListLoSanPhamsTuDau={layListLoSanPhams} width={200} height={30} paddingVertical={5} fontSize={12}/>
+            </View>
+            <BlurLine />
             <FlatList
                 data={listLoSanPhams}
                 keyExtractor={(item: LoSanPham, index) => `${item.lsP_Id}-${index}`}
                 renderItem={({item}: {item: LoSanPham}) => {
                     return (
-                        <LoSanPhamRender loSanPham={item} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} setReRenderLoSanPham={setReRender}/>
+                        <LoSanPhamRender loSanPham={item} listLoSanPhamsHienThi={listLoSanPhams} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} sP_DN_SoHuu_Id={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}

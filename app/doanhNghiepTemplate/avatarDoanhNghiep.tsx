@@ -23,7 +23,7 @@ export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN
     useEffect(() => {
         layAvatarDoanhNghiep();
         layQuyenSua();
-    }, [reRender]);
+    }, [reRender, dN_Id]);
 
     const layAvatarDoanhNghiep = async() => {
         const uriAvatarInTemp = temp_UriAvatarDoanhNghiep.find((item) => {

@@ -74,7 +74,7 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
     ? (
     <View>
         <TouchableOpacity style={{backgroundColor: 'yellow', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>Sửa</Text>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Sửa'}</Text>
         </TouchableOpacity>
 
         <Modal

@@ -9,7 +9,7 @@ import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "re
 import { View } from "react-native";
 import { temp_ListLoSanPhams } from "..";
 
-export default function XoaLoSanPham({loSanPham, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
     const [showModalXoa, setShowModalXoa] = useState<boolean | undefined>(false);
 
@@ -18,7 +18,7 @@ export default function XoaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
     }, [])
 
     const layQuyenXoa = async() => {
-        const quyenSua = await quyenSuaSanPham(loSanPham.lsp_DoanhNghiepSoHuu_Id);
+        const quyenSua = await quyenSuaSanPham(doanhNghiepSoHuuId);
 
         setQuyenXoa(quyenSua);
     }
@@ -35,6 +35,14 @@ export default function XoaLoSanPham({loSanPham, setReRenderLoSanPham, width, he
 
             if (indexLoSanPhamBiXoaInTemp !== -1) {
                 temp_ListLoSanPhams.splice(indexLoSanPhamBiXoaInTemp);
+            }
+
+            const indexLoSanPhamHienThiBiXoa = listLoSanPhamsHienThi.findIndex((loSanPhamHienThi: LoSanPham) => {
+                return loSanPhamHienThi.lsP_Id === loSanPham.lsP_Id;
+            });
+
+            if (indexLoSanPhamHienThiBiXoa !== -1) {
+                listLoSanPhamsHienThi.splice(indexLoSanPhamBiXoaInTemp);
             }
 
             setReRenderLoSanPham((value: number) => value + 1);
