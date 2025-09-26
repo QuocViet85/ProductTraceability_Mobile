@@ -15,10 +15,7 @@ import PostBinhLuan from "./postBinhLuan";
 import { useRouter } from "expo-router";
 import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
 import BinhLuan from "@/app/model/BinhLuan";
-import { paginate } from "@/app/helpers/LogicHelper/helper";
 import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
-
-export const temp_ListBinhLuans: BinhLuan[] = [];
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -27,58 +24,40 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
     const [soSaoBinhLuan, setSoSaoBinhLuan] = useState<0 | 1 | 2 | 3 | 4 | 5>(0);
     const router = useRouter();
 
+    const [forceReRender, setForceReRender] = useState<number>(0);
+
     const tongSoTrang : number = Math.ceil(tongSoBinhLuan / LIMIT_BINHLUAN);
 
     useEffect(() => {
         layCacBinhLuans();
-    }, [pageNumber, soSaoBinhLuan])
+    }, [pageNumber, soSaoBinhLuan, forceReRender]);
 
     const layCacBinhLuans = async () => {
-        const listBinhLuansCuaSPTrongTemp = temp_ListBinhLuans.filter((item) => {
-            return item.bL_SP_Id === sP_Id;
-        }); 
+        try {
+            const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
+            const response = await axios.get(urlBinhLuan);
 
-        const listBinhLuansCuaSPTrongTempCanLay = paginate(listBinhLuansCuaSPTrongTemp, pageNumber, LIMIT_BINHLUAN);
+            if (response.data.listBinhLuans) {
+                const listBinhLuans : BinhLuan[] = response.data.listBinhLuans;
 
-        if (listBinhLuansCuaSPTrongTempCanLay.length < 1) {
-            try {
-                const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
-                const response = await axios.get(urlBinhLuan);
-
-                if (response.data.listBinhLuans) {
-                    const listBinhLuans : BinhLuan[] = response.data.listBinhLuans;
-
-                    for (const binhLuan of listBinhLuans) {
-                        if (response.data.tongSo) {
-                            binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
+                for (const binhLuan of listBinhLuans) {
+                    if (response.data.tongSo) {
+                        binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
+                    }
+                    try {
+                        if (binhLuan.bL_NguoiTao_Client) {
+                            const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
+                            binhLuan.bL_NguoiTao_Client.soSao = soSao;
                         }
-                        try {
-                            if (binhLuan.bL_NguoiTao_Client) {
-                                const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
-                                binhLuan.bL_NguoiTao_Client.soSao = soSao;
-                            }
-                        }catch {}
-                    }
-                    setListBinhLuans(listBinhLuans);
-                    temp_ListBinhLuans.push(...listBinhLuans);
+                    }catch {}
                 }
-
-                if (response.data.tongSo) {
-                    setTongSoBinhLuan(response.data.tongSo);
-                }
-            }catch {}
-        }else {
-            for (const binhLuan of listBinhLuansCuaSPTrongTempCanLay) {
-                try {
-                    if (binhLuan.bL_NguoiTao_Client) {
-                        const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
-                        binhLuan.bL_NguoiTao_Client.soSao = soSao;
-                    }
-                }catch {}
+                setListBinhLuans(listBinhLuans);
             }
-            setListBinhLuans(listBinhLuansCuaSPTrongTempCanLay);
-            setTongSoBinhLuan(listBinhLuansCuaSPTrongTemp[0].temp_tongSoBinhLuanCuaSP);
-        }
+
+            if (response.data.tongSo) {
+                setTongSoBinhLuan(response.data.tongSo);
+            }
+        }catch {}
     }
 
     const backPage = () => {
@@ -93,9 +72,17 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
         }
     }
 
+    const reloadBinhLuans = () => {
+        if (pageNumber !== 1) {
+            setPageNumber(1);
+        }else {
+            setForceReRender(value => value + 1);
+        }
+    }
+
     return (
         <View>
-            <Text style={{marginBottom: 20, fontWeight: 'bold', fontSize: 20}}>Đánh giá sản phẩm ({tongSoBinhLuan})</Text>
+            <Text style={{marginBottom: 20, fontWeight: 'bold', fontSize: 20}}>{'Đánh giá sản phẩm '}({tongSoBinhLuan})</Text>
             <View style={{alignItems: 'center', marginBottom: 10}}>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(0)}>
@@ -127,7 +114,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                             <View>
                                 <View style={{flexDirection: 'row'}}>
                                     <Text style={{fontWeight: 'bold'}}>{item.bL_NguoiTao_Client?.name}</Text>
-                                    <XoaBinhLuan userLogin={userLogin} binhLuan={item} layCacBinhLuans={layCacBinhLuans} width={'100%'}/>
+                                    <XoaBinhLuan userLogin={userLogin} binhLuan={item} listBinhLuansHienThi={listBinhLuans} setTongSoBinhLuan={setTongSoBinhLuan} width={'100%'}/>
                                 </View>
                                 <View style={{ flexDirection: 'row' }}>
                                     {Array.from({length: 5}).map((_, index) => {
@@ -168,7 +155,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                     <View style={{height: 10}}></View>
                     <ChonSaoSanPham sP_Id={sP_Id} userId={userLogin.id as string} />
                     <View style={{height: 10}}></View>
-                    <PostBinhLuan sP_Id={sP_Id} layCacBinhLuans={layCacBinhLuans}/>
+                    <PostBinhLuan sP_Id={sP_Id} reloadBinhLuans={reloadBinhLuans}/>
                 </View>
             ) : (<View></View>)}
             <Spacer height={10}/>

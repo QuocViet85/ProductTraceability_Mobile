@@ -11,8 +11,9 @@ import { Alert } from "react-native";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import NhaMay from "@/app/model/NhaMay";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
+import { temp_ListLoSanPhams } from "..";
 
-export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, layLaiListLoSanPhamsTuDau, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, layLaiListLoSanPhamsTuDau: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanPhamsHienThi, setReRender, setPageNumber, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listLoSanPhamsHienThi: LoSanPham[], setReRender: Function, setPageNumber: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
 
@@ -43,7 +44,7 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, layLaiList
         try {
             const urlThemLoSanPham = url(`api/losanpham`);
 
-            await axios.post(urlThemLoSanPham, {
+            const res = await axios.post(urlThemLoSanPham, {
                 lsP_Ten: ten,
                 lsP_SP_Id: sanPhamId,
                 lsP_MaLSP: maLSP,
@@ -54,7 +55,13 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, layLaiList
                 lsP_NM_Id: nhaMay?.nM_Id
             } as LoSanPham, {headers: {Authorization: await getBearerToken()}});
 
-            layLaiListLoSanPhamsTuDau();
+            const loSanPhamNew: LoSanPham = res.data;
+
+            listLoSanPhamsHienThi.unshift(loSanPhamNew);
+            temp_ListLoSanPhams.unshift(loSanPhamNew);
+
+            setPageNumber(1);
+            setReRender((value: any) => value + 1); 
             setShowModalSua(false);
         }catch {
             Alert.alert('Lỗi', 'Thêm lô sản phẩm thất bại')

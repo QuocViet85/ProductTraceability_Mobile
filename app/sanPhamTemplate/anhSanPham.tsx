@@ -9,7 +9,6 @@ import { quyenSuaSanPham } from "../Auth/Authorization/AuthSanPham";
 import { url } from "../server/backend";
 import axios from "axios";
 import getBearerToken from "../Auth/Authentication";
-import { quyenSuaNhaMay } from "../Auth/Authorization/AuthNhaMay";
 
 const temp_ListFilesAnhSanPham : {sP_Id: string, listFilesAnhSanPham: File[]}[] = [];
 

@@ -15,7 +15,7 @@ import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper
 import DanhMuc from "@/app/model/DanhMuc";
 import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
 
-export default function ThemSanPham({setReRenderSanPham, width, height, paddingVertical, fontSize}: { setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemSanPham({listSanPhamsHienThi, setReRenderSanPham, width, height, paddingVertical, fontSize}: { listSanPhamsHienThi: SanPham[], setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [showModalThem, setShowModalThem] = useState<boolean | undefined>(false);
 
     const [ten, setTen] = useState<string | undefined>(undefined);
@@ -75,7 +75,7 @@ export default function ThemSanPham({setReRenderSanPham, width, height, paddingV
             if (validate()) {
                 const urlThemSanPham = url(`api/sanpham`);
 
-                await axios.post(urlThemSanPham, {
+                const res = await axios.post(urlThemSanPham, {
                     sP_Ten: ten,
                     sP_MaTruyXuat: maTruyXuat,
                     sP_MaVach: maVach,
@@ -90,6 +90,9 @@ export default function ThemSanPham({setReRenderSanPham, width, height, paddingV
                     sP_NM_Id: nhaMay?.nM_Id,
                     sP_DM_Id: danhMuc.dM_Id ? danhMuc.dM_Id : null
                 } as SanPham, {headers: {Authorization: await getBearerToken()}});
+
+                const sanPhamNew: SanPham = res.data;
+                listSanPhamsHienThi.unshift(sanPhamNew);
 
                 setReRenderSanPham((value: number) => value + 1);
                 setShowModalThem(false);

@@ -30,6 +30,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const [modeTimKiem, setModeTimKiem] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [loading, setLoading] = useState<boolean>(false);
+    const [reRender, setReRender]  = useState<number>(0);
     const [forceReRender, setForceReRender]  = useState<number>(0);
 
     useEffect(() => {
@@ -151,7 +152,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
           </View>
           <View style={{marginTop: 10}}>
-            <ThemSanPham setReRenderSanPham={setForceReRender} width={100} height={30} paddingVertical={5} fontSize={12}/>
+            <ThemSanPham listSanPhamsHienThi={listSanPhams} setReRenderSanPham={setReRender} width={100} height={30} paddingVertical={5} fontSize={12}/>
           </View>
           <FlatList
               data={listSanPhams}
