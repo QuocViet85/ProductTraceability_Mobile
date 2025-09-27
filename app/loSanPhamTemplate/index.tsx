@@ -92,7 +92,7 @@ export default function DanhSachLoSanPham() {
         <View style={styles.container}>
             <Header title={'Lô sản phẩm'} fontSize={20} resource={sP_Ten}/>
             <View style={{marginTop: 10}}>
-                <ThemLoSanPham sanPhamId={sP_Id} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} listLoSanPhamsHienThi={listLoSanPhams} setPageNumber={setPageNumber} setReRender={setReRender} width={200} height={30} paddingVertical={5} fontSize={12}/>
+                <ThemLoSanPham sanPhamId={sP_Id} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} listLoSanPhamsHienThi={listLoSanPhams} setReRender={setReRender} width={200} height={30} paddingVertical={5} fontSize={12}/>
             </View>
             <BlurLine />
             <FlatList
@@ -100,7 +100,7 @@ export default function DanhSachLoSanPham() {
                 keyExtractor={(item: LoSanPham, index) => `${item.lsP_Id}-${index}`}
                 renderItem={({item}: {item: LoSanPham}) => {
                     return (
-                        <LoSanPhamRender loSanPham={item} listLoSanPhamsHienThi={listLoSanPhams} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} sP_DN_SoHuu_Id={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRender}/>
+                        <LoSanPhamRender loSanPham={item} listLoSanPhamsHienThi={listLoSanPhams} pageNumber={pageNumber} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} sP_DN_SoHuu_Id={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}

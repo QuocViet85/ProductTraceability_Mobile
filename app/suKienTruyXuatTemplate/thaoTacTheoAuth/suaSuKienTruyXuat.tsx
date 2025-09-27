@@ -12,7 +12,7 @@ import { Alert } from "react-native";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { temp_ListSuKienTruyXuats } from "..";
 
-export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
     const [showChonThoiGian, setShowChonThoiGian] = useState<boolean>(false);
@@ -54,6 +54,18 @@ export default function SuaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
                 suKien.sK_ThoiGian = thoiGian;
                 suKien.sK_MoTa = moTa;
                 suKien.sK_DiaDiem = diaDiem;
+            }
+
+            const suKienHienThi = listSuKiensHienThi.find((suKienHienThi: SuKienTruyXuat) => {
+                return suKienHienThi.sK_Id === suKien.sK_Id;
+            });
+
+            if (suKienHienThi) {
+                suKienHienThi.sK_Ten = ten;
+                suKienHienThi.sK_MaSK = maSK;
+                suKienHienThi.sK_ThoiGian = thoiGian;
+                suKienHienThi.sK_MoTa = moTa;
+                suKienHienThi.sK_DiaDiem = diaDiem;
             }
 
             setReRenderSuKien((value: number) => value + 1);

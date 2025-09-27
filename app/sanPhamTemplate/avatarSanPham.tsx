@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { getUriAvatarSanPham } from "../helpers/LogicHelper/fileHelper";
 import { DimensionValue, Image } from "react-native";
 
-const temp_AvatarSanPham : {
+export const temp_AvatarSanPham : {
     sP_Id: string,
     uriAvatar: string | undefined
 }[] = [];
-
 
 export default function AvatarSanPham({sP_Id, width, height, marginBottom}: {sP_Id: string, width: DimensionValue | undefined, height: DimensionValue | undefined, marginBottom: DimensionValue | undefined}) {
     const [uriAvatar, setUriAvatar] = useState<string | undefined>(undefined);

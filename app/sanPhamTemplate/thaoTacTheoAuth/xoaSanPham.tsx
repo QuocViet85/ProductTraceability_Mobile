@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { temp_SanPham } from "..";
+import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
 
 export default function XoaSanPham({sanPham, setSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -28,15 +29,26 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
 
             await axios.delete(urlXoaSanPham, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Xóa sản phẩm thành công');
+
             const indexSanPhamBiXoaInTemp = temp_SanPham.findIndex((sanPhamInTemp: SanPham) => {
                 return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
             });
 
             if (indexSanPhamBiXoaInTemp !== -1) {
-                temp_SanPham.splice(indexSanPhamBiXoaInTemp);
+                temp_SanPham.splice(indexSanPhamBiXoaInTemp, 1);
+            }
+
+            const indexSanPhamBiXoaInTrangChu = listSanPhamsHienThiTrangChu.findIndex((sanPhamInTrangChu: SanPham) => {
+                return sanPhamInTrangChu.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
+            });
+
+            if (indexSanPhamBiXoaInTrangChu !== -1) {
+                listSanPhamsHienThiTrangChu.splice(indexSanPhamBiXoaInTrangChu, 1);
             }
 
             setSanPham(null);
+            reRenderTrangChuListSanPhams((value: number) => value + 1);
             setShowModalXoa(false);
         }catch {
             Alert.alert('Lỗi', 'Xóa sản phẩm thất bại');

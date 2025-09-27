@@ -8,7 +8,7 @@ import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "re
 import { View } from "react-native";
 import { temp_ListSuKienTruyXuats } from "..";
 
-export default function XoaSuKienTruyXuat({suKien, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
     const [showModalXoa, setShowModalXoa] = useState<boolean | undefined>(false);
 
@@ -28,17 +28,26 @@ export default function XoaSuKienTruyXuat({suKien, setReRenderSuKien, width, hei
 
             await axios.delete(urlXoaSuKien, {headers: {Authorization: await getBearerToken()}});
 
-            const indexSuKienInTemp = temp_ListSuKienTruyXuats.findIndex((suKienInTemp: SuKienTruyXuat) => {
+            const indexSuKienBiXoaInTemp = temp_ListSuKienTruyXuats.findIndex((suKienInTemp: SuKienTruyXuat) => {
                 return suKienInTemp.sK_Id === suKien.sK_Id;
             });
 
-            if (indexSuKienInTemp !== -1) {
-                temp_ListSuKienTruyXuats.splice(indexSuKienInTemp, 1);
+            if (indexSuKienBiXoaInTemp !== -1) {
+                temp_ListSuKienTruyXuats.splice(indexSuKienBiXoaInTemp, 1);
+            }
+
+            const indexSuKienBiXoaTrongListHienThi= listSuKiensHienThi.findIndex((suKienHienThi: SuKienTruyXuat) => {
+                return suKienHienThi.sK_Id === suKien.sK_Id;
+            });
+
+            if (indexSuKienBiXoaTrongListHienThi !== -1) {
+                listSuKiensHienThi.splice(indexSuKienBiXoaTrongListHienThi, 1);
             }
 
             setReRenderSuKien((value: number) => value + 1);
             for (const suKien of temp_ListSuKienTruyXuats) {
                 if (suKien.temp_TongSoVoiLoSanPham) {
+                    temp_ListSuKienTruyXuats[0].temp_TongSoVoiLoSanPham = suKien.temp_TongSoVoiLoSanPham - 1;
                     suKien.temp_TongSoVoiLoSanPham -= 1;
                 }
             }

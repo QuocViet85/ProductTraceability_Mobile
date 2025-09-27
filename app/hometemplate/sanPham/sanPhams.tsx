@@ -17,6 +17,10 @@ import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
 import ThemSanPham from "@/app/sanPhamTemplate/thaoTacTheoAuth/themSanPham";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 
+export let listSanPhamsHienThiTrangChu: SanPham[] = [];
+export let reRenderTrangChuListSanPhams: Function = () => {}
+export let pageNumberTrangChuListSanPhams: number = 1;
+
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();
     const dN_Id = params.dN_Id;
@@ -29,8 +33,10 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const [textTimKiemSanPham, setTextTimKiemSanPham] = useState<string>('');
     const [modeTimKiem, setModeTimKiem] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
+    pageNumberTrangChuListSanPhams = 1;
     const [loading, setLoading] = useState<boolean>(false);
     const [reRender, setReRender]  = useState<number>(0);
+    reRenderTrangChuListSanPhams = setReRender;
     const [forceReRender, setForceReRender]  = useState<number>(0);
 
     useEffect(() => {
@@ -77,6 +83,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
 
             setListSanPham(newListSanPhams);
             setLoading(false);
+            listSanPhamsHienThiTrangChu = newListSanPhams;
           }
 
           if (res.data.tongSo) {
@@ -152,7 +159,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
           </View>
           <View style={{marginTop: 10}}>
-            <ThemSanPham listSanPhamsHienThi={listSanPhams} setReRenderSanPham={setReRender} width={100} height={30} paddingVertical={5} fontSize={12}/>
+            <ThemSanPham width={100} height={30} paddingVertical={5} fontSize={12}/>
           </View>
           <FlatList
               data={listSanPhams}

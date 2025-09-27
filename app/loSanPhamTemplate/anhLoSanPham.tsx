@@ -15,7 +15,7 @@ import axios from "axios";
 const temp_ListAnhLoSanPhams: {lsP_Id: string | undefined, listAnhLoSanPhams: File[]}[] = [];
 
 const { width } = Dimensions.get('window');
-export default function AnhLoSanPham({loSanPham}: {loSanPham: LoSanPham}) {
+export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: LoSanPham, sP_DN_SoHuu_Id: string}) {
     const [listFileAnhLoSanPhams, setListFileAnhLoSanPhams] = useState<File[]>([]);
     const [showModalAnhLoSanPham, setShowModalAnhLoSanPham] = useState<boolean | undefined>(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -48,7 +48,7 @@ export default function AnhLoSanPham({loSanPham}: {loSanPham: LoSanPham}) {
     }
 
     const layQuyenSuaSanPham = async() => {
-        const quyenSua = await quyenSuaSanPham(loSanPham.lsp_DoanhNghiepSoHuu_Id);
+        const quyenSua = await quyenSuaSanPham(sP_DN_SoHuu_Id);
         setQuyenSuaSP(quyenSua);
     }
 
@@ -119,7 +119,7 @@ export default function AnhLoSanPham({loSanPham}: {loSanPham: LoSanPham}) {
         try {
             const uriXoaAnhLoSanPham = url(`api/losanpham/photos/${loSanPham.lsP_Id}?f_id=${fileAnhHienTai?.f_Id}`);
             await axios.delete(uriXoaAnhLoSanPham, { headers : {Authorization: bearerToken}});
-            Alert.alert('Thông báo', 'Xóa ảnh lô sản phẩm thành công');
+            Alert.alert('Thông báo', 'Xóa ảnh thành công');
             setShowModalXoaAnh(false);
 
             const indexFilesAnhCuaLoSanPhamInTemp = temp_ListAnhLoSanPhams.findIndex((item) => {

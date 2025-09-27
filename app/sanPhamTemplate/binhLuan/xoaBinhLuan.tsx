@@ -4,7 +4,7 @@ import AppUser from "@/app/model/AppUser";
 import BinhLuan from "@/app/model/BinhLuan";
 import { url } from "@/app/server/backend";
 import axios from "axios";
-import { DimensionValue, Text, TouchableOpacity, View } from "react-native";
+import { Alert, DimensionValue, Text, TouchableOpacity, View } from "react-native";
 
 export default function XoaBinhLuan({userLogin, binhLuan, listBinhLuansHienThi, setTongSoBinhLuan, width} : {userLogin: AppUser | null, binhLuan: BinhLuan, listBinhLuansHienThi: BinhLuan[], setTongSoBinhLuan: Function, width: DimensionValue | undefined}) {
     const xoaBinhLuan = async () => {
@@ -18,6 +18,8 @@ export default function XoaBinhLuan({userLogin, binhLuan, listBinhLuansHienThi, 
 
         try {
             await axios.delete(urlXoaBinhLuan, {headers: { Authorization: bearerToken}});
+
+            Alert.alert('Thông báo', 'Xóa bình luận thành công');
 
             const indexBinhLuanBiXoa = listBinhLuansHienThi.findIndex((item: BinhLuan) => {
                 return item.bL_Id === binhLuan.bL_Id

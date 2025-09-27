@@ -28,6 +28,8 @@ export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghi
 
             await axios.delete(urlXoaDoanhNghiep, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Xóa doanh nghiệp thành công');
+
             const indexDoanhNghiepBiXoa = temp_DoanhNghiep.findIndex((doanhNghiepInTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
                 return doanhNghiepInTemp.doanhNghiep.dN_Id === doanhNghiep.dN_Id;
             });

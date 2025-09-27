@@ -73,7 +73,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
 
             try {
                 await axios.put(uriChangeAvatar, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
-                Alert.alert('Thông báo', 'Đổi avatar thành công');
+                Alert.alert('Thông báo', 'Tải lên ảnh thành công');
 
                 for (const tempUri of temp_UriAvatarUser) {
                     if (tempUri.userId === userId) {
@@ -84,7 +84,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
                 setReRender((value) => value + 1);
                 setShowModalChangeAvatar(false);
             }catch {
-                 Alert.alert('Lỗi', 'Đổi avatar thất bại');
+                 Alert.alert('Lỗi', 'Tải lên ảnh thất bại');
             }
          }
     }
@@ -99,7 +99,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
         try {
             const uriDeleteCoverPhoto = url('api/auth/avatar');
             await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
-            Alert.alert('Thông báo', 'Xóa ảnh đại diện thành công');
+            Alert.alert('Thông báo', 'Xóa ảnh thành công');
             for (const tempUri of temp_UriAvatarUser) {
                     if (tempUri.userId === userId) {
                         tempUri.userId = '';

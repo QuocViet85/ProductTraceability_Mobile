@@ -54,6 +54,8 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
                 lsP_NM_Id: nhaMay?.nM_Id
             } as LoSanPham, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Sửa lô sản phẩm thành công');
+
             const loSanPhamInTemp = temp_ListLoSanPhams.find((loSanPhamInTemp: LoSanPham) => {
                 return loSanPhamInTemp.lsP_Id === loSanPham.lsP_Id;
             });

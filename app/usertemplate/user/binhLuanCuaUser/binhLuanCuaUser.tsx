@@ -116,7 +116,13 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                                             )
                                                         }
                                                     })}
-                                                    <XoaBinhLuan userLogin={userLogin} binhLuan={item} layCacBinhLuans={layCacBinhLuans} width={'100%'}/>
+                                                    <XoaBinhLuan 
+                                                    userLogin={userLogin} 
+                                                    binhLuan={item} 
+                                                    listBinhLuansHienThi={temp_ListBinhLuans} 
+                                                    setTongSoBinhLuan={setTongSoBinhLuan} 
+                                                    width={'100%'}
+                                                    />
                                                 </View>
                                             </View>
                                             

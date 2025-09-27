@@ -80,7 +80,7 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
 
                 try {
                     await axios.put(uriUploadCoverPhoto, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: bearerToken}});
-                    Alert.alert('Thông báo', 'Đổi ảnh bìa thành công');
+                    Alert.alert('Thông báo', 'Tải lên ảnh thành công');
 
                     for (const tempUri of temp_UriCoverPhotoUser) {
                         if (tempUri.userId === userId) {
@@ -90,7 +90,7 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
                     setReRender((value) => value + 1);
                     setShowModalChangeCoverPhoto(false);
                 }catch {
-                    Alert.alert('Lỗi', 'Đổi ảnh bìa thất bại');
+                    Alert.alert('Lỗi', 'Tải lên ảnh thất bại');
                 }
             }
         }
@@ -106,7 +106,7 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
                 const uriDeleteCoverPhoto = url('api/auth/cover-photo');
                 await axios.delete(uriDeleteCoverPhoto, { headers : {Authorization: bearerToken}});
 
-                Alert.alert('Thông báo', 'Xóa ảnh bìa thành công');
+                Alert.alert('Thông báo', 'Xóa ảnh thành công');
                 for (const tempUri of temp_UriCoverPhotoUser) {
                     if (tempUri.userId === userId) {
                         tempUri.userId = '';
@@ -116,7 +116,7 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
                 setReRender((value) => value + 1);
                 setShowModalChangeCoverPhoto(false);
             }catch {
-                Alert.alert('Lỗi', 'Xóa ảnh bìa thất bại');
+                Alert.alert('Lỗi', 'Xóa ảnh thất bại');
             }
         }
     return (

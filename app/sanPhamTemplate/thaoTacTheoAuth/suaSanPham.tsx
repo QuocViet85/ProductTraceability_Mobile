@@ -16,6 +16,7 @@ import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNg
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
 import DanhMuc from "@/app/model/DanhMuc";
 import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
+import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
 
 export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -115,6 +116,8 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                     sP_DM_Id: danhMuc.dM_Id ? danhMuc.dM_Id : null
                 } as SanPham, {headers: {Authorization: await getBearerToken()}});
 
+                Alert.alert('Thông báo', 'Sửa sản phẩm thành công');
+
                 const sanPhamInTemp = temp_SanPham.find((sanPhamInTemp: SanPham) => {
                     return sanPhamInTemp.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
                 });
@@ -140,10 +143,19 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                     sanPhamInTemp.sP_DM = danhMuc.dM_Id ? danhMuc : undefined; 
                 }
 
+                const sanPhamInTrangChu = listSanPhamsHienThiTrangChu.find((sanPhamInTrangChu: SanPham) => {
+                    return sanPhamInTrangChu.sP_MaTruyXuat === sanPham.sP_MaTruyXuat;
+                });
+
+                if (sanPhamInTrangChu) {
+                    sanPhamInTrangChu.sP_Ten = ten;
+                    sanPhamInTrangChu.sP_MaTruyXuat = maTruyXuat;
+                }
+    
                 setReRenderSanPham((value: number) => value + 1);
+                reRenderTrangChuListSanPhams((value: number) => value + 1);
                 setShowModalSua(false);
             }
-            
         }catch {
             Alert.alert('Lỗi', 'Sửa sản phẩm thất bại')
         }

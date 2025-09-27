@@ -43,6 +43,8 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                 dN_Email: email
             }, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Sửa doanh nghiệp thành công');
+
             const doanhNghiepInTemp = temp_DoanhNghiep.find((doanhNghiepInTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
                 return doanhNghiepInTemp.doanhNghiep.dN_Id === doanhNghiep.dN_Id;
             });

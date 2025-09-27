@@ -47,6 +47,8 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
                 nM_DN_Id: doanhNghiep?.dN_Id
             } as NhaMay, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Sửa nhà máy thành công');
+
             const nhaMayInTemp = temp_NhaMay.find((nhaMayInTemp: NhaMay) => {
                 return nhaMayInTemp.nM_Id === nhaMay.nM_Id;
             });

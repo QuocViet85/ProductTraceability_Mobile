@@ -28,6 +28,8 @@ export default function XoaNhaMay({nhaMay, setNhaMay}: {nhaMay: NhaMay, setNhaMa
 
             await axios.delete(urlXoaNhaMay, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Xóa nhà máy thành công');
+
             const indexNhaMayBiXoa = temp_NhaMay.findIndex((nhaMayInTemp: NhaMay) => {
                 return nhaMayInTemp.nM_Id === nhaMay.nM_Id;
             });

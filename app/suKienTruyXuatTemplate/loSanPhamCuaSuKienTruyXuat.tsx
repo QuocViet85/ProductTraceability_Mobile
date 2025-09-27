@@ -8,7 +8,7 @@ export default function LoSanPhamCuaSuKienTruyXuat({loSanPham}: {loSanPham: LoSa
     const [showModalLoSanPham, setShowModalLoSanPham] = useState<boolean | undefined>(false);
     return (
         <View style={{flexDirection: 'row'}}>
-            <Text style={{fontWeight: 'bold'}}>Lô sản phẩm: </Text>
+            <Text style={{fontWeight: 'bold'}}>{'Lô sản phẩm: '}</Text>
             {loSanPham ? (
                 <View>
                     <TouchableOpacity style={{backgroundColor: '#f2f2f2'}} onPress={() => setShowModalLoSanPham(true)}>
@@ -19,6 +19,8 @@ export default function LoSanPhamCuaSuKienTruyXuat({loSanPham}: {loSanPham: LoSa
                     animationType="slide"
                     >
                         <LoSanPhamRender 
+                        listLoSanPhamsHienThi={[]}
+                        sP_DN_SoHuu_Id=""
                         loSanPham={loSanPham} 
                         sP_Id={loSanPham.lsP_SP_Id} 
                         sP_MaTruyXuat={loSanPham.lsP_SP?.sP_MaTruyXuat} 

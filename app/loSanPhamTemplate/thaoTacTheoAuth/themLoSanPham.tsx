@@ -12,8 +12,9 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import NhaMay from "@/app/model/NhaMay";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
 import { temp_ListLoSanPhams } from "..";
+import { LIMIT_LO_SANPHAM } from "@/app/constant/Limit";
 
-export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanPhamsHienThi, setReRender, setPageNumber, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listLoSanPhamsHienThi: LoSanPham[], setReRender: Function, setPageNumber: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanPhamsHienThi, setReRender, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listLoSanPhamsHienThi: LoSanPham[], setReRender: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
 
@@ -55,14 +56,29 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanP
                 lsP_NM_Id: nhaMay?.nM_Id
             } as LoSanPham, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Thêm lô sản phẩm thành công');
+
             const loSanPhamNew: LoSanPham = res.data;
 
             listLoSanPhamsHienThi.unshift(loSanPhamNew);
             temp_ListLoSanPhams.unshift(loSanPhamNew);
 
-            setPageNumber(1);
-            setReRender((value: any) => value + 1); 
+            if (listLoSanPhamsHienThi.length % LIMIT_LO_SANPHAM === 0) {
+                listLoSanPhamsHienThi.pop();
+            }
+            if (temp_ListLoSanPhams.length % LIMIT_LO_SANPHAM === 0) {
+                temp_ListLoSanPhams.pop();
+            }
+            
+            setReRender((value: any) => value + 1);
+            for (const loSanPham of temp_ListLoSanPhams) {
+                if (loSanPham.temp_TongSoVoiSanPham) {
+                    temp_ListLoSanPhams[0].temp_TongSoVoiSanPham = loSanPham.temp_TongSoVoiSanPham + 1;
+                    loSanPham.temp_TongSoVoiSanPham += 1;
+                }
+            } 
             setShowModalSua(false);
+            resetState();
         }catch {
             Alert.alert('Lỗi', 'Thêm lô sản phẩm thất bại')
         }
@@ -86,6 +102,16 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanP
         }else {
             Alert.alert('Lỗi', 'Bạn không có quyền sửa nhà máy cho lô sản phẩm này');
         }
+    }
+
+    const resetState = () => {
+        setTen(undefined);
+        setMaLSP(undefined);
+        setNgaySanXuat(undefined);
+        setNgayHetHan(undefined);
+        setSoLuong(undefined);
+        setMoTa(undefined);
+        setNhaMay(undefined);
     }
 
     return quyenSua 

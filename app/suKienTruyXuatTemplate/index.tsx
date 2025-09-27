@@ -124,14 +124,6 @@ export default function DanhSachSuKienTruyXuat() {
         }catch {}
     }
 
-    const layCacSuKiensTuDau = () => {
-        if (pageNumber !== 1) {
-            setPageNumber(1);
-        }else {
-            setReRender(value => value + 1);
-        }
-    }
-
     const tongSoTrang : number = Math.ceil(tongSoSuKiens / LIMIT_SU_KIEN_TRUY_XUAT);
 
     const handleLoadMore = () => {

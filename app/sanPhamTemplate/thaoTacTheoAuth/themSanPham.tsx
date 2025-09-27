@@ -14,8 +14,10 @@ import NhaMay from "@/app/model/NhaMay";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
 import DanhMuc from "@/app/model/DanhMuc";
 import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
+import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
+import { LIMIT_SANPHAM } from "@/app/constant/Limit";
 
-export default function ThemSanPham({listSanPhamsHienThi, setReRenderSanPham, width, height, paddingVertical, fontSize}: { listSanPhamsHienThi: SanPham[], setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemSanPham({width, height, paddingVertical, fontSize}: { width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [showModalThem, setShowModalThem] = useState<boolean | undefined>(false);
 
     const [ten, setTen] = useState<string | undefined>(undefined);
@@ -91,10 +93,15 @@ export default function ThemSanPham({listSanPhamsHienThi, setReRenderSanPham, wi
                     sP_DM_Id: danhMuc.dM_Id ? danhMuc.dM_Id : null
                 } as SanPham, {headers: {Authorization: await getBearerToken()}});
 
-                const sanPhamNew: SanPham = res.data;
-                listSanPhamsHienThi.unshift(sanPhamNew);
+                Alert.alert('Thông báo', 'Thêm sản phẩm thành công');
 
-                setReRenderSanPham((value: number) => value + 1);
+                const sanPhamNew: SanPham = res.data;
+                listSanPhamsHienThiTrangChu.unshift(sanPhamNew);
+                if (listSanPhamsHienThiTrangChu.length % LIMIT_SANPHAM === 0) {
+                    listSanPhamsHienThiTrangChu.pop();
+                }
+                
+                reRenderTrangChuListSanPhams((value: number) => value + 1);
                 setShowModalThem(false);
                 resetState();
             }
@@ -126,6 +133,10 @@ export default function ThemSanPham({listSanPhamsHienThi, setReRenderSanPham, wi
         setGia(undefined);
         setMaQuocGia(undefined);
         setDoanhNghiepSoHuu(undefined);
+        setDoanhNghiepSanXuat(undefined);
+        setDoanhNghiepVanTai(undefined);
+        setNhaMay(undefined);
+        setDanhMuc(khongChonDanhMuc as DanhMuc);
     }
 
     return (

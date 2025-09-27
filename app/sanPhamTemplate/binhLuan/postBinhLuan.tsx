@@ -37,7 +37,9 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
                 await axios.post(urlPostBinhLuan, formData, {headers: {
                     Authorization: bearerToken,
                     "Content-Type": 'multipart/form-data'
-                }})
+                }});
+
+                Alert.alert('Thông báo', 'Đăng bình luận thành công');
 
                 setNoiDungBinhLuan('');
                 reloadBinhLuans();
