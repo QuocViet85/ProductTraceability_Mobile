@@ -102,11 +102,17 @@ export default function Index() {
                 <Text style = {{fontSize: 15}}>{'Mã vạch: '}
                     {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
                 </Text>
+                <QrCode urlSanPham={urlSanPham} />
+                <View style={{height: 10}}></View>
                 <View style={{flexDirection: 'row'}}>
-                    <QrCode urlSanPham={urlSanPham} />
-                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40, marginLeft: 'auto'}}
+                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
                                       onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
-                      <Text>{'Truy xuất sản phẩm'}</Text>
+                        <Text>{'Lô sản phẩm'}</Text>
+                    </TouchableOpacity>
+                    <View style={{width: 10}}></View>
+                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
+                                      onPress={() => router.push({pathname: '/suKienTruyXuatTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
+                        <Text>{'Sự kiện truy xuất'}</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{height: 10}}></View>

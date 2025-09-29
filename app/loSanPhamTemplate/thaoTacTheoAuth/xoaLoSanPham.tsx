@@ -48,7 +48,7 @@ export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, pageNumb
                 listLoSanPhamsHienThi.splice(indexLoSanPhamBiXoaInTemp);
             }
 
-            const res = await axios.get(`api/losanpham/san-pham/${loSanPham.lsP_SP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_LO_SANPHAM}`);
+            const res = await axios.get(url(`api/losanpham/san-pham/${loSanPham.lsP_SP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_LO_SANPHAM}`));
             const listLoSanPhamsTrangCuoiHienTai: LoSanPham[] = res.data;
             if (listLoSanPhamsTrangCuoiHienTai.length > 0) {
                 const loSanPhamCuoiCuaTrangCuoiHienTai: LoSanPham = listLoSanPhamsTrangCuoiHienTai[listLoSanPhamsTrangCuoiHienTai.length - 1];

@@ -12,13 +12,13 @@ import Footer from "../helpers/ViewHelpers/footer";
 import SuKienTruyXuatRender from "./suKienTruyXuatRender";
 import Header from "@/app/helpers/ViewHelpers/header";
 import { paginate } from "../helpers/LogicHelper/helper";
+import ThemSuKienTruyXuat from "./thaoTacTheoAuth/themSuKienTruyXuat";
+import BlurLine from "../helpers/ViewHelpers/blurLine";
 
 export const temp_ListSuKienTruyXuats: SuKienTruyXuat[] = []; //temp not main screen
 
 export default function DanhSachSuKienTruyXuat() {
     const params = useLocalSearchParams();
-    const lsP_Id = params.lsP_Id;
-    const lsP_MaLSP = params.lsP_MaLSP;
     const sP_Id = params.sP_Id;
     const sP_Ten = params.nM_Ten;
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
@@ -34,94 +34,64 @@ export default function DanhSachSuKienTruyXuat() {
         layCacSuKiens();
     },[pageNumber]);
 
-    const isNotMainScreen = () => {
-      return lsP_Id;
-    }
-
     const layCacSuKiens = async() => {
         setLoading(true);
 
         const newListSuKiens = [];
 
-        let urlSuKien = url('api/sukientruyxuat');
+        const listSuKiensTrongTemp = temp_ListSuKienTruyXuats.filter((item) => {
+            return item.sK_SP_Id === sP_Id;
+        });
 
-        if (isNotMainScreen()) {
-            const listSuKiensTrongTemp = temp_ListSuKienTruyXuats.filter((item) => {
-                return item.sK_LSP_Id === lsP_Id;
-            });
-    
-            const listSuKiensTrongTempCanLay = paginate(listSuKiensTrongTemp, pageNumber, LIMIT_SU_KIEN_TRUY_XUAT) as SuKienTruyXuat[];
+        const listSuKiensTrongTempCanLay = paginate(listSuKiensTrongTemp, pageNumber, LIMIT_SU_KIEN_TRUY_XUAT) as SuKienTruyXuat[];
 
-            if (listSuKiensTrongTempCanLay.length < 1) {
-                urlSuKien +=`/lo-san-pham/${lsP_Id}`;
-            }else {
-                if (pageNumber > 1) {
-                    newListSuKiens.push(...listSuKiens, ...listSuKiensTrongTempCanLay);
-                }else {
-                    newListSuKiens.push(...listSuKiensTrongTempCanLay);
+        if (listSuKiensTrongTempCanLay.length < 1) {
+            const urlSuKien = url(`api/sukientruyxuat/san-pham/${sP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_SU_KIEN_TRUY_XUAT}`);
+            try {
+                const res = await axios.get(urlSuKien);
+
+                if (res.data.tongSo) {
+                    setTongSoSuKiens(res.data.tongSo);
                 }
-                setListSuKiens(newListSuKiens);
-                setTongSoSuKiens(temp_ListSuKienTruyXuats[0].temp_TongSoVoiLoSanPham);
-                setLoading(false);
-                return;
-            }
-        }
 
-        urlSuKien += `?pageNumber=${pageNumber}&limit=${LIMIT_SU_KIEN_TRUY_XUAT}`;
+                if (res.data.listSuKienTruyXuats) {
+                    const listSuKiensTuBackEnd: SuKienTruyXuat[] = res.data.listSuKienTruyXuats;
 
-        try {
-            const res = await axios.get(urlSuKien);
+                    for (const suKien of listSuKiensTuBackEnd) {
+                        suKien.sK_SP = {
+                                sP_Id: sP_Id as string,
+                                sP_Ten: sP_Ten as string,
+                                sP_MaTruyXuat: sP_MaTruyXuat as string,
+                                sP_UriAvatar: await getUriAvatarSanPham(sP_Id as string) 
+                        };
 
-            if (res.data.tongSo) {
-                setTongSoSuKiens(res.data.tongSo);
-            }
-
-            if (res.data.listSuKienTruyXuats) {
-                const listSuKiensTuBackEnd: SuKienTruyXuat[] = res.data.listSuKienTruyXuats;
-
-                for (const suKien of listSuKiensTuBackEnd) {
-                    if (isNotMainScreen()) {
-                        suKien.sK_LSP = {
-                            lsP_Id: lsP_Id,
-                            lsP_MaLSP: lsP_MaLSP,
-                            lsP_SP: {
-                                sP_Id: sP_Id,
-                                sP_Ten: sP_Ten,
-                                sP_MaTruyXuat: sP_MaTruyXuat,
-                                sP_UriAvatar: await getUriAvatarSanPham(sP_Id as string)
-                            }
-                        } as LoSanPham;
-
-                        suKien.temp_TongSoVoiLoSanPham = res.data.tongSo ? res.data.tongSo : 0;
-                    }else {
-                        if (suKien.sK_LSP?.lsP_SP) {
-                            suKien.sK_LSP.lsP_SP.sP_UriAvatar = (await getUriAvatarSanPham(suKien.sK_LSP.lsP_SP.sP_Id)) as string;
-                        }
-                    }
-                    
-                    if (!isNotMainScreen()) {
-                        try {
-                        const doanhNghiepSoHuuId = (await axios.get(url(`api/losanpham/doanh-nghiep-so-huu-id/${suKien.sK_LSP_Id}`))).data;
-                        suKien.sK_DoanhNghiepSoHuu_Id = doanhNghiepSoHuuId;
-                        }catch {}
-                    }else {
+                        suKien.temp_TongSoVoiSanPham = res.data.tongSo ? res.data.tongSo : 0;
                         suKien.sK_DoanhNghiepSoHuu_Id = sP_DN_SoHuu_Id as string;
                     }
-                }
 
-                if (isNotMainScreen()) { 
                     temp_ListSuKienTruyXuats.push(...listSuKiensTuBackEnd); //không phải màn hình chính thì cache
-                }
 
-                if (pageNumber > 1) {
-                    newListSuKiens.push(...listSuKiens, ...listSuKiensTuBackEnd);
-                }else {
-                    newListSuKiens.push(...listSuKiensTuBackEnd);
+                    if (pageNumber > 1) {
+                        newListSuKiens.push(...listSuKiens, ...listSuKiensTuBackEnd);
+                    }else {
+                        newListSuKiens.push(...listSuKiensTuBackEnd);
+                    }
+                    setListSuKiens(newListSuKiens);
+                    setLoading(false);
                 }
-                setListSuKiens(newListSuKiens);
-                setLoading(false);
+            }catch {}
+
+        }else {
+            if (pageNumber > 1) {
+                newListSuKiens.push(...listSuKiens, ...listSuKiensTrongTempCanLay);
+            }else {
+                newListSuKiens.push(...listSuKiensTrongTempCanLay);
             }
-        }catch {}
+            setListSuKiens(newListSuKiens);
+            setTongSoSuKiens(temp_ListSuKienTruyXuats[0].temp_TongSoVoiSanPham);
+            setLoading(false);
+            return;
+        }
     }
 
     const tongSoTrang : number = Math.ceil(tongSoSuKiens / LIMIT_SU_KIEN_TRUY_XUAT);
@@ -134,20 +104,24 @@ export default function DanhSachSuKienTruyXuat() {
 
     return (
         <View style={styles.container}>
-            <Header title={('Nhật ký truy xuất' + (isNotMainScreen() ? ' của lô sản phẩm' :  '')) as string} fontSize={isNotMainScreen() ? 20 : 30} resource={(isNotMainScreen() ? lsP_MaLSP : '') as string | undefined | null}></Header>
+            <Header title={'Nhật ký truy xuất của sản phẩm'} fontSize={20} resource={sP_Ten as string}></Header>
+            <View style={{marginTop: 10}}>
+                <ThemSuKienTruyXuat sanPhamId={sP_Id as string} doanhNghiepSoHuuId={sP_DN_SoHuu_Id as string} listSuKiensHienThi={listSuKiens} setReRenderSuKien={setReRender} width={200} height={30} paddingVertical={5} fontSize={12}/>
+            </View>
+            <BlurLine />
             <FlatList
                 data={listSuKiens}
                 keyExtractor={(item: SuKienTruyXuat, index) => item.sK_Id as string + '-' + index}
                 renderItem={({item}: {item: SuKienTruyXuat}) => {
                     return (
-                        <SuKienTruyXuatRender suKien={item} isNotMainScreen={isNotMainScreen} setReRenderSuKien={setReRender}/>
+                        <SuKienTruyXuatRender suKien={item} listSuKiensHienThi={listSuKiens} pageNumber={pageNumber} setReRenderSuKien={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0}
                 />
                 {loading ? (<Loading />) : (<View></View>)}
-                {isNotMainScreen() ? (<Footer backgroundColor={'black'} height={'6%'}/>) : (<View></View>)}
+                <Footer backgroundColor={'black'} height={'6%'}/>
         </View>
     )
 }

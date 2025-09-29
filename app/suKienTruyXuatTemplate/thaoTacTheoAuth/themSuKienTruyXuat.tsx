@@ -11,36 +11,38 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { temp_ListSuKienTruyXuats } from "..";
 import LoSanPham from "@/app/model/LoSanPham";
 import LuaChonLoSanPhamHelper from "@/app/helpers/LuaChonHelper/luaChonLoSanPhamHelper";
+import { LIMIT_SU_KIEN_TRUY_XUAT } from "@/app/constant/Limit";
 
-export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listSuKiensHienThi, setReRenderSuKien, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listSuKiensHienThi: SuKienTruyXuat[], setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
     const [showChonThoiGian, setShowChonThoiGian] = useState<boolean>(false);
 
-    const [ten, setTen] = useState<string | undefined>(suKien.sK_Ten);
-    const [maSK, setMaSK] = useState<string | undefined>(suKien.sK_MaSK);
-    const [moTa, setMoTa] = useState<string | undefined>(suKien.sK_MoTa);
-    const [diaDiem, setDiaDiem] = useState<string | undefined>(suKien.sK_DiaDiem);
-    const [thoiGian, setThoiGian] = useState<Date | undefined>(suKien.sK_ThoiGian);
+    const [ten, setTen] = useState<string | undefined>(undefined);
+    const [maSK, setMaSK] = useState<string | undefined>(undefined);
+    const [moTa, setMoTa] = useState<string | undefined>(undefined);
+    const [diaDiem, setDiaDiem] = useState<string | undefined>(undefined);
+    const [thoiGian, setThoiGian] = useState<Date | undefined>(undefined);
 
     const [showLuaChonLoSanPham, setShowLuaChonLoSanPham] = useState<boolean>(false);
-    const [loSanPham, setLoSanPham] = useState<LoSanPham | undefined>(suKien.sK_LSP);
+    const [loSanPham, setLoSanPham] = useState<LoSanPham | undefined>(undefined);
 
     useEffect(() => {
         layQuyenSua();
     }, [])
 
     const layQuyenSua = async() => {
-        const quyenSua = await quyenSuaSanPham(suKien.sK_DoanhNghiepSoHuu_Id);
+        const quyenSua = await quyenSuaSanPham(doanhNghiepSoHuuId);
         setQuyenSua(quyenSua);
     }
 
     const suaSuKienTruyXuat = async() => {
         try {
-            const urlSuaSuKien = url(`api/sukientruyxuat/${suKien.sK_Id}`);
+            const urlThemSuKien = url(`api/sukientruyxuat`);
 
-            await axios.put(urlSuaSuKien, {
+            const res = await axios.post(urlThemSuKien, {
                 sK_Ten: ten,
+                sK_SP_Id: sanPhamId,
                 sK_MaSK: maSK,
                 sK_MoTa: moTa,
                 sK_DiaDiem: diaDiem,
@@ -48,41 +50,31 @@ export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
                 sK_LSP_Id: loSanPham?.lsP_Id
             } as SuKienTruyXuat, {headers: {Authorization: await getBearerToken()}});
 
-            Alert.alert('Thông báo', 'Sửa sự kiện truy xuất thành công');
+            Alert.alert('Thông báo', 'Thêm sự kiện truy xuất thành công');
+           
+            const suKienNew: SuKienTruyXuat = res.data;
 
+            listSuKiensHienThi.unshift(suKienNew);
+            temp_ListSuKienTruyXuats.unshift(suKienNew);
 
-            const suKienInTemp = temp_ListSuKienTruyXuats.find((suKienInTemp: SuKienTruyXuat) => {
-                return suKienInTemp.sK_Id === suKien.sK_Id;
-            });
-
-            if (suKienInTemp) {
-                suKien.sK_Ten = ten;
-                suKien.sK_MaSK = maSK;
-                suKien.sK_ThoiGian = thoiGian;
-                suKien.sK_MoTa = moTa;
-                suKien.sK_DiaDiem = diaDiem;
-                suKien.sK_LSP_Id = loSanPham?.lsP_Id;
-                suKien.sK_LSP = loSanPham;
+            if (listSuKiensHienThi.length % LIMIT_SU_KIEN_TRUY_XUAT === 0) {
+                listSuKiensHienThi.pop();
             }
-
-            const suKienHienThi = listSuKiensHienThi.find((suKienHienThi: SuKienTruyXuat) => {
-                return suKienHienThi.sK_Id === suKien.sK_Id;
-            });
-
-            if (suKienHienThi) {
-                suKienHienThi.sK_Ten = ten;
-                suKienHienThi.sK_MaSK = maSK;
-                suKienHienThi.sK_ThoiGian = thoiGian;
-                suKienHienThi.sK_MoTa = moTa;
-                suKienHienThi.sK_DiaDiem = diaDiem;
-                suKienHienThi.sK_LSP_Id = loSanPham?.lsP_Id;
-                suKienHienThi.sK_LSP = loSanPham;
+            if (temp_ListSuKienTruyXuats.length % LIMIT_SU_KIEN_TRUY_XUAT === 0) {
+                temp_ListSuKienTruyXuats.pop();
             }
-
-            setReRenderSuKien((value: number) => value + 1);
+            
+            setReRenderSuKien((value: any) => value + 1);
+            for (const suKien of temp_ListSuKienTruyXuats) {
+                if (suKien.temp_TongSoVoiSanPham) {
+                    temp_ListSuKienTruyXuats[0].temp_TongSoVoiSanPham = suKien.temp_TongSoVoiSanPham + 1;
+                    suKien.temp_TongSoVoiSanPham += 1;
+                }
+            } 
             setShowModalSua(false);
+            resetState();
         }catch {
-            Alert.alert('Lỗi', 'Sửa sự kiện truy xuất thất bại')
+            Alert.alert('Lỗi', 'Thêm sự kiện truy xuất thất bại')
         }
     }
 
@@ -102,11 +94,20 @@ export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
         }
     }
 
+    const resetState = () => {
+        setTen(undefined);
+        setMaSK(undefined);
+        setMoTa(undefined);
+        setDiaDiem(undefined);
+        setThoiGian(undefined);
+        setLoSanPham(undefined);
+    }
+
     return quyenSua 
     ? (
     <View>
-        <TouchableOpacity style={{backgroundColor: 'yellow', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Sửa'}</Text>
+        <TouchableOpacity style={{backgroundColor: 'blue', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize, color: 'white'}}>{'Thêm'}</Text>
         </TouchableOpacity>
 
         <Modal
@@ -172,18 +173,18 @@ export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
                     <TouchableOpacity onPress={() => setShowLuaChonLoSanPham(true)}>
                             <TextInput
                             style={styles.input}
-                            placeholder="Nhà máy"
+                            placeholder="Lô sản phẩm"
                             editable={false}
-                            value={loSanPham?.lsP_MaLSP + `${loSanPham?.lsP_Ten ? loSanPham.lsP_Ten : null}`}
+                            value={`${loSanPham?.lsP_MaLSP ? loSanPham.lsP_MaLSP : ''}` + `${loSanPham?.lsP_Ten ? ' - '  + loSanPham.lsP_Ten : ''}`}
                         />
                     </TouchableOpacity>
-                    <LuaChonLoSanPhamHelper sP_Id={suKien.sK_SP_Id as string} showLuaChon={showLuaChonLoSanPham} setShowLuaChon={setShowLuaChonLoSanPham} setChonLoSanPham={setChonLoSanPham}/>
+                    <LuaChonLoSanPhamHelper sP_Id={sanPhamId as string} showLuaChon={showLuaChonLoSanPham} setShowLuaChon={setShowLuaChonLoSanPham} setChonLoSanPham={setChonLoSanPham}/>
                 </ScrollView>
             </View>
             
             <View style={{flexDirection:'row', width: '100%', alignItems: 'center', marginTop: 'auto'}}>
                 <View style={{width: '50%'}}>
-                    <Button title="Sửa" color={'red'} onPress={suaSuKienTruyXuat}></Button>
+                    <Button title="Thêm" color={'blue'} onPress={suaSuKienTruyXuat}></Button>
                 </View>
                 <View style={{width: '50%'}}>
                     <Button title="Đóng" onPress={() => setShowModalSua(false)}></Button>

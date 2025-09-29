@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { temp_SanPham } from "..";
-import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
+import { listSanPhamsHienThiTrangChu, pageNumberTrangChuListSanPhams, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
+import { LIMIT_SANPHAM } from "@/app/constant/Limit";
 
 export default function XoaSanPham({sanPham, setSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -48,6 +49,14 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
             }
 
             setSanPham(null);
+            const res = await axios.get(url(`api/sanpham?pageNumber=${pageNumberTrangChuListSanPhams}&limit=${LIMIT_SANPHAM}`));
+            const listSanPhamsTrangCuoiHienTai: SanPham[] = res.data;
+            if (listSanPhamsTrangCuoiHienTai.length > 0) {
+                const sanPhamCuoiCuaTrangCuoiHienTai: SanPham = listSanPhamsTrangCuoiHienTai[listSanPhamsTrangCuoiHienTai.length - 1];
+                if (sanPhamCuoiCuaTrangCuoiHienTai.sP_Id !== listSanPhamsHienThiTrangChu[listSanPhamsHienThiTrangChu.length - 1]?.sP_Id) {
+                    listSanPhamsHienThiTrangChu.push(sanPhamCuoiCuaTrangCuoiHienTai);
+                }
+            }
             reRenderTrangChuListSanPhams((value: number) => value + 1);
             setShowModalXoa(false);
         }catch {

@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
 import { View } from "react-native";
 import { temp_ListSuKienTruyXuats } from "..";
+import { LIMIT_SU_KIEN_TRUY_XUAT } from "@/app/constant/Limit";
 
-export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumber, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], pageNumber: number, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
     const [showModalXoa, setShowModalXoa] = useState<boolean | undefined>(false);
 
@@ -28,6 +29,8 @@ export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
 
             await axios.delete(urlXoaSuKien, {headers: {Authorization: await getBearerToken()}});
 
+            Alert.alert('Thông báo', 'Xóa sự kiện truy xuất thành công');
+
             const indexSuKienBiXoaInTemp = temp_ListSuKienTruyXuats.findIndex((suKienInTemp: SuKienTruyXuat) => {
                 return suKienInTemp.sK_Id === suKien.sK_Id;
             });
@@ -44,15 +47,26 @@ export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
                 listSuKiensHienThi.splice(indexSuKienBiXoaTrongListHienThi, 1);
             }
 
+            const res = await axios.get(url(`api/sukientruyxuat/san-pham/${suKien.sK_SP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_SU_KIEN_TRUY_XUAT}`));
+            const listSuKiensTrangCuoiHienTai: SuKienTruyXuat[] = res.data;
+            if (listSuKiensTrangCuoiHienTai.length > 0) {
+                const suKienCuoiCuaTrangCuoiHienTai: SuKienTruyXuat = listSuKiensTrangCuoiHienTai[listSuKiensTrangCuoiHienTai.length - 1];
+                if (suKienCuoiCuaTrangCuoiHienTai.sK_Id !== listSuKiensHienThi[listSuKiensHienThi.length - 1]?.sK_Id) {
+                    listSuKiensHienThi.push(suKienCuoiCuaTrangCuoiHienTai);
+                }
+                if (suKienCuoiCuaTrangCuoiHienTai.sK_Id !== temp_ListSuKienTruyXuats[temp_ListSuKienTruyXuats.length - 1]?.sK_Id) {
+                    listSuKiensHienThi.push(suKienCuoiCuaTrangCuoiHienTai);
+                }
+            }
+
             setReRenderSuKien((value: number) => value + 1);
             for (const suKien of temp_ListSuKienTruyXuats) {
-                if (suKien.temp_TongSoVoiLoSanPham) {
-                    temp_ListSuKienTruyXuats[0].temp_TongSoVoiLoSanPham = suKien.temp_TongSoVoiLoSanPham - 1;
-                    suKien.temp_TongSoVoiLoSanPham -= 1;
+                if (suKien.temp_TongSoVoiSanPham) {
+                    temp_ListSuKienTruyXuats[0].temp_TongSoVoiSanPham = suKien.temp_TongSoVoiSanPham - 1;
+                    suKien.temp_TongSoVoiSanPham -= 1;
                 }
             }
             setShowModalXoa(false);
-            Alert.alert('Thông báo', 'Xóa sự kiện truy xuất thành công');
         }catch {
             Alert.alert('Lỗi', 'Xóa sự kiện truy xuất thất bại');
         }

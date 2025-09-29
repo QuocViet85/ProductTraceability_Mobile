@@ -20,7 +20,6 @@ export default function DanhSachLoSanPham() {
     const params = useLocalSearchParams();
     const sP_Id: string = params.sP_Id as string;
     const sP_Ten: string = params.sP_Ten as string;
-    const sP_MaTruyXuat: string = params.sP_MaTruyXuat as string;
     const sP_DN_SoHuu_Id: string = params.sP_DN_SoHuu_Id as string;
 
     const [listLoSanPhams, setListLoSanPhams] = useState<LoSanPham[]>([]);
@@ -100,7 +99,7 @@ export default function DanhSachLoSanPham() {
                 keyExtractor={(item: LoSanPham, index) => `${item.lsP_Id}-${index}`}
                 renderItem={({item}: {item: LoSanPham}) => {
                     return (
-                        <LoSanPhamRender loSanPham={item} listLoSanPhamsHienThi={listLoSanPhams} pageNumber={pageNumber} sP_Id={sP_Id} sP_Ten={sP_Ten} sP_MaTruyXuat={sP_MaTruyXuat} sP_DN_SoHuu_Id={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRender}/>
+                        <LoSanPhamRender loSanPham={item} listLoSanPhamsHienThi={listLoSanPhams} pageNumber={pageNumber} sP_DN_SoHuu_Id={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}

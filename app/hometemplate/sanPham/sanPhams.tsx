@@ -15,7 +15,6 @@ import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
 import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
 import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
 import ThemSanPham from "@/app/sanPhamTemplate/thaoTacTheoAuth/themSanPham";
-import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 
 export let listSanPhamsHienThiTrangChu: SanPham[] = [];
 export let reRenderTrangChuListSanPhams: Function = () => {}
@@ -27,17 +26,21 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const dN_Ten = params.dN_Ten
     const nM_Id = params.nM_Id;
     const nM_Ten = params.nM_Ten;
-
     const [listSanPhams, setListSanPham] = useState<SanPham[]>([]);
     const [tongSoSanPham, setTongSoSanPham] = useState<number>(0);
     const [textTimKiemSanPham, setTextTimKiemSanPham] = useState<string>('');
     const [modeTimKiem, setModeTimKiem] = useState<boolean>(false);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    pageNumberTrangChuListSanPhams = 1;
     const [loading, setLoading] = useState<boolean>(false);
     const [reRender, setReRender]  = useState<number>(0);
-    reRenderTrangChuListSanPhams = setReRender;
+    
     const [forceReRender, setForceReRender]  = useState<number>(0);
+
+    if (!dN_Id && !nM_Id) {
+      listSanPhamsHienThiTrangChu = listSanPhams;
+      pageNumberTrangChuListSanPhams = pageNumber;
+      reRenderTrangChuListSanPhams = setReRender;
+    }
 
     useEffect(() => {
       layCacSanPhams();
@@ -83,7 +86,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
 
             setListSanPham(newListSanPhams);
             setLoading(false);
-            listSanPhamsHienThiTrangChu = newListSanPhams;
           }
 
           if (res.data.tongSo) {

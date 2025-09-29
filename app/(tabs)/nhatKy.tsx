@@ -3,7 +3,9 @@ import DanhSachSuKienTruyXuat from "../suKienTruyXuatTemplate";
 
 export default function NhatKy() {
     return (
-            <DanhSachSuKienTruyXuat />
+        <View>
+            
+        </View>
     )
 }
 

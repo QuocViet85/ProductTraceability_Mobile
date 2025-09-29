@@ -15,7 +15,7 @@ import axios from "axios";
 const temp_ListAnhLoSanPhams: {lsP_Id: string | undefined, listAnhLoSanPhams: File[]}[] = [];
 
 const { width } = Dimensions.get('window');
-export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: LoSanPham, sP_DN_SoHuu_Id: string}) {
+export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: LoSanPham, sP_DN_SoHuu_Id: string | undefined}) {
     const [listFileAnhLoSanPhams, setListFileAnhLoSanPhams] = useState<File[]>([]);
     const [showModalAnhLoSanPham, setShowModalAnhLoSanPham] = useState<boolean | undefined>(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -48,6 +48,10 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
     }
 
     const layQuyenSuaSanPham = async() => {
+        if (!sP_DN_SoHuu_Id) {
+            setQuyenSuaSP(false);
+            return;
+        }
         const quyenSua = await quyenSuaSanPham(sP_DN_SoHuu_Id);
         setQuyenSuaSP(quyenSua);
     }

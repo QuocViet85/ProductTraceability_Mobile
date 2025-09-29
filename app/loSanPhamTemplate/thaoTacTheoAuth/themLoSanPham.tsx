@@ -216,7 +216,7 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanP
             
             <View style={{flexDirection:'row', width: '100%', alignItems: 'center', marginTop: 'auto'}}>
                 <View style={{width: '50%'}}>
-                    <Button title="Thêm" color={'red'} onPress={themLoSanPham}></Button>
+                    <Button title="Thêm" color={'blue'} onPress={themLoSanPham}></Button>
                 </View>
                 <View style={{width: '50%'}}>
                     <Button title="Đóng" onPress={() => setShowModalSua(false)}></Button>

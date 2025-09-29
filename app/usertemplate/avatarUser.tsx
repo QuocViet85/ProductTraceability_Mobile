@@ -5,8 +5,6 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, Image, Modal, Text, TouchableOpacity, View } from "react-native";
-import { STATE_CHANGE } from "../constant/State";
-
 const temp_UriAvatarUser : {
     userId: string,
     uri: string | undefined

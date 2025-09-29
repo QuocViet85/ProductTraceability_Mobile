@@ -19,12 +19,10 @@ export default function LoSanPhamCuaSuKienTruyXuat({loSanPham}: {loSanPham: LoSa
                     animationType="slide"
                     >
                         <LoSanPhamRender 
+                        loSanPham={loSanPham}
+                        pageNumber={0}
                         listLoSanPhamsHienThi={[]}
-                        sP_DN_SoHuu_Id=""
-                        loSanPham={loSanPham} 
-                        sP_Id={loSanPham.lsP_SP_Id} 
-                        sP_MaTruyXuat={loSanPham.lsP_SP?.sP_MaTruyXuat} 
-                        sP_Ten={loSanPham.lsP_SP?.sP_Ten}
+                        sP_DN_SoHuu_Id={undefined}
                         setReRenderLoSanPham={() => {}}/>
                         
                         <View style={{marginTop: 'auto'}}>

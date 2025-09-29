@@ -267,7 +267,7 @@ export default function ThemSanPham({width, height, paddingVertical, fontSize}: 
                 
                 <View style={{flexDirection:'row', width: '100%', alignItems: 'center', marginTop: 'auto'}}>
                     <View style={{width: '50%'}}>
-                        <Button title="Thêm" color={'red'} onPress={themSanPham}></Button>
+                        <Button title="Thêm" color={'blue'} onPress={themSanPham}></Button>
                     </View>
                     <View style={{width: '50%'}}>
                         <Button title="Đóng" onPress={() => setShowModalThem(false)}></Button>
