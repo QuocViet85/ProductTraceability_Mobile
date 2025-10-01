@@ -1,14 +1,13 @@
 import getBearerToken from "@/app/Auth/Authentication";
 import { quyenXoaSanPham } from "@/app/Auth/Authorization/AuthSanPham";
+import { LIMIT_SANPHAM } from "@/app/constant/Limit";
 import SanPham from "@/app/model/SanPham";
+import { listSanPhamsHienThiTrangChu, modeTimKiemTrangChuListSanPhams, pageNumberTrangChuListSanPhams, reRenderTrangChuListSanPhams, textTimKiemTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "react-native";
-import { View } from "react-native";
+import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity, View } from "react-native";
 import { temp_SanPham } from "..";
-import { listSanPhamsHienThiTrangChu, pageNumberTrangChuListSanPhams, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
-import { LIMIT_SANPHAM } from "@/app/constant/Limit";
 
 export default function XoaSanPham({sanPham, setSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -49,7 +48,7 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
             }
 
             setSanPham(null);
-            const res = await axios.get(url(`api/sanpham?pageNumber=${pageNumberTrangChuListSanPhams}&limit=${LIMIT_SANPHAM}`));
+            const res = await axios.get(url(`api/sanpham?pageNumber=${pageNumberTrangChuListSanPhams}&limit=${LIMIT_SANPHAM}${modeTimKiemTrangChuListSanPhams ? `&search=${textTimKiemTrangChuListSanPhams}` :  ''}`));
             const listSanPhamsTrangCuoiHienTai: SanPham[] = res.data;
             if (listSanPhamsTrangCuoiHienTai.length > 0) {
                 const sanPhamCuoiCuaTrangCuoiHienTai: SanPham = listSanPhamsTrangCuoiHienTai[listSanPhamsTrangCuoiHienTai.length - 1];

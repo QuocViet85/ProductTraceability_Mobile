@@ -36,35 +36,37 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
 
     const suaNhaMay = async() => {
         try {
-            const urlSuaNhaMay = url(`api/nhamay/${nhaMay.nM_Id}`);
+            if (validate()) {
+                const urlSuaNhaMay = url(`api/nhamay/${nhaMay.nM_Id}`);
 
-            await axios.put(urlSuaNhaMay, {
-                nM_Ten: ten,
-                nM_MaNM: maNhaMay,
-                nM_SoDienThoai: soDienThoai,
-                nM_Email: email,
-                nM_DiaChi: diaChi,
-                nM_DN_Id: doanhNghiep?.dN_Id
-            } as NhaMay, {headers: {Authorization: await getBearerToken()}});
+                await axios.put(urlSuaNhaMay, {
+                    nM_Ten: ten,
+                    nM_MaNM: maNhaMay,
+                    nM_SoDienThoai: soDienThoai,
+                    nM_Email: email,
+                    nM_DiaChi: diaChi,
+                    nM_DN_Id: doanhNghiep?.dN_Id
+                } as NhaMay, {headers: {Authorization: await getBearerToken()}});
 
-            Alert.alert('Thông báo', 'Sửa nhà máy thành công');
+                Alert.alert('Thông báo', 'Sửa nhà máy thành công');
 
-            const nhaMayInTemp = temp_NhaMay.find((nhaMayInTemp: NhaMay) => {
-                return nhaMayInTemp.nM_Id === nhaMay.nM_Id;
-            });
+                const nhaMayInTemp = temp_NhaMay.find((nhaMayInTemp: NhaMay) => {
+                    return nhaMayInTemp.nM_Id === nhaMay.nM_Id;
+                });
 
-            if (nhaMayInTemp) {
-                nhaMayInTemp.nM_Ten = ten;
-                nhaMayInTemp.nM_MaNM = maNhaMay;
-                nhaMayInTemp.nM_SoDienThoai = soDienThoai;
-                nhaMayInTemp.nM_Email = email;
-                nhaMayInTemp.nM_DiaChi = diaChi;
-                nhaMayInTemp.nM_DN_Id = doanhNghiep?.dN_Id;
-                nhaMayInTemp.nM_DN = doanhNghiep;
+                if (nhaMayInTemp) {
+                    nhaMayInTemp.nM_Ten = ten;
+                    nhaMayInTemp.nM_MaNM = maNhaMay;
+                    nhaMayInTemp.nM_SoDienThoai = soDienThoai;
+                    nhaMayInTemp.nM_Email = email;
+                    nhaMayInTemp.nM_DiaChi = diaChi;
+                    nhaMayInTemp.nM_DN_Id = doanhNghiep?.dN_Id;
+                    nhaMayInTemp.nM_DN = doanhNghiep;
+                }
+
+                setReRenderNhaMay((value: number) => value + 1);
+                setShowModalSua(false);
             }
-
-            setReRenderNhaMay((value: number) => value + 1);
-            setShowModalSua(false);
         }catch {
             Alert.alert('Lỗi', 'Sửa doanh nghiệp thất bại');
         }
@@ -77,6 +79,26 @@ export default function SuaNhaMay({nhaMay, setReRenderNhaMay}: {nhaMay: NhaMay, 
         }else {
             Alert.alert('Lỗi', 'Bạn không có quyền sửa doanh nghiệp cho nhà máy này');
         }
+    }
+
+    const validate = () => {
+        let alert = '';
+        if (!ten) {
+            alert += 'Vui lòng nhập tên \n';
+        }
+
+        if (email) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert += 'Email không đúng định dạng \n';
+            }
+        }
+
+        if (alert !== '') {
+            Alert.alert('Lỗi', alert);
+            return false;
+        }
+
+        return true;
     }
 
     return quyenSua ? (

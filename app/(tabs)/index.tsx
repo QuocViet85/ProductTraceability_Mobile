@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import DanhMucs, { khongChonDanhMuc } from '../danhMucTemplate/danhMucs';
 import Header from '../helpers/ViewHelpers/header';
-import DanhMucs, { khongChonDanhMuc } from '../hometemplate/danhMuc/danhMucs';
-import DanhSachSanPham from '../hometemplate/sanPham/sanPhams';
 import DanhMuc from '../model/DanhMuc';
+import DanhSachSanPham from '../sanPhamTemplate/danhSachSanPham/danhSachSanPham';
 
 
 export default function HomeScreen() {

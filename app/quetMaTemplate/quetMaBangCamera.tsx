@@ -38,7 +38,7 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
   function handleBarCodeScanned({data}: {data: string}) {
     const maTruyXuat = layMaTruyXuatTuUrl(data);
     router.push({
-      pathname: '/sanPhamTemplate', 
+      pathname: '/sanPhamTemplate/chiTietSanPham', 
       params: {sP_MaTruyXuat: maTruyXuat}
     });
   }

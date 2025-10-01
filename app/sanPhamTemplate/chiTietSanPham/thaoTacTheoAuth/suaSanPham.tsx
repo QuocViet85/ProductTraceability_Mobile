@@ -1,22 +1,19 @@
 import getBearerToken from "@/app/Auth/Authentication";
-import { quyenAdminSanPham, quyenSuaSanPham, quyenThemSanPham } from "@/app/Auth/Authorization/AuthSanPham";
+import { quyenAdminSanPham, quyenSuaSanPham } from "@/app/Auth/Authorization/AuthSanPham";
+import DanhMucs, { khongChonDanhMuc } from "@/app/danhMucTemplate/danhMucs";
 import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
-import SanPham from "@/app/model/SanPham";
-import { url } from "@/app/server/backend";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
-import { View } from "react-native";
-import { temp_SanPham } from "..";
-import { Alert } from "react-native";
-import DoanhNghiep from "@/app/model/DoanhNghiep";
-import NhaMay from "@/app/model/NhaMay";
-import { quyenSuaDoanhNghiep } from "@/app/Auth/Authorization/AuthDoanhNghiep";
 import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
 import DanhMuc from "@/app/model/DanhMuc";
-import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
-import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
+import DoanhNghiep from "@/app/model/DoanhNghiep";
+import NhaMay from "@/app/model/NhaMay";
+import SanPham from "@/app/model/SanPham";
+import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
+import { url } from "@/app/server/backend";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Alert, Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { temp_SanPham } from "..";
 
 export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -151,9 +148,9 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
                     sanPhamInTrangChu.sP_Ten = ten;
                     sanPhamInTrangChu.sP_MaTruyXuat = maTruyXuat;
                 }
-    
-                setReRenderSanPham((value: number) => value + 1);
                 reRenderTrangChuListSanPhams((value: number) => value + 1);
+                
+                setReRenderSanPham((value: number) => value + 1);
                 setShowModalSua(false);
             }
         }catch {
@@ -162,13 +159,17 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
     }
 
     const validate = () : boolean => {
+        let alert = '';
         if (!ten) {
-            Alert.alert('Lỗi', 'Tên không được để trống');
-            return false;
+            alert += 'Vui lòng nhập tên \n';
         }
 
         if (!doanhNghiepSoHuu) {
-            Alert.alert('Lỗi', 'Phải có doanh nghiệp sở hữu');
+            alert += 'Vui lòng chọn doanh nghiệp sở hữu';
+        }
+
+        if (alert !== '') {
+            Alert.alert('Lỗi', alert);
             return false;
         }
         return true;

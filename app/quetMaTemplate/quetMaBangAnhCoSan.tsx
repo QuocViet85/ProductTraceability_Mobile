@@ -17,7 +17,7 @@ export default function QuetMaBangAnhCoSan() {
                 const urlSanPham = await giaiMaQrCode(base64);
                 const maTruyXuat = layMaTruyXuatTuUrl(urlSanPham);
                 router.push({
-                pathname: '/sanPhamTemplate', 
+                pathname: '/sanPhamTemplate/chiTietSanPham', 
                 params: {sP_MaTruyXuat: maTruyXuat}
                 });
             }catch {

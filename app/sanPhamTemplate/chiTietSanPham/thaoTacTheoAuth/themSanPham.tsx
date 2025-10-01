@@ -1,21 +1,19 @@
 import getBearerToken from "@/app/Auth/Authentication";
-import { quyenSuaSanPham, quyenThemSanPham } from "@/app/Auth/Authorization/AuthSanPham";
+import { quyenThemSanPham } from "@/app/Auth/Authorization/AuthSanPham";
+import { LIMIT_SANPHAM } from "@/app/constant/Limit";
+import DanhMucs, { khongChonDanhMuc } from "@/app/danhMucTemplate/danhMucs";
 import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
+import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
+import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
+import DanhMuc from "@/app/model/DanhMuc";
+import DoanhNghiep from "@/app/model/DoanhNghiep";
+import NhaMay from "@/app/model/NhaMay";
 import SanPham from "@/app/model/SanPham";
+import { listSanPhamsHienThiTrangChu, modeTimKiemTrangChuListSanPhams, reRenderTrangChuListSanPhams, textTimKiemTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
-import { View } from "react-native";
-import { Alert } from "react-native";
-import DoanhNghiep from "@/app/model/DoanhNghiep";
-import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
-import NhaMay from "@/app/model/NhaMay";
-import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
-import DanhMuc from "@/app/model/DanhMuc";
-import DanhMucs, { khongChonDanhMuc } from "@/app/hometemplate/danhMuc/danhMucs";
-import { listSanPhamsHienThiTrangChu, reRenderTrangChuListSanPhams } from "@/app/hometemplate/sanPham/sanPhams";
-import { LIMIT_SANPHAM } from "@/app/constant/Limit";
+import { Alert, Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function ThemSanPham({width, height, paddingVertical, fontSize}: { width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [showModalThem, setShowModalThem] = useState<boolean | undefined>(false);
@@ -96,10 +94,20 @@ export default function ThemSanPham({width, height, paddingVertical, fontSize}: 
                 Alert.alert('Thông báo', 'Thêm sản phẩm thành công');
 
                 const sanPhamNew: SanPham = res.data;
-                listSanPhamsHienThiTrangChu.unshift(sanPhamNew);
-                if (listSanPhamsHienThiTrangChu.length % LIMIT_SANPHAM === 0) {
-                    listSanPhamsHienThiTrangChu.pop();
+                if (modeTimKiemTrangChuListSanPhams) {
+                    if (sanPhamNew.sP_Ten?.includes(textTimKiemTrangChuListSanPhams) || sanPhamNew.sP_MaTruyXuat?.includes(textTimKiemTrangChuListSanPhams)) {
+                        listSanPhamsHienThiTrangChu.unshift(sanPhamNew);
+                        if (listSanPhamsHienThiTrangChu.length % LIMIT_SANPHAM === 0) {
+                            listSanPhamsHienThiTrangChu.pop();
+                        }
+                    }
+                }else {
+                    listSanPhamsHienThiTrangChu.unshift(sanPhamNew);
+                    if (listSanPhamsHienThiTrangChu.length % LIMIT_SANPHAM === 0) {
+                        listSanPhamsHienThiTrangChu.pop();
+                    }
                 }
+                
                 
                 reRenderTrangChuListSanPhams((value: number) => value + 1);
                 setShowModalThem(false);
@@ -111,13 +119,17 @@ export default function ThemSanPham({width, height, paddingVertical, fontSize}: 
     }
 
     const validate = () : boolean => {
+        let alert = '';
         if (!ten) {
-            Alert.alert('Lỗi', 'Tên không được để trống');
-            return false;
+            alert += 'Vui lòng nhập tên \n';
         }
 
         if (!doanhNghiepSoHuu) {
-            Alert.alert('Lỗi', 'Phải có doanh nghiệp sở hữu');
+            alert += 'Vui lòng chọn doanh nghiệp sở hữu';
+        }
+
+        if (alert !== '') {
+            Alert.alert('Lỗi', alert);
             return false;
         }
         return true;

@@ -36,10 +36,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="nhatKy"
+        name="doanhNghiep"
         options={{
-          title: 'Nhật ký',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="assignment" color={color} />,
+          title: 'Doanh Nghiệp',
+          tabBarIcon: ({ color }) => <IconSymbol size={28} name="business" color={color} />,
         }}
       />
       <Tabs.Screen

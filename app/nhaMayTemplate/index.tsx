@@ -88,7 +88,7 @@ export default function NhaMayChiTiet() {
                     </View>
 
                     <View style={{marginTop: 10, alignItems: 'center'}}>
-                        <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/hometemplate/sanPham/sanPhams', params: {nM_Id: nhaMay.nM_Id, nM_Ten: nhaMay.nM_Ten
+                        <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/sanPhamTemplate/danhSachSanPham/danhSachSanPham', params: {nM_Id: nhaMay.nM_Id, nM_Ten: nhaMay.nM_Ten
                         }})}>
                             <Text style={styles.statLabel}>{'Sản phẩm được sản xuất tại nhà máy'}</Text>
                         </TouchableOpacity>
@@ -102,7 +102,7 @@ export default function NhaMayChiTiet() {
                     <View style={styles.section}>
                         <Text style={styles.sectionTitle}>{'Doanh Nghiệp Sở Hữu Nhà Máy'}</Text>
                         {nhaMay.nM_DN ? (<View>
-                            <Link href={{pathname: '/doanhNghiepTemplate', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
+                            <Link href={{pathname: '/doanhNghiepTemplate/chiTietDoanhNghiep', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
                             <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
                                 <View>
                                     <AvatarDoanhNghiep dN_Id={nhaMay.nM_DN?.dN_Id as string} width={40} height={40} canChange={false}/>

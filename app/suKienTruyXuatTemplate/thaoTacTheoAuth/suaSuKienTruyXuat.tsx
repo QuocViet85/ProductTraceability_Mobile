@@ -37,50 +37,52 @@ export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
 
     const suaSuKienTruyXuat = async() => {
         try {
-            const urlSuaSuKien = url(`api/sukientruyxuat/${suKien.sK_Id}`);
+            if (validate()) {
+                const urlSuaSuKien = url(`api/sukientruyxuat/${suKien.sK_Id}`);
 
-            await axios.put(urlSuaSuKien, {
-                sK_Ten: ten,
-                sK_MaSK: maSK,
-                sK_MoTa: moTa,
-                sK_DiaDiem: diaDiem,
-                sK_ThoiGian: thoiGian,
-                sK_LSP_Id: loSanPham?.lsP_Id
-            } as SuKienTruyXuat, {headers: {Authorization: await getBearerToken()}});
+                await axios.put(urlSuaSuKien, {
+                    sK_Ten: ten,
+                    sK_MaSK: maSK,
+                    sK_MoTa: moTa,
+                    sK_DiaDiem: diaDiem,
+                    sK_ThoiGian: thoiGian,
+                    sK_LSP_Id: loSanPham?.lsP_Id
+                } as SuKienTruyXuat, {headers: {Authorization: await getBearerToken()}});
 
-            Alert.alert('Thông báo', 'Sửa sự kiện truy xuất thành công');
+                Alert.alert('Thông báo', 'Sửa sự kiện truy xuất thành công');
 
 
-            const suKienInTemp = temp_ListSuKienTruyXuats.find((suKienInTemp: SuKienTruyXuat) => {
-                return suKienInTemp.sK_Id === suKien.sK_Id;
-            });
+                const suKienInTemp = temp_ListSuKienTruyXuats.find((suKienInTemp: SuKienTruyXuat) => {
+                    return suKienInTemp.sK_Id === suKien.sK_Id;
+                });
 
-            if (suKienInTemp) {
-                suKien.sK_Ten = ten;
-                suKien.sK_MaSK = maSK;
-                suKien.sK_ThoiGian = thoiGian;
-                suKien.sK_MoTa = moTa;
-                suKien.sK_DiaDiem = diaDiem;
-                suKien.sK_LSP_Id = loSanPham?.lsP_Id;
-                suKien.sK_LSP = loSanPham;
+                if (suKienInTemp) {
+                    suKien.sK_Ten = ten;
+                    suKien.sK_MaSK = maSK;
+                    suKien.sK_ThoiGian = thoiGian;
+                    suKien.sK_MoTa = moTa;
+                    suKien.sK_DiaDiem = diaDiem;
+                    suKien.sK_LSP_Id = loSanPham?.lsP_Id;
+                    suKien.sK_LSP = loSanPham;
+                }
+
+                const suKienHienThi = listSuKiensHienThi.find((suKienHienThi: SuKienTruyXuat) => {
+                    return suKienHienThi.sK_Id === suKien.sK_Id;
+                });
+
+                if (suKienHienThi) {
+                    suKienHienThi.sK_Ten = ten;
+                    suKienHienThi.sK_MaSK = maSK;
+                    suKienHienThi.sK_ThoiGian = thoiGian;
+                    suKienHienThi.sK_MoTa = moTa;
+                    suKienHienThi.sK_DiaDiem = diaDiem;
+                    suKienHienThi.sK_LSP_Id = loSanPham?.lsP_Id;
+                    suKienHienThi.sK_LSP = loSanPham;
+                }
+
+                setReRenderSuKien((value: number) => value + 1);
+                setShowModalSua(false);
             }
-
-            const suKienHienThi = listSuKiensHienThi.find((suKienHienThi: SuKienTruyXuat) => {
-                return suKienHienThi.sK_Id === suKien.sK_Id;
-            });
-
-            if (suKienHienThi) {
-                suKienHienThi.sK_Ten = ten;
-                suKienHienThi.sK_MaSK = maSK;
-                suKienHienThi.sK_ThoiGian = thoiGian;
-                suKienHienThi.sK_MoTa = moTa;
-                suKienHienThi.sK_DiaDiem = diaDiem;
-                suKienHienThi.sK_LSP_Id = loSanPham?.lsP_Id;
-                suKienHienThi.sK_LSP = loSanPham;
-            }
-
-            setReRenderSuKien((value: number) => value + 1);
-            setShowModalSua(false);
         }catch {
             Alert.alert('Lỗi', 'Sửa sự kiện truy xuất thất bại')
         }
@@ -100,6 +102,20 @@ export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
         }else {
             Alert.alert('Lỗi', 'Bạn không có quyền sửa lô sản phẩm của nhật ký truy xuất này');
         }
+    }
+
+    const validate = () => {
+        let alert = '';
+        if (!ten) {
+            alert += 'Vui lòng nhập tên \n';
+        }
+
+        if (alert !== '') {
+            Alert.alert('Lỗi', alert);
+            return false;
+        }
+
+        return true;
     }
 
     return quyenSua 

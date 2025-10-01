@@ -53,7 +53,7 @@ export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
         <View style={{flexDirection: 'row'}}>
             {saoArr};
             <Text style={{ fontSize: 24, color: 'green' }}>
-                {"\u00A0"} {soSao}/5
+                {"\u00A0"} {soSao}{'/5'}
             </Text>
         </View>
     )

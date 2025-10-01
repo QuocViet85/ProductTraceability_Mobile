@@ -1,13 +1,13 @@
+import { IconSymbol } from "@/components/ui/IconSymbol";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
-import { DOANH_NGHIEP } from "../constant/KieuTaiNguyen";
-import { COVER_PHOTO } from "../constant/KieuFile";
-import { quyenSuaDoanhNghiep } from "../Auth/Authorization/AuthDoanhNghiep";
-import getBearerToken from "../Auth/Authentication";
-import { url } from "../server/backend";
-import axios from "axios";
-import { IconSymbol } from "@/components/ui/IconSymbol";
+import getBearerToken from "../../Auth/Authentication";
+import { quyenSuaDoanhNghiep } from "../../Auth/Authorization/AuthDoanhNghiep";
+import { COVER_PHOTO } from "../../constant/KieuFile";
+import { DOANH_NGHIEP } from "../../constant/KieuTaiNguyen";
+import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "../../helpers/LogicHelper/fileHelper";
+import { url } from "../../server/backend";
 
 const temp_UriCoverPhotoDoanhNghiep : {
     dN_Id: string,

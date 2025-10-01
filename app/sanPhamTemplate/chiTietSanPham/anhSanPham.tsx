@@ -3,12 +3,12 @@ import { SAN_PHAM } from "@/app/constant/KieuTaiNguyen";
 import { getFileAsync, getUriFile, getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import File from "@/app/model/File";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, Dimensions, FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { quyenSuaSanPham } from "../Auth/Authorization/AuthSanPham";
-import { url } from "../server/backend";
-import axios from "axios";
-import getBearerToken from "../Auth/Authentication";
+import getBearerToken from "../../Auth/Authentication";
+import { quyenSuaSanPham } from "../../Auth/Authorization/AuthSanPham";
+import { url } from "../../server/backend";
 
 const temp_ListFilesAnhSanPham : {sP_Id: string, listFilesAnhSanPham: File[]}[] = [];
 

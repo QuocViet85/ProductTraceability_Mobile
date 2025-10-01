@@ -22,7 +22,7 @@ export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listS
     const [maSK, setMaSK] = useState<string | undefined>(undefined);
     const [moTa, setMoTa] = useState<string | undefined>(undefined);
     const [diaDiem, setDiaDiem] = useState<string | undefined>(undefined);
-    const [thoiGian, setThoiGian] = useState<Date | undefined>(undefined);
+    const [thoiGian, setThoiGian] = useState<Date | undefined>(new Date());
 
     const [showLuaChonLoSanPham, setShowLuaChonLoSanPham] = useState<boolean>(false);
     const [loSanPham, setLoSanPham] = useState<LoSanPham | undefined>(undefined);
@@ -38,41 +38,43 @@ export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listS
 
     const suaSuKienTruyXuat = async() => {
         try {
-            const urlThemSuKien = url(`api/sukientruyxuat`);
+            if (validate()) {
+                const urlThemSuKien = url(`api/sukientruyxuat`);
 
-            const res = await axios.post(urlThemSuKien, {
-                sK_Ten: ten,
-                sK_SP_Id: sanPhamId,
-                sK_MaSK: maSK,
-                sK_MoTa: moTa,
-                sK_DiaDiem: diaDiem,
-                sK_ThoiGian: thoiGian,
-                sK_LSP_Id: loSanPham?.lsP_Id
-            } as SuKienTruyXuat, {headers: {Authorization: await getBearerToken()}});
+                const res = await axios.post(urlThemSuKien, {
+                    sK_Ten: ten,
+                    sK_SP_Id: sanPhamId,
+                    sK_MaSK: maSK,
+                    sK_MoTa: moTa,
+                    sK_DiaDiem: diaDiem,
+                    sK_ThoiGian: thoiGian,
+                    sK_LSP_Id: loSanPham?.lsP_Id
+                } as SuKienTruyXuat, {headers: {Authorization: await getBearerToken()}});
 
-            Alert.alert('Thông báo', 'Thêm sự kiện truy xuất thành công');
-           
-            const suKienNew: SuKienTruyXuat = res.data;
-
-            listSuKiensHienThi.unshift(suKienNew);
-            temp_ListSuKienTruyXuats.unshift(suKienNew);
-
-            if (listSuKiensHienThi.length % LIMIT_SU_KIEN_TRUY_XUAT === 0) {
-                listSuKiensHienThi.pop();
-            }
-            if (temp_ListSuKienTruyXuats.length % LIMIT_SU_KIEN_TRUY_XUAT === 0) {
-                temp_ListSuKienTruyXuats.pop();
-            }
+                Alert.alert('Thông báo', 'Thêm sự kiện truy xuất thành công');
             
-            setReRenderSuKien((value: any) => value + 1);
-            for (const suKien of temp_ListSuKienTruyXuats) {
-                if (suKien.temp_TongSoVoiSanPham) {
-                    temp_ListSuKienTruyXuats[0].temp_TongSoVoiSanPham = suKien.temp_TongSoVoiSanPham + 1;
-                    suKien.temp_TongSoVoiSanPham += 1;
+                const suKienNew: SuKienTruyXuat = res.data;
+
+                listSuKiensHienThi.unshift(suKienNew);
+                temp_ListSuKienTruyXuats.unshift(suKienNew);
+
+                if (listSuKiensHienThi.length % LIMIT_SU_KIEN_TRUY_XUAT === 0) {
+                    listSuKiensHienThi.pop();
                 }
-            } 
-            setShowModalSua(false);
-            resetState();
+                if (temp_ListSuKienTruyXuats.length % LIMIT_SU_KIEN_TRUY_XUAT === 0) {
+                    temp_ListSuKienTruyXuats.pop();
+                }
+                
+                setReRenderSuKien((value: any) => value + 1);
+                for (const suKien of temp_ListSuKienTruyXuats) {
+                    if (suKien.temp_TongSoVoiSanPham) {
+                        temp_ListSuKienTruyXuats[0].temp_TongSoVoiSanPham = suKien.temp_TongSoVoiSanPham + 1;
+                        suKien.temp_TongSoVoiSanPham += 1;
+                    }
+                } 
+                setShowModalSua(false);
+                resetState();
+            }
         }catch {
             Alert.alert('Lỗi', 'Thêm sự kiện truy xuất thất bại')
         }
@@ -92,6 +94,20 @@ export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listS
         }else {
             Alert.alert('Lỗi', 'Bạn không có quyền sửa lô sản phẩm của nhật ký truy xuất này');
         }
+    }
+
+    const validate = () => {
+        let alert = '';
+        if (!ten) {
+            alert += 'Vui lòng nhập tên \n';
+        }
+
+        if (alert !== '') {
+            Alert.alert('Lỗi', alert);
+            return false;
+        }
+
+        return true;
     }
 
     const resetState = () => {

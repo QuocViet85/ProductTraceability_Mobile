@@ -9,7 +9,7 @@ export default function DoanhNghiepSanPham({doanhNghiep, vaiTro} : {doanhNghiep:
     return (
         <View>
             {doanhNghiep ? (
-            <Link href={{pathname: '/doanhNghiepTemplate', params: {dN_Id: doanhNghiep.dN_Id} }} withAnchor asChild>
+            <Link href={{pathname: '/doanhNghiepTemplate/chiTietDoanhNghiep', params: {dN_Id: doanhNghiep.dN_Id} }} withAnchor asChild>
                 <TouchableOpacity>
                     <View style={{height: 80, backgroundColor: 'white', flexDirection: 'row'}}>
                         <View>

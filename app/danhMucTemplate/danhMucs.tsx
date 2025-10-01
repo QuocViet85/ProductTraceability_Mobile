@@ -1,10 +1,10 @@
+import DanhMuc from "@/app/model/DanhMuc";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, DimensionValue, FlexAlignType, Modal, Text, TouchableOpacity, View } from "react-native";
-import { url } from "../../server/backend";
 import ListDanhMucs from "./listDanhMucs";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import DanhMuc from "@/app/model/DanhMuc";
+import { url } from "../server/backend";
 
 export const khongChonDanhMuc = {dM_Id: undefined, dM_Ten: 'Không Chọn'};
 

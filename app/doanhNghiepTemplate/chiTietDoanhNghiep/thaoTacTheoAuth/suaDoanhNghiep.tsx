@@ -1,14 +1,13 @@
 import getBearerToken from "@/app/Auth/Authentication";
 import { quyenSuaDoanhNghiep } from "@/app/Auth/Authorization/AuthDoanhNghiep";
+import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
 import DoanhNghiep from "@/app/model/DoanhNghiep";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, TextInput } from "react-native";
-import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { StyleSheet } from "react-native";
+import { Alert, Button, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { temp_DoanhNghiep } from "..";
-import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
+import { listDoanhNghiepsHienThiTrangChu, reRenderTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
 
 export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {doanhNghiep: DoanhNghiep, setReRenderDoanhNghiep: Function}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -32,37 +31,69 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
 
     const suaDoanhNghiep = async() => {
         try {
-            const urlSuaDoanhNghiep = url(`api/doanhnghiep/${doanhNghiep.dN_Id}`);
+            if (validate()) {
+                const urlSuaDoanhNghiep = url(`api/doanhnghiep/${doanhNghiep.dN_Id}`);
 
-            await axios.put(urlSuaDoanhNghiep, {
-                dN_Ten: ten,
-                dN_MaSoThue: maSoThue,
-                dN_MaGLN: maGLN,
-                dN_DiaChi: diaChi,
-                dN_SoDienThoai: soDienThoai,
-                dN_Email: email
-            }, {headers: {Authorization: await getBearerToken()}});
+                await axios.put(urlSuaDoanhNghiep, {
+                    dN_Ten: ten,
+                    dN_MaSoThue: maSoThue,
+                    dN_MaGLN: maGLN,
+                    dN_DiaChi: diaChi,
+                    dN_SoDienThoai: soDienThoai,
+                    dN_Email: email
+                }, {headers: {Authorization: await getBearerToken()}});
 
-            Alert.alert('Thông báo', 'Sửa doanh nghiệp thành công');
+                Alert.alert('Thông báo', 'Sửa doanh nghiệp thành công');
 
-            const doanhNghiepInTemp = temp_DoanhNghiep.find((doanhNghiepInTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
-                return doanhNghiepInTemp.doanhNghiep.dN_Id === doanhNghiep.dN_Id;
-            });
+                const doanhNghiepInTemp = temp_DoanhNghiep.find((doanhNghiepInTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
+                    return doanhNghiepInTemp.doanhNghiep.dN_Id === doanhNghiep.dN_Id;
+                });
 
-            if (doanhNghiepInTemp) {
-                doanhNghiepInTemp.doanhNghiep.dN_Ten = ten;
-                doanhNghiepInTemp.doanhNghiep.dN_MaSoThue = maSoThue;
-                doanhNghiepInTemp.doanhNghiep.dN_MaGLN = maGLN;
-                doanhNghiepInTemp.doanhNghiep.dN_DiaChi = diaChi;
-                doanhNghiepInTemp.doanhNghiep.dN_SoDienThoai = soDienThoai;
-                doanhNghiepInTemp.doanhNghiep.dN_Email = email;
+                if (doanhNghiepInTemp) {
+                    doanhNghiepInTemp.doanhNghiep.dN_Ten = ten;
+                    doanhNghiepInTemp.doanhNghiep.dN_MaSoThue = maSoThue;
+                    doanhNghiepInTemp.doanhNghiep.dN_MaGLN = maGLN;
+                    doanhNghiepInTemp.doanhNghiep.dN_DiaChi = diaChi;
+                    doanhNghiepInTemp.doanhNghiep.dN_SoDienThoai = soDienThoai;
+                    doanhNghiepInTemp.doanhNghiep.dN_Email = email;
+                }
+
+                const doanhNghiepInTrangChu = listDoanhNghiepsHienThiTrangChu.find((doanhNghiepInTrangChu: DoanhNghiep) => {
+                    return doanhNghiepInTrangChu.dN_Id === doanhNghiep.dN_Id;
+                });
+
+                if (doanhNghiepInTrangChu) {
+                    doanhNghiepInTrangChu.dN_Ten = ten;
+                    doanhNghiepInTrangChu.dN_MaSoThue = maSoThue;
+                }
+                reRenderTrangChuListDoanhNghieps((value: number) => value + 1);
+
+                setReRenderDoanhNghiep((value: number) => value + 1);
+                setShowModalSua(false);
             }
-
-            setReRenderDoanhNghiep((value: number) => value + 1);
-            setShowModalSua(false);
         }catch {
             Alert.alert('Lỗi', 'Sửa doanh nghiệp thất bại');
         }
+    }
+
+    const validate = () => {
+        let alert = '';
+        if (!ten) {
+            alert += 'Vui lòng nhập tên \n';
+        }
+
+        if (email) {
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                alert += 'Email không đúng định dạng \n';
+            }
+        }
+
+        if (alert !== '') {
+            Alert.alert('Lỗi', alert);
+            return false;
+        }
+
+        return true;
     }
 
     return quyenSua ? (

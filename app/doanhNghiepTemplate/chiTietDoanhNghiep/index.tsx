@@ -3,20 +3,20 @@ import axios from "axios";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Updating } from "../helpers/ViewHelpers/updating";
-import DoanhNghiep from "../model/DoanhNghiep";
-import { url } from "../server/backend";
-import AvatarDoanhNghiep from "./avatarDoanhNghiep";
-import CoverPhotoDoanhNghiep from "./coverPhotoDoanhNghiep";
-import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
-import AvatarUser from "../usertemplate/avatarUser";
-import Footer from "../helpers/ViewHelpers/footer";
+import Footer from "../../helpers/ViewHelpers/footer";
+import { Updating } from "../../helpers/ViewHelpers/updating";
+import DoanhNghiep from "../../model/DoanhNghiep";
+import { url } from "../../server/backend";
+import AvatarUser from "../../usertemplate/avatarUser";
+import AvatarDoanhNghiep from "../avatarDoanhNghiep";
 import SuaDoanhNghiep from "./thaoTacTheoAuth/suaDoanhNghiep";
 import XoaDoanhNghiep from "./thaoTacTheoAuth/xoaDoanhNghiep";
+import TuongTacDoanhNghiep from "./tuongTacDoanhNghiep";
+import CoverPhotoDoanhNghiep from "./coverPhotoDoanhNghiep";
 
 export const temp_DoanhNghiep: {doanhNghiep: DoanhNghiep, soSanPham: number}[] = [];
 
-export default function Index() 
+export default function ChiTietDoanhNghiep() 
 {
     const params = useLocalSearchParams();
     const dN_Id = params.dN_Id;
@@ -83,7 +83,7 @@ export default function Index()
                     
                         {/* Stats */}
                         <View style={styles.statsRow}>
-                            <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/hometemplate/sanPham/sanPhams', params: {dN_Id: doanhNghiep.dN_Id, dN_Ten: doanhNghiep.dN_Ten}})}>
+                            <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/sanPhamTemplate/danhSachSanPham/danhSachSanPham', params: {dN_Id: doanhNghiep.dN_Id, dN_Ten: doanhNghiep.dN_Ten}})}>
                                 <Text style={styles.statValue}>{soSanPhamSoHuu}</Text>
                                 <Text style={styles.statLabel}>{'Sản phẩm'}</Text>
                             </TouchableOpacity>

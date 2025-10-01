@@ -1,24 +1,25 @@
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
-import { getFileAsync, getUriAvatarSanPham, getUriFile } from "@/app/helpers/LogicHelper/fileHelper";
+import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
+import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
+import Footer from "@/app/helpers/ViewHelpers/footer";
 import Header from "@/app/helpers/ViewHelpers/header";
+import Loading from "@/app/helpers/ViewHelpers/loading";
+import DanhMuc from "@/app/model/DanhMuc";
 import SanPham from "@/app/model/SanPham";
+import AvatarSanPham from "@/app/sanPhamTemplate/chiTietSanPham/avatarSanPham";
+import ThemSanPham from "@/app/sanPhamTemplate/chiTietSanPham/thaoTacTheoAuth/themSanPham";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { Link, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
-import Footer from "@/app/helpers/ViewHelpers/footer";
-import Loading from "@/app/helpers/ViewHelpers/loading";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import DanhMuc from "@/app/model/DanhMuc";
-import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
-import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
-import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
-import ThemSanPham from "@/app/sanPhamTemplate/thaoTacTheoAuth/themSanPham";
 
 export let listSanPhamsHienThiTrangChu: SanPham[] = [];
 export let reRenderTrangChuListSanPhams: Function = () => {}
 export let pageNumberTrangChuListSanPhams: number = 1;
+export let modeTimKiemTrangChuListSanPhams: boolean = false;
+export let textTimKiemTrangChuListSanPhams: string = '';
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();
@@ -40,6 +41,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
       listSanPhamsHienThiTrangChu = listSanPhams;
       pageNumberTrangChuListSanPhams = pageNumber;
       reRenderTrangChuListSanPhams = setReRender;
+      modeTimKiemTrangChuListSanPhams = modeTimKiem;
+      textTimKiemTrangChuListSanPhams = textTimKiemSanPham;
     }
 
     useEffect(() => {
@@ -136,7 +139,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     }
 
     const renderItem = ({ item } : {item: SanPham}) => (
-        <Link href={{pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
+        <Link href={{pathname: '/sanPhamTemplate/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
           <TouchableOpacity style={styles.card}>
             <AvatarSanPham sP_Id={item.sP_Id as string} height={getHeightScreen() <= HEIGHT_SMARTPHONE ? 80 : 130} width={'100%'} marginBottom={8}/>
             <Text style={styles.text}>{item.sP_Ten}</Text>

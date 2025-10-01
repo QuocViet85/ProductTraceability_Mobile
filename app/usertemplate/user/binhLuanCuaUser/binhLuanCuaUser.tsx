@@ -4,9 +4,9 @@ import { paginate } from "@/app/helpers/LogicHelper/helper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import AppUser from "@/app/model/AppUser";
 import BinhLuan from "@/app/model/BinhLuan";
-import AvatarSanPham from "@/app/sanPhamTemplate/avatarSanPham";
-import AnhBinhLuan from "@/app/sanPhamTemplate/binhLuan/anhBinhLuan";
-import XoaBinhLuan from "@/app/sanPhamTemplate/binhLuan/xoaBinhLuan";
+import AvatarSanPham from "@/app/sanPhamTemplate/chiTietSanPham/avatarSanPham";
+import AnhBinhLuan from "@/app/sanPhamTemplate/chiTietSanPham/binhLuan/anhBinhLuan";
+import XoaBinhLuan from "@/app/sanPhamTemplate/chiTietSanPham/binhLuan/xoaBinhLuan";
 import { url } from "@/app/server/backend";
 import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
 import { IconSymbol } from "@/components/ui/IconSymbol";
@@ -130,7 +130,7 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                             <AnhBinhLuan bL_Id={item.bL_Id as string}/>
                                         </View>
                                         <View style={styles.viewSanPham}>
-                                                <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/sanPhamTemplate', params: {sP_MaTruyXuat: item.bL_SP?.sP_MaTruyXuat as string} })}>
+                                                <TouchableOpacity style={styles.touchAvatarSanPham} onPress={() => router.push({pathname: '/sanPhamTemplate/chiTietSanPham', params: {sP_MaTruyXuat: item.bL_SP?.sP_MaTruyXuat as string} })}>
                                                     <AvatarSanPham sP_Id={item.bL_SP_Id as string} width={50} height={50} marginBottom={undefined}/>
                                                     <View style={{marginLeft: 10}}>
                                                         <Text style={{fontSize: 17, fontWeight: 'bold'}}>{item.bL_SP?.sP_Ten}</Text>

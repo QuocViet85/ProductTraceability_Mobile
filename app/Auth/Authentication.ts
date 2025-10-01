@@ -1,9 +1,9 @@
+import { temp_ThongTinTheoDoiDoanhNghiep } from "@/app/doanhNghiepTemplate/chiTietDoanhNghiep/tuongTacDoanhNghiep";
+import AppUser from "@/app/model/AppUser";
+import { temp_ThongTinTheoDoiUser } from "@/app/usertemplate/user/tuongTacUser";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import AppUser from "@/app/model/AppUser";
-import { temp_ThongTinTheoDoiUser } from "@/app/usertemplate/user/tuongTacUser";
-import { temp_ThongTinTheoDoiDoanhNghiep } from "@/app/doanhNghiepTemplate/tuongTacDoanhNghiep";
 import { url } from "../server/backend";
 
 const AccessToken = "accessToken";
@@ -22,7 +22,7 @@ export async function getAccessToken(resetAccessToken: Boolean = false) {
 
     if (currentTime < decoded.exp && !resetAccessToken) {
       return accessToken;
-    }else {
+    } else {
       await AsyncStorage.removeItem(AccessToken);
       let refreshToken = await AsyncStorage.getItem(RefreshToken);
       if (!refreshToken) {
@@ -30,15 +30,17 @@ export async function getAccessToken(resetAccessToken: Boolean = false) {
       }
 
       let urlAccessToken = url("api/auth/access-token");
-      accessToken = (await axios.post(urlAccessToken, refreshToken, {
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })).data;
+      accessToken = (
+        await axios.post(urlAccessToken, refreshToken, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+      ).data;
 
       if (accessToken) {
         await AsyncStorage.setItem("accessToken", accessToken);
-      }else {
+      } else {
         return null;
       }
 
@@ -67,44 +69,46 @@ export async function setAccessAndRefreshToken(
   await AsyncStorage.setItem("refreshToken", refreshToken);
 }
 
-export async function logOut(allDevices : Boolean = false) {
+export async function logOut(allDevices: Boolean = false) {
   try {
     if (allDevices) {
-      const urlLogoutAllDevices = url('api/auth/logoutAll');
+      const urlLogoutAllDevices = url("api/auth/logoutAll");
       const bearerToken = await getBearerToken();
-        await axios.post(urlLogoutAllDevices, null, {
+      await axios.post(urlLogoutAllDevices, null, {
+        headers: {
+          Authorization: bearerToken,
+        },
+      });
+    } else {
+      const refreshToken = await AsyncStorage.getItem(RefreshToken);
+      if (refreshToken) {
+        const urlLogout = url(`api/auth/logout`);
+        await axios.post(urlLogout, refreshToken, {
           headers: {
-            Authorization: bearerToken
-          }
+            "Content-Type": "application/json",
+          },
         });
-    }else {
-          const refreshToken = await AsyncStorage.getItem(RefreshToken);
-          if (refreshToken) {
-          const urlLogout = url(`api/auth/logout`);
-          await axios.post(urlLogout, refreshToken, {
-            headers: {
-              "Content-Type": "application/json"
-            }
-          });
-        }
+      }
     }
     deleteRelatedTempDataAfterLogout();
     await AsyncStorage.removeItem(AccessToken);
     await AsyncStorage.removeItem(RefreshToken);
-  }catch {
-    throw new Error('Đăng xuất thất bại');
+  } catch {
+    throw new Error("Đăng xuất thất bại");
   }
 }
 
 const deleteRelatedTempDataAfterLogout = () => {
-    temp_ThongTinTheoDoiUser.length = 0;
-    temp_ThongTinTheoDoiDoanhNghiep.length = 0;
-    resetPermissionsUserLogin();
-}
+  temp_ThongTinTheoDoiUser.length = 0;
+  temp_ThongTinTheoDoiDoanhNghiep.length = 0;
+  resetPermissionsUserLogin();
+};
 
 let temp_permissionsUserLogin: string[] | undefined = undefined;
 
-export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<AppUser | null> {
+export async function getUserLogin(
+  resetUserInfo: Boolean = false
+): Promise<AppUser | null> {
   const accessToken = await getAccessToken(resetUserInfo);
 
   if (!accessToken) {
@@ -119,18 +123,21 @@ export async function getUserLogin(resetUserInfo: Boolean = false) : Promise<App
   user.name = decoded.Name;
   user.email = decoded.Email;
   user.address = decoded.Address;
-  user.role = decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+  user.role =
+    decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
 
   if (!temp_permissionsUserLogin) {
-    const uriPermissions = url('api/auth/permissions');
+    const uriPermissions = url("api/auth/permissions");
 
     try {
-      const res = await axios.get(uriPermissions, {headers: {Authorization: await getBearerToken()}});
+      const res = await axios.get(uriPermissions, {
+        headers: { Authorization: await getBearerToken() },
+      });
       const permissions: string[] = res.data ? res.data : [];
       temp_permissionsUserLogin = permissions;
       user.permissions = permissions;
-    }catch {}
-  }else {
+    } catch {}
+  } else {
     user.permissions = temp_permissionsUserLogin;
   }
   return user;

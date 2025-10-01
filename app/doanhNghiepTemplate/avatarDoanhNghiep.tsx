@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Image, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Button, DimensionValue, Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { getUriAvatarDoanhNghiep, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { quyenSuaDoanhNghiep } from "../Auth/Authorization/AuthDoanhNghiep";
 import getBearerToken from "../Auth/Authentication";
@@ -14,7 +14,7 @@ const temp_UriAvatarDoanhNghiep : {
 }[] = [];
 
 
-export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN_Id: string, width: number, height: number, canChange: boolean}) {
+export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN_Id: string, width: DimensionValue | undefined, height: DimensionValue | undefined, canChange: boolean}) {
     const [uriAvatar, setUriAvatar] = useState<string | undefined>(undefined);
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalChangeAvatar, setShowModalChangeAvatar] = useState<boolean | undefined>(false);

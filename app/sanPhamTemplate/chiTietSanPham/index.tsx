@@ -10,8 +10,9 @@ import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Footer from "../helpers/ViewHelpers/footer";
-import { url } from "../server/backend";
+import { HEIGHT_SMARTPHONE } from "../../constant/SizeScreen";
+import Footer from "../../helpers/ViewHelpers/footer";
+import { url } from "../../server/backend";
 import AnhSanPham from "./anhSanPham";
 import BinhLuanSanPhan from "./binhLuan/binhLuanSanPham";
 import DoanhNghiepSanPham from "./doanhNghiepSanPham";
@@ -19,10 +20,9 @@ import MoTaSanPham from "./moTaSanPham";
 import NhaMaySanPham from "./nhaMaySanPham";
 import QrCode from "./qrCode";
 import SaoSanPham from "./saoSanPham";
-import WebsiteSanPham from "./websiteSanPham";
 import SuaSanPham from "./thaoTacTheoAuth/suaSanPham";
 import XoaSanPham from "./thaoTacTheoAuth/xoaSanPham";
-import { HEIGHT_SMARTPHONE } from "../constant/SizeScreen";
+import WebsiteSanPham from "./websiteSanPham";
 
 export const temp_SanPham : SanPham[] = [];
 
@@ -77,7 +77,7 @@ export default function Index() {
 
     return (
       <KeyboardAvoidingView
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: 'white' }}
           behavior={Platform.OS === "ios" ? "position" : "position"}
         >
           <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>

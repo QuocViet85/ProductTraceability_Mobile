@@ -4,9 +4,10 @@ import DoanhNghiep from "@/app/model/DoanhNghiep";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Alert, Button, Modal, Text, TouchableOpacity, View } from "react-native";
-import { StyleSheet } from "react-native";
-import { temp_DoanhNghiep } from "..";
+import { Alert, Button, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { temp_DoanhNghiep } from "../";
+import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, pageNumberTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
+import { LIMIT_DOANHNGHIEP } from "@/app/constant/Limit";
 
 export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghiep: DoanhNghiep, setDoanhNghiep: Function}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -39,6 +40,15 @@ export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghi
             }
 
             setDoanhNghiep(null);
+            const res = await axios.get(url(`api/doanhnghiep?pageNumber=${pageNumberTrangChuListDoanhNghieps}&limit=${LIMIT_DOANHNGHIEP}${modeTimKiemTrangChuListDoanhNghieps ? `&search=${textTimKiemTrangChuListDoanhNghieps}` :  ''}`));
+            const listDoanhNghiepsTrangCuoiHienTai: DoanhNghiep[] = res.data;
+            if (listDoanhNghiepsTrangCuoiHienTai.length > 0) {
+                const doanhNghiepCuoiCuaTrangCuoiHienTai: DoanhNghiep = listDoanhNghiepsTrangCuoiHienTai[listDoanhNghiepsTrangCuoiHienTai.length - 1];
+                if (doanhNghiepCuoiCuaTrangCuoiHienTai.dN_Id !== listDoanhNghiepsHienThiTrangChu[listDoanhNghiepsHienThiTrangChu.length - 1]?.dN_Id) {
+                    listDoanhNghiepsHienThiTrangChu.push(doanhNghiepCuoiCuaTrangCuoiHienTai);
+                }
+            }
+            reRenderTrangChuListDoanhNghieps((value: number) => value + 1);
             setShowModalXoa(false);
         }catch {
             Alert.alert('Lỗi', 'Xóa doanh nghiệp thất bại');

@@ -25,7 +25,7 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanP
     const [ten, setTen] = useState<string | undefined>(undefined);
     const [maLSP, setMaLSP] = useState<string | undefined>(undefined);
     const [ngaySanXuat, setNgaySanXuat] = useState<Date | undefined>(undefined);
-    const [ngayHetHan, setNgayHetHan] = useState<Date | undefined>(undefined);
+    const [ngayHetHan, setNgayHetHan] = useState<Date | undefined>(new Date());
     const [soLuong, setSoLuong] = useState<string | undefined>(undefined);
     const [moTa, setMoTa] = useState<string | undefined>(undefined);
 

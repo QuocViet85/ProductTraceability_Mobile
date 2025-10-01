@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getUriAvatarSanPham } from "../helpers/LogicHelper/fileHelper";
 import { DimensionValue, Image } from "react-native";
+import { getUriAvatarSanPham } from "../../helpers/LogicHelper/fileHelper";
 
 export const temp_AvatarSanPham : {
     sP_Id: string,
