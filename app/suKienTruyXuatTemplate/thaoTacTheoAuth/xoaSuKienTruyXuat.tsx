@@ -9,7 +9,7 @@ import { View } from "react-native";
 import { temp_ListSuKienTruyXuats } from "..";
 import { LIMIT_SU_KIEN_TRUY_XUAT } from "@/app/constant/Limit";
 
-export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumber, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], pageNumber: number, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumber, setTongSoSuKiens, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, setTongSoSuKiens: Function, listSuKiensHienThi: SuKienTruyXuat[], pageNumber: number, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
     const [showModalXoa, setShowModalXoa] = useState<boolean | undefined>(false);
 
@@ -55,7 +55,7 @@ export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumbe
                     listSuKiensHienThi.push(suKienCuoiCuaTrangCuoiHienTai);
                 }
                 if (suKienCuoiCuaTrangCuoiHienTai.sK_Id !== temp_ListSuKienTruyXuats[temp_ListSuKienTruyXuats.length - 1]?.sK_Id) {
-                    listSuKiensHienThi.push(suKienCuoiCuaTrangCuoiHienTai);
+                    temp_ListSuKienTruyXuats.push(suKienCuoiCuaTrangCuoiHienTai);
                 }
             }
 
@@ -66,6 +66,8 @@ export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumbe
                     suKien.temp_TongSoVoiSanPham -= 1;
                 }
             }
+            setTongSoSuKiens((value: number) => value - 1);
+            
             setShowModalXoa(false);
         }catch {
             Alert.alert('Lỗi', 'Xóa sự kiện truy xuất thất bại');

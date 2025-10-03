@@ -211,7 +211,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                             <TouchableOpacity onPress={xoaAnhSanPham}>
                               <IconSymbol name={'delete'} size={50} color={'red'}/>
                             </TouchableOpacity>
-                            <Text>Xóa ảnh sản phẩm này</Text>
+                            <Text>{'Xóa ảnh sản phẩm này'}</Text>
                         </View>
                       </View>
                   </View>

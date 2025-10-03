@@ -9,7 +9,7 @@ import MoTaSuKienTruyXuat from "./moTaSuKienTruyXuat";
 import SuaSuKienTruyXuat from "./thaoTacTheoAuth/suaSuKienTruyXuat";
 import XoaSuKienTruyXuat from "./thaoTacTheoAuth/xoaSuKienTruyXuat";
 
-export default function SuKienTruyXuatRender({suKien, listSuKiensHienThi, pageNumber, setReRenderSuKien}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], pageNumber: number, setReRenderSuKien: Function}) {
+export default function SuKienTruyXuatRender({suKien, listSuKiensHienThi, setTongSoSuKiens, pageNumber, setReRenderSuKien}: {suKien: SuKienTruyXuat, listSuKiensHienThi: SuKienTruyXuat[], setTongSoSuKiens: Function, pageNumber: number, setReRenderSuKien: Function}) {
     const router = useRouter();
     return (
         <View>
@@ -35,7 +35,7 @@ export default function SuKienTruyXuatRender({suKien, listSuKiensHienThi, pageNu
             <View style={{flexDirection: 'row'}}>
                 <SuaSuKienTruyXuat suKien={suKien} listSuKiensHienThi={listSuKiensHienThi} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
                 <View style={{width: 10}}></View>
-                <XoaSuKienTruyXuat suKien={suKien} listSuKiensHienThi={listSuKiensHienThi} pageNumber={pageNumber} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                <XoaSuKienTruyXuat suKien={suKien} listSuKiensHienThi={listSuKiensHienThi} setTongSoSuKiens={setTongSoSuKiens} pageNumber={pageNumber} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
             </View>
             <Spacer height={10}/>
         </View>

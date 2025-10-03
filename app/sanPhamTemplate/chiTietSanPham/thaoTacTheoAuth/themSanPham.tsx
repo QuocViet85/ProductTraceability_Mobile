@@ -9,7 +9,7 @@ import DanhMuc from "@/app/model/DanhMuc";
 import DoanhNghiep from "@/app/model/DoanhNghiep";
 import NhaMay from "@/app/model/NhaMay";
 import SanPham from "@/app/model/SanPham";
-import { listSanPhamsHienThiTrangChu, modeTimKiemTrangChuListSanPhams, reRenderTrangChuListSanPhams, textTimKiemTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
+import { listSanPhamsHienThiTrangChu, modeTimKiemTrangChuListSanPhams, reRenderTrangChuListSanPhams, setTongSanPham, textTimKiemTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -107,9 +107,9 @@ export default function ThemSanPham({width, height, paddingVertical, fontSize}: 
                         listSanPhamsHienThiTrangChu.pop();
                     }
                 }
-                
-                
+                  
                 reRenderTrangChuListSanPhams((value: number) => value + 1);
+                setTongSanPham((value: number) => value + 1);
                 setShowModalThem(false);
                 resetState();
             }

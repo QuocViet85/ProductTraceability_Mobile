@@ -10,7 +10,7 @@ import { temp_ListLoSanPhams } from "..";
 import { LIMIT_LO_SANPHAM } from "@/app/constant/Limit";
 import SanPham from "@/app/model/SanPham";
 
-export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, pageNumber, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], pageNumber: number, doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, setTongSo, pageNumber, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], setTongSo: Function, pageNumber: number, doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
     const [showModalXoa, setShowModalXoa] = useState<boolean | undefined>(false);
 
@@ -56,7 +56,7 @@ export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, pageNumb
                     listLoSanPhamsHienThi.push(loSanPhamCuoiCuaTrangCuoiHienTai);
                 }
                 if (loSanPhamCuoiCuaTrangCuoiHienTai.lsP_Id !== temp_ListLoSanPhams[temp_ListLoSanPhams.length - 1]?.lsP_Id) {
-                    listLoSanPhamsHienThi.push(loSanPhamCuoiCuaTrangCuoiHienTai);
+                    temp_ListLoSanPhams.push(loSanPhamCuoiCuaTrangCuoiHienTai);
                 }
             }
 
@@ -67,6 +67,7 @@ export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, pageNumb
                     loSanPham.temp_TongSoVoiSanPham -= 1;
                 }
             }
+            setTongSo((value: number) => value - 1);
             setShowModalXoa(false);
         }catch {
             Alert.alert('Lỗi', 'Xóa lô sản phẩm thất bại');

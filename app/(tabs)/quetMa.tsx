@@ -20,7 +20,7 @@ export default function QuetMa() {
                         <IconSymbol name={'camera'} size={50} color={'blue'}/>
                       </TouchableOpacity>
                     </Link>
-                    <Text>Camera</Text>
+                    <Text>{'Camera'}</Text>
                 </View>
               </View>
               

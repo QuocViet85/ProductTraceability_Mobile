@@ -1,21 +1,24 @@
+import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
+import { paginate } from "@/app/helpers/LogicHelper/helper";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import AppUser from "@/app/model/AppUser";
+import BinhLuan from "@/app/model/BinhLuan";
 import { url } from "@/app/server/backend";
+import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
+import AvatarUser from "@/app/usertemplate/avatarUser";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
-import { use, useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import ChonSaoSanPham from "./chonSaoSanPham";
-import XoaBinhLuan from "./xoaBinhLuan";
-import AvatarUser from "@/app/usertemplate/avatarUser";
-import AnhBinhLuan from "./anhBinhLuan";
-import PostBinhLuan from "./postBinhLuan";
 import { useRouter } from "expo-router";
-import { LIMIT_BINHLUAN } from "@/app/constant/Limit";
-import BinhLuan from "@/app/model/BinhLuan";
-import { laySoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import AnhBinhLuan from "./anhBinhLuan";
+import ChonSaoSanPham from "./chonSaoSanPham";
+import PostBinhLuan from "./postBinhLuan";
+import XoaBinhLuan from "./xoaBinhLuan";
+
+export const temp_ListBinhLuansCuaSanPham : BinhLuan[] = [];
 
 export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, userLogin : AppUser | null}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -33,17 +36,63 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
     }, [pageNumber, soSaoBinhLuan, forceReRender]);
 
     const layCacBinhLuans = async () => {
-        try {
-            const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
-            const response = await axios.get(urlBinhLuan);
+        const layCacBinhLuansTuBackEnd = async() => {
+            try {
+                const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=${soSaoBinhLuan}`);
+                const response = await axios.get(urlBinhLuan);
 
-            if (response.data.listBinhLuans) {
-                const listBinhLuans : BinhLuan[] = response.data.listBinhLuans;
+                if (response.data.listBinhLuans) {
+                    const listBinhLuansTuBackEnd : BinhLuan[] = response.data.listBinhLuans;
 
-                for (const binhLuan of listBinhLuans) {
-                    if (response.data.tongSo) {
-                        binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
+                    for (const binhLuan of listBinhLuansTuBackEnd) {
+                        if (response.data.tongSo) {
+                            binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
+                        }
+                        try {
+                            if (binhLuan.bL_NguoiTao_Client) {
+                                const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
+                                binhLuan.bL_NguoiTao_Client.soSao = soSao;
+                            }
+                        }catch {}
                     }
+                    setListBinhLuans(listBinhLuansTuBackEnd);
+                    
+                    //chỉ cache bình luận được lấy không theo số sao
+                    if (soSaoBinhLuan === 0) {
+                        temp_ListBinhLuansCuaSanPham.push(...listBinhLuansTuBackEnd);
+                    }
+                }
+
+                if (response.data.tongSo) {
+                    setTongSoBinhLuan(response.data.tongSo);
+                }
+            }catch {}
+        }
+
+        if (soSaoBinhLuan > 0) {
+            layCacBinhLuansTuBackEnd();
+        }else {
+            const listBinhLuansCuaSanPhamTrongTemp = temp_ListBinhLuansCuaSanPham.filter((item) => {
+                return item.bL_SP_Id === sP_Id;
+            }); 
+
+            const listBinhLuansCuaSanPhamTrongTempCanLay = paginate(listBinhLuansCuaSanPhamTrongTemp, pageNumber, LIMIT_BINHLUAN);
+
+            if (listBinhLuansCuaSanPhamTrongTempCanLay.length < 1) {
+                layCacBinhLuansTuBackEnd();
+            }else {
+                if (pageNumber < tongSoTrang && listBinhLuansCuaSanPhamTrongTempCanLay.length < LIMIT_BINHLUAN) {
+                    //xử lý trường hợp thiếu bình luận do xóa bình luận ở trang không phải trang cuối thật sự nhưng dữ liệu cache mới chỉ đến trang hiện tại
+
+                    const urlBinhLuan = url(`api/binhluan/san-pham/${sP_Id}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=0`);
+                    const res = await axios.get(urlBinhLuan);
+                    if (res.data.listBinhLuans) {
+                        const listBinhLuansTuBackEnd : BinhLuan[] = res.data.listBinhLuans;
+                        temp_ListBinhLuansCuaSanPham.push(listBinhLuansTuBackEnd[listBinhLuansTuBackEnd.length - 1])
+                        listBinhLuansCuaSanPhamTrongTempCanLay.push(listBinhLuansTuBackEnd[listBinhLuansTuBackEnd.length - 1]);
+                    }
+                }
+                for (const binhLuan of listBinhLuansCuaSanPhamTrongTempCanLay) {
                     try {
                         if (binhLuan.bL_NguoiTao_Client) {
                             const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, binhLuan.bL_NguoiTao_Client.id);
@@ -51,13 +100,10 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                         }
                     }catch {}
                 }
-                setListBinhLuans(listBinhLuans);
+                setListBinhLuans(listBinhLuansCuaSanPhamTrongTempCanLay);
+                setTongSoBinhLuan(listBinhLuansCuaSanPhamTrongTempCanLay[0].temp_tongSoBinhLuanCuaSP);
             }
-
-            if (response.data.tongSo) {
-                setTongSoBinhLuan(response.data.tongSo);
-            }
-        }catch {}
+        }
     }
 
     const backPage = () => {
@@ -78,6 +124,12 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
         }else {
             setForceReRender(value => value + 1);
         }
+        setSoSaoBinhLuan(0);
+    }
+
+    const setSaoBinhLuan = (soSao: 0 | 1 | 2 | 3 | 4 | 5) => {
+        setPageNumber(1);
+        setSoSaoBinhLuan(soSao);
     }
 
     return (
@@ -85,23 +137,23 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
             <Text style={{marginBottom: 20, fontWeight: 'bold', fontSize: 20}}>{'Đánh giá sản phẩm '}({tongSoBinhLuan})</Text>
             <View style={{alignItems: 'center', marginBottom: 10}}>
                 <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(0)}>
-                        <Text style={{fontWeight: soSaoBinhLuan === 0 ? 'bold' : 'normal'}}>Tất cả</Text>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSaoBinhLuan(0)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 0 ? 'bold' : 'normal'}}>{'Tất cả'}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(5)}>
-                        <Text style={{fontWeight: soSaoBinhLuan === 5 ? 'bold' : 'normal'}}>5 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSaoBinhLuan(5)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 5 ? 'bold' : 'normal'}}>{'5 '}<IconSymbol name="star" size={20} color="#FFD700" /></Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(4)}>
-                        <Text style={{fontWeight: soSaoBinhLuan === 4 ? 'bold' : 'normal'}}>4 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSaoBinhLuan(4)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 4 ? 'bold' : 'normal'}}>{'4 '}<IconSymbol name="star" size={20} color="#FFD700" /></Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(3)}>
-                        <Text style={{fontWeight: soSaoBinhLuan === 3 ? 'bold' : 'normal'}}>3 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSaoBinhLuan(3)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 3 ? 'bold' : 'normal'}}>{'3 '}<IconSymbol name="star" size={20} color="#FFD700" /></Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(2)}>
-                        <Text style={{fontWeight: soSaoBinhLuan === 2 ? 'bold' : 'normal'}}>2 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSaoBinhLuan(2)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 2 ? 'bold' : 'normal'}}>{'2 '}<IconSymbol name="star" size={20} color="#FFD700" /></Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSoSaoBinhLuan(1)}>
-                        <Text style={{fontWeight: soSaoBinhLuan === 1 ? 'bold' : 'normal'}}>1 <IconSymbol name="star" size={20} color="#FFD700" /></Text>
+                    <TouchableOpacity style={styles.touchSaoBinhLuan} onPress={() => setSaoBinhLuan(1)}>
+                        <Text style={{fontWeight: soSaoBinhLuan === 1 ? 'bold' : 'normal'}}>{'1 '}<IconSymbol name="star" size={20} color="#FFD700" /></Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -114,7 +166,12 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                             <View>
                                 <View style={{flexDirection: 'row'}}>
                                     <Text style={{fontWeight: 'bold'}}>{item.bL_NguoiTao_Client?.name}</Text>
-                                    <XoaBinhLuan userLogin={userLogin} binhLuan={item} listBinhLuansHienThi={listBinhLuans} setTongSoBinhLuan={setTongSoBinhLuan} width={'100%'}/>
+                                    <XoaBinhLuan 
+                                    userLogin={userLogin} 
+                                    binhLuan={item} 
+                                    setTongSoBinhLuan={setTongSoBinhLuan} 
+                                    setForceReRender={setForceReRender}
+                                    width={'100%'}/>
                                 </View>
                                 <View style={{ flexDirection: 'row' }}>
                                     {Array.from({length: 5}).map((_, index) => {
@@ -153,11 +210,11 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
             {userLogin ? (
                 <View>
                     <View style={{height: 10}}></View>
-                    <ChonSaoSanPham sP_Id={sP_Id} userId={userLogin.id as string} />
+                    <ChonSaoSanPham sP_Id={sP_Id} userLoginId={userLogin.id as string} />
                     <View style={{height: 10}}></View>
-                    <PostBinhLuan sP_Id={sP_Id} reloadBinhLuans={reloadBinhLuans}/>
+                    <PostBinhLuan sP_Id={sP_Id} reloadBinhLuans={reloadBinhLuans} />
                 </View>
-            ) : (<View></View>)}
+            ) : (null)}
             <Spacer height={10}/>
         </View>
     )

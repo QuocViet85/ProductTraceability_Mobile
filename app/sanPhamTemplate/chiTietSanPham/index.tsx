@@ -95,10 +95,11 @@ export default function Index() {
                     <Text style={{fontSize: 15}}>{'Danh mục: '}</Text> {sanPham.sP_DM?.dM_Ten ? (<Text style={{fontSize: 15, fontWeight: 'bold'}}>{sanPham.sP_DM?.dM_Ten}</Text>) : (<Updating />)}
                   </View>
                   
-                  {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
+                {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
                 <View style={{flexDirection: 'row'}}>
                     <Text style={styles.textGia}>{'Giá:'} <Updating /></Text> 
                 </View>)}
+                
                 <Text style = {{fontSize: 15}}>{'Mã vạch: '}
                     {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
                 </Text>

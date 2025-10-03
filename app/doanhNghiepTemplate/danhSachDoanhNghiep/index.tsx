@@ -17,6 +17,7 @@ export let reRenderTrangChuListDoanhNghieps: Function = () => {}
 export let pageNumberTrangChuListDoanhNghieps: number = 1;
 export let modeTimKiemTrangChuListDoanhNghieps: boolean = false;
 export let textTimKiemTrangChuListDoanhNghieps: string = '';
+export let setTongDoanhNghiep: Function = () => {};
 
 export default function DanhSachDoanhNghiep() {
     const [listDoanhNghieps, setListDoanhNghieps] = useState<DoanhNghiep[]>([]);
@@ -36,6 +37,7 @@ export default function DanhSachDoanhNghiep() {
     reRenderTrangChuListDoanhNghieps = setReRender;
     modeTimKiemTrangChuListDoanhNghieps = modeTimKiem;
     textTimKiemTrangChuListDoanhNghieps = textTimKiemDoanhNghiep;
+    setTongDoanhNghiep = setTongSoDoanhNghiep;
 
     useEffect(() => {
       layCacDoanhNghieps();

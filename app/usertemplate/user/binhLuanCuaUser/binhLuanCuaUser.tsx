@@ -16,7 +16,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-const temp_ListBinhLuans: BinhLuan[] = [];
+export const temp_ListBinhLuansCuaUser: BinhLuan[] = [];
 
 export default function BinhLuanCuaUser({userId} : {userId: string}) {
     const [listBinhLuans, setListBinhLuans] = useState<BinhLuan[]>([]);
@@ -24,6 +24,8 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
     const [pageNumber, setPageNumber] = useState<number>(1);
     const [userLogin, setUserLogin] = useState<AppUser | null>(null);
     const router = useRouter();
+
+    const [forceReRender, setForceReRender] = useState<number>(0);
 
     const tongSoTrang : number = Math.ceil(tongSoBinhLuan / LIMIT_BINHLUAN);
 
@@ -35,10 +37,10 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
 
     useEffect(() => {
         layCacBinhLuans();
-    }, [pageNumber])
+    }, [pageNumber, forceReRender])
 
     const layCacBinhLuans = async() => {
-        const listBinhLuansCuaUserTrongTemp = temp_ListBinhLuans.filter((item) => {
+        const listBinhLuansCuaUserTrongTemp = temp_ListBinhLuansCuaUser.filter((item) => {
             return item.bL_NguoiTao_Id === userId;
         }); 
 
@@ -53,22 +55,30 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                 const listBinhLuans : BinhLuan[] = response.data.listBinhLuans;
 
                 for (const binhLuan of listBinhLuans) {
-                    if (response.data.tongSo) {
-                        binhLuan.temp_tongSoBinhLuanCuaSP = response.data.tongSo;
-                    }
                     try {
                         const soSao = await laySoSaoCuaMotNguoiVoiMotSanPham(binhLuan.bL_SP_Id as string, userId);
                         binhLuan.bL_NguoiTao_Client = {id: userId, soSao: soSao, name: undefined}
                     }catch {}
                 }
                 setListBinhLuans(listBinhLuans);
-                temp_ListBinhLuans.push(...listBinhLuans);
+                temp_ListBinhLuansCuaUser.push(...listBinhLuans);
             }
 
             if (response.data.tongSo) {
                 setTongSoBinhLuan(response.data.tongSo);
             }
         }else {
+            if (pageNumber < tongSoTrang && listBinhLuansCuaUserTrongTempCanLay.length < LIMIT_BINHLUAN) {
+                //xử lý trường hợp thiếu bình luận do xóa bình luận ở trang không phải trang cuối thật sự nhưng dữ liệu cache mới chỉ đến trang hiện tại
+
+                const urlBinhLuan = url(`api/binhluan/user/${userId}?&pageNumber=${pageNumber}&limit=${LIMIT_BINHLUAN}&soSao=0`);
+                const res = await axios.get(urlBinhLuan);
+                if (res.data.listBinhLuans) {
+                    const listBinhLuansTuBackEnd : BinhLuan[] = res.data.listBinhLuans;
+                    temp_ListBinhLuansCuaUser.push(listBinhLuansTuBackEnd[listBinhLuansTuBackEnd.length - 1])
+                    listBinhLuansCuaUserTrongTempCanLay.push(listBinhLuansTuBackEnd[listBinhLuansTuBackEnd.length - 1]);
+                }
+            }
             for (const binhLuan of listBinhLuansCuaUserTrongTempCanLay) {
                 try {
                     if (binhLuan.bL_NguoiTao_Client) {
@@ -78,7 +88,6 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                 }catch {}
             }
             setListBinhLuans(listBinhLuansCuaUserTrongTempCanLay);
-            setTongSoBinhLuan(listBinhLuansCuaUserTrongTempCanLay[0].temp_tongSoBinhLuanCuaUser);
         }
     }
 
@@ -119,8 +128,8 @@ export default function BinhLuanCuaUser({userId} : {userId: string}) {
                                                     <XoaBinhLuan 
                                                     userLogin={userLogin} 
                                                     binhLuan={item} 
-                                                    listBinhLuansHienThi={temp_ListBinhLuans} 
-                                                    setTongSoBinhLuan={setTongSoBinhLuan} 
+                                                    setTongSoBinhLuan={setTongSoBinhLuan}
+                                                    setForceReRender={setForceReRender}
                                                     width={'100%'}
                                                     />
                                                 </View>

@@ -228,7 +228,7 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                                         <TouchableOpacity onPress={xoaAnhSuKien}>
                                         <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
-                                        <Text>Xóa ảnh vừa chọn?</Text>
+                                        <Text>{'Xóa ảnh vừa chọn?'}</Text>
                                     </View>
                                     <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                                 </View>

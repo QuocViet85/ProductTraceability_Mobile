@@ -5,7 +5,7 @@ import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
+import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, setTongDoanhNghiep, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
 import { LIMIT_DOANHNGHIEP } from "@/app/constant/Limit";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 
@@ -53,7 +53,7 @@ export default function ThemDoanhNghiep({width, height, paddingVertical, fontSiz
                     }
                 }
                 
-                
+                setTongDoanhNghiep((value: number) =>  value + 1);
                 reRenderTrangChuListDoanhNghieps((value: number) => value + 1);
                 resetState();
             }

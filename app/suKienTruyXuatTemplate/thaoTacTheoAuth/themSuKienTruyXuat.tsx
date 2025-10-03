@@ -13,7 +13,7 @@ import LoSanPham from "@/app/model/LoSanPham";
 import LuaChonLoSanPhamHelper from "@/app/helpers/LuaChonHelper/luaChonLoSanPhamHelper";
 import { LIMIT_SU_KIEN_TRUY_XUAT } from "@/app/constant/Limit";
 
-export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listSuKiensHienThi, setReRenderSuKien, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listSuKiensHienThi: SuKienTruyXuat[], setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listSuKiensHienThi, setTongSoSuKiens, setReRenderSuKien, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listSuKiensHienThi: SuKienTruyXuat[], setTongSoSuKiens: Function, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
     const [showChonThoiGian, setShowChonThoiGian] = useState<boolean>(false);
@@ -72,6 +72,8 @@ export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listS
                         suKien.temp_TongSoVoiSanPham += 1;
                     }
                 } 
+                setTongSoSuKiens((value: number) => value + 1);
+                
                 setShowModalSua(false);
                 resetState();
             }

@@ -230,7 +230,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                                         <TouchableOpacity onPress={xoaAnhLoSanPham}>
                                         <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
-                                        <Text>Xóa ảnh vừa chọn?</Text>
+                                        <Text>{'Xóa ảnh vừa chọn?'}</Text>
                                     </View>
                                     <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                                 </View>

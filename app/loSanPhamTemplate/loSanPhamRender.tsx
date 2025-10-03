@@ -8,7 +8,7 @@ import MoTaLoSanPham from "./moTaLoSanPham";
 import SuaLoSanPham from "./thaoTacTheoAuth/suaLoSanPham";
 import XoaLoSanPham from "./thaoTacTheoAuth/xoaLoSanPham";
 
-export default function LoSanPhamRender({loSanPham, listLoSanPhamsHienThi, pageNumber, sP_DN_SoHuu_Id, setReRenderLoSanPham}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], pageNumber: number, sP_DN_SoHuu_Id: string | undefined, setReRenderLoSanPham: Function}) {
+export default function LoSanPhamRender({loSanPham, listLoSanPhamsHienThi, setTongSo, pageNumber, sP_DN_SoHuu_Id, setReRenderLoSanPham}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], setTongSo: Function, pageNumber: number, sP_DN_SoHuu_Id: string | undefined, setReRenderLoSanPham: Function}) {
     const router = useRouter();
     return (
         <View>
@@ -47,7 +47,7 @@ export default function LoSanPhamRender({loSanPham, listLoSanPhamsHienThi, pageN
                 <View style={{flexDirection: 'row'}}>
                 <SuaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
                 <View style={{width: 10}}></View>
-                <XoaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} pageNumber={pageNumber} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                <XoaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} setTongSo={setTongSo} pageNumber={pageNumber} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
             </View>
             ) : null}
             <View style={{height: 10}}></View>

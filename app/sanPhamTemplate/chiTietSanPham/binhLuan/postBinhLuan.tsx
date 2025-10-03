@@ -1,11 +1,14 @@
 import getBearerToken from "@/app/Auth/Authentication";
 import { getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
+import BinhLuan from "@/app/model/BinhLuan";
 import { url } from "@/app/server/backend";
+import { temp_ListBinhLuansCuaUser } from "@/app/usertemplate/user/binhLuanCuaUser/binhLuanCuaUser";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useState } from "react";
 import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { temp_ListBinhLuansCuaSanPham } from "./binhLuanSanPham";
 
 export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, reloadBinhLuans: () => void}) {
     const [noiDungBinhLuan, setNoiDungBinhLuan] = useState<string>('');
@@ -34,16 +37,40 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
             };
 
             try {
-                await axios.post(urlPostBinhLuan, formData, {headers: {
+                const res = await axios.post(urlPostBinhLuan, formData, {headers: {
                     Authorization: bearerToken,
                     "Content-Type": 'multipart/form-data'
                 }});
 
                 Alert.alert('Thông báo', 'Đăng bình luận thành công');
 
+                const binhLuanNew : BinhLuan = res.data;
+
+                const listBinhLuansCuaSanPhamTrongTemp = temp_ListBinhLuansCuaSanPham.filter((item: BinhLuan) => {
+                    return item.bL_SP_Id === sP_Id;
+                })
+                if (listBinhLuansCuaSanPhamTrongTemp.length > 1) {
+                    for (const binhLuan of listBinhLuansCuaSanPhamTrongTemp) {
+                        binhLuan.temp_tongSoBinhLuanCuaSP += 1;
+                    }
+                    binhLuanNew.temp_tongSoBinhLuanCuaSP = listBinhLuansCuaSanPhamTrongTemp[0].temp_tongSoBinhLuanCuaSP;
+                    temp_ListBinhLuansCuaSanPham.unshift(binhLuanNew);
+                }
+
+                const listBinhLuansCuaUserTrongTemp = temp_ListBinhLuansCuaUser.filter((item: BinhLuan) => {
+                    return item.bL_SP_Id === sP_Id;
+                })
+                if (listBinhLuansCuaUserTrongTemp.length > 1) {
+                    for (const binhLuan of listBinhLuansCuaUserTrongTemp) {
+                        binhLuan.temp_tongSoBinhLuanCuaUser += 1;
+                    }
+                    binhLuanNew.temp_tongSoBinhLuanCuaUser = listBinhLuansCuaUserTrongTemp[0].temp_tongSoBinhLuanCuaUser;
+                    temp_ListBinhLuansCuaUser.unshift(binhLuanNew);
+                }
+                
                 setNoiDungBinhLuan('');
-                reloadBinhLuans();
                 setListUriAnhBinhLuan([]);
+                reloadBinhLuans();
             }catch {
                 Alert.alert('Lỗi', 'Lỗi đăng bình luận')
             }

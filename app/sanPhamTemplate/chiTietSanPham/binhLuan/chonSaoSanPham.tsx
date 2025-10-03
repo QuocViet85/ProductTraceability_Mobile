@@ -7,12 +7,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Button, Modal, Text, TouchableOpacity, View } from "react-native";
 
-export default function ChonSaoSanPham({sP_Id, userId} : {sP_Id: string, userId: string}) {
+export default function ChonSaoSanPham({sP_Id, userLoginId} : {sP_Id: string, userLoginId: string}) {
     const [showModalChonSao, setShowModalChonSao] = useState<boolean | undefined>(false);
     const [soSaoChon, setSoSaoChon] = useState<number>(0);
 
     useEffect(() => {
-        laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, userId).then((soSao) => {
+        laySoSaoCuaMotNguoiVoiMotSanPham(sP_Id, userLoginId).then((soSao) => {
             setSoSaoChon(soSao)
         })
     }, []);
@@ -26,7 +26,7 @@ export default function ChonSaoSanPham({sP_Id, userId} : {sP_Id: string, userId:
             setSoSaoChon(soSao);
 
             const soSaoInTemp = temp_SoSaoCuaMotNguoiVoiMotSanPham.find((item) => {
-                return item.sP_Id === sP_Id && item.userId === userId;
+                return item.sP_Id === sP_Id && item.userId === userLoginId;
             });
             
             if (soSaoInTemp) {

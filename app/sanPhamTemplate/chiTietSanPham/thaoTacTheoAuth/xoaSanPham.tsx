@@ -2,7 +2,7 @@ import getBearerToken from "@/app/Auth/Authentication";
 import { quyenXoaSanPham } from "@/app/Auth/Authorization/AuthSanPham";
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
 import SanPham from "@/app/model/SanPham";
-import { listSanPhamsHienThiTrangChu, modeTimKiemTrangChuListSanPhams, pageNumberTrangChuListSanPhams, reRenderTrangChuListSanPhams, textTimKiemTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
+import { listSanPhamsHienThiTrangChu, modeTimKiemTrangChuListSanPhams, pageNumberTrangChuListSanPhams, reRenderTrangChuListSanPhams, setTongSanPham, textTimKiemTrangChuListSanPhams } from "@/app/sanPhamTemplate/danhSachSanPham/danhSachSanPham";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -57,6 +57,7 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
                 }
             }
             reRenderTrangChuListSanPhams((value: number) => value + 1);
+            setTongSanPham((value: number) => value - 1);
             setShowModalXoa(false);
         }catch {
             Alert.alert('Lỗi', 'Xóa sản phẩm thất bại');

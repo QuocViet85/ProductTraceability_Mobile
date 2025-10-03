@@ -38,14 +38,14 @@ export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
     for (let i = 1; i <= 5; i++) {
         if (i <= soSao) {
             saoArr.push(
-                <IconSymbol name="star" size={sizeSao} color="#FFD700" />
+                <IconSymbol key={i} name="star" size={sizeSao} color="#FFD700" />
             )
         }else if (i - soSao < 1) {
             saoArr.push(
-                <IconSymbol name="star-half" size={sizeSao} color="#FFD700" />
+                <IconSymbol key={i} name="star-half" size={sizeSao} color="#FFD700" />
             )
         }else {
-            saoArr.push(<IconSymbol name="star" size={sizeSao} color="grey" />)
+            saoArr.push(<IconSymbol key={i} name="star" size={sizeSao} color="grey" />)
         }
     }
     

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { temp_DoanhNghiep } from "../";
-import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, pageNumberTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
+import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, pageNumberTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, setTongDoanhNghiep, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
 import { LIMIT_DOANHNGHIEP } from "@/app/constant/Limit";
 
 export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghiep: DoanhNghiep, setDoanhNghiep: Function}) {
@@ -48,6 +48,8 @@ export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghi
                     listDoanhNghiepsHienThiTrangChu.push(doanhNghiepCuoiCuaTrangCuoiHienTai);
                 }
             }
+
+            setTongDoanhNghiep((value: number) =>  value - 1);
             reRenderTrangChuListDoanhNghieps((value: number) => value + 1);
             setShowModalXoa(false);
         }catch {

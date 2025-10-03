@@ -20,6 +20,7 @@ export let reRenderTrangChuListSanPhams: Function = () => {}
 export let pageNumberTrangChuListSanPhams: number = 1;
 export let modeTimKiemTrangChuListSanPhams: boolean = false;
 export let textTimKiemTrangChuListSanPhams: string = '';
+export let setTongSanPham: Function = () => {}
 
 export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: DanhMuc}) {
     const params = useLocalSearchParams();
@@ -43,6 +44,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
       reRenderTrangChuListSanPhams = setReRender;
       modeTimKiemTrangChuListSanPhams = modeTimKiem;
       textTimKiemTrangChuListSanPhams = textTimKiemSanPham;
+      setTongSanPham = setTongSoSanPham;
     }
 
     useEffect(() => {

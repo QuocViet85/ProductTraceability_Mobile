@@ -15,7 +15,7 @@ import { paginate } from "../helpers/LogicHelper/helper";
 import ThemSuKienTruyXuat from "./thaoTacTheoAuth/themSuKienTruyXuat";
 import BlurLine from "../helpers/ViewHelpers/blurLine";
 
-export const temp_ListSuKienTruyXuats: SuKienTruyXuat[] = []; //temp not main screen
+export const temp_ListSuKienTruyXuats: SuKienTruyXuat[] = []; 
 
 export default function DanhSachSuKienTruyXuat() {
     const params = useLocalSearchParams();
@@ -106,7 +106,7 @@ export default function DanhSachSuKienTruyXuat() {
         <View style={styles.container}>
             <Header title={'Nhật ký truy xuất của sản phẩm'} fontSize={20} resource={sP_Ten as string}></Header>
             <View style={{marginTop: 10}}>
-                <ThemSuKienTruyXuat sanPhamId={sP_Id as string} doanhNghiepSoHuuId={sP_DN_SoHuu_Id as string} listSuKiensHienThi={listSuKiens} setReRenderSuKien={setReRender} width={200} height={30} paddingVertical={5} fontSize={12}/>
+                <ThemSuKienTruyXuat sanPhamId={sP_Id as string} doanhNghiepSoHuuId={sP_DN_SoHuu_Id as string} listSuKiensHienThi={listSuKiens} setTongSoSuKiens={setTongSoSuKiens} setReRenderSuKien={setReRender} width={200} height={30} paddingVertical={5} fontSize={12}/>
             </View>
             <BlurLine />
             <FlatList
@@ -114,7 +114,7 @@ export default function DanhSachSuKienTruyXuat() {
                 keyExtractor={(item: SuKienTruyXuat, index) => item.sK_Id as string + '-' + index}
                 renderItem={({item}: {item: SuKienTruyXuat}) => {
                     return (
-                        <SuKienTruyXuatRender suKien={item} listSuKiensHienThi={listSuKiens} pageNumber={pageNumber} setReRenderSuKien={setReRender}/>
+                        <SuKienTruyXuatRender suKien={item} listSuKiensHienThi={listSuKiens} pageNumber={pageNumber} setTongSoSuKiens={setTongSoSuKiens} setReRenderSuKien={setReRender}/>
                     )
                 }}
                 onEndReached={handleLoadMore}

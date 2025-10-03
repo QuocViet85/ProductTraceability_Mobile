@@ -14,7 +14,7 @@ import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper
 import { temp_ListLoSanPhams } from "..";
 import { LIMIT_LO_SANPHAM } from "@/app/constant/Limit";
 
-export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanPhamsHienThi, setReRender, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listLoSanPhamsHienThi: LoSanPham[], setReRender: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
+export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanPhamsHienThi, setTongSo, setReRender, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listLoSanPhamsHienThi: LoSanPham[], setTongSo: Function, setReRender: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
     const [showModalSua, setShowModalSua] = useState<boolean | undefined>(false);
 
@@ -70,13 +70,14 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanP
                 temp_ListLoSanPhams.pop();
             }
             
-            setReRender((value: any) => value + 1);
+            setReRender((value: number) => value + 1);
             for (const loSanPham of temp_ListLoSanPhams) {
                 if (loSanPham.temp_TongSoVoiSanPham) {
                     temp_ListLoSanPhams[0].temp_TongSoVoiSanPham = loSanPham.temp_TongSoVoiSanPham + 1;
                     loSanPham.temp_TongSoVoiSanPham += 1;
                 }
             } 
+            setTongSo((value: number) => value + 1);
             setShowModalSua(false);
             resetState();
         }catch {
