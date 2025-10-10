@@ -31,7 +31,9 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const dN_Ten = params.dN_Ten
     const nM_Id = params.nM_Id;
     const nM_Ten = params.nM_Ten;
-    const [listSanPhams, setListSanPham] = useState<SanPham[]>([]);
+    
+    const [listSanPhams, setListSanPhams] = useState<SanPham[]>([]);
+    const [listSanPhamsTemp, setListSanPhamsTemp] = useState<SanPham[]>([]);
     const [tongSoSanPham, setTongSoSanPham] = useState<number>(0);
     const [textTimKiemSanPham, setTextTimKiemSanPham] = useState<string>('');
     const [modeTimKiem, setModeTimKiem] = useState<boolean>(false);
@@ -94,7 +96,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               newListSanPhams.push(...listSanPhamsTuBackEnd);
             }
 
-            setListSanPham(newListSanPhams);
+            setListSanPhams(newListSanPhams);
+            setListSanPhamsTemp(newListSanPhams);
             setLoading(false);
           }
 
@@ -114,15 +117,31 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
 
     const handleLoadMore = () => {
       if (pageNumber < tongSoTrang) {
+        if (!modeTimKiem && textTimKiemSanPham) {
+          return;
+        }
         setPageNumber(pageNumber + 1);
       }
     };
 
     const handleTextInputSearch = (text: string) => {
       setTextTimKiemSanPham(text);
+
+      if (!modeTimKiem) {
+        //Nếu không ở chế độ tìm kiếm thì chỉ tìm kiếm trong các phần tử đã tải về client, không tìm trên server
+          const listSanPhamsTimKiem = listSanPhamsTemp.filter((item: SanPham) => {
+            return item.sP_Ten?.toLocaleLowerCase().includes(text.toLocaleLowerCase()) || item.sP_MaTruyXuat?.toLocaleLowerCase().includes(text.toLocaleLowerCase());
+        });
+        setListSanPhams(listSanPhamsTimKiem);
+      }
+      
       if (!text) {
-        setModeTimKiem(false);
-        layCacSanPhamsTuDau();
+        if (modeTimKiem) {
+          setModeTimKiem(false);
+          layCacSanPhamsTuDau();
+        }else {
+          setListSanPhams(listSanPhamsTemp);
+        }
       }
     }
 
@@ -136,8 +155,12 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const handleTouchDestroySearch = () => {
       if (textTimKiemSanPham) {
         setTextTimKiemSanPham('');
-        setModeTimKiem(false);
-        layCacSanPhamsTuDau();
+        if (modeTimKiem) {
+          setModeTimKiem(false);
+          layCacSanPhamsTuDau();
+        }else {
+          setListSanPhams(listSanPhamsTemp);
+        }
       }
     }
 
