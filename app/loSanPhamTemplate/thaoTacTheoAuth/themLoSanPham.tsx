@@ -13,6 +13,7 @@ import NhaMay from "@/app/model/NhaMay";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
 import { temp_ListLoSanPhams } from "..";
 import { LIMIT_LO_SANPHAM } from "@/app/constant/Limit";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanPhamsHienThi, setTongSo, setReRender, width, height, paddingVertical, fontSize}: {sanPhamId: string, doanhNghiepSoHuuId: string, listLoSanPhamsHienThi: LoSanPham[], setTongSo: Function, setReRender: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -125,7 +126,7 @@ export default function ThemLoSanPham({sanPhamId, doanhNghiepSoHuuId, listLoSanP
         <Modal
         visible={showModalSua}
         animationType={'slide'}>
-            <View style={{height: '90%'}}>
+            <View style={{height: '90%', padding: PADDING_DEFAULT}}>
                 <ScrollView>
                     <Text>{'Tên:'}</Text>
                     <TextInput

@@ -125,13 +125,13 @@ export default function ThemSuKienTruyXuat({sanPhamId, doanhNghiepSoHuuId, listS
     ? (
     <View>
         <TouchableOpacity style={{backgroundColor: 'blue', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
-            <Text style={{fontWeight: 'bold', fontSize: fontSize, color: 'white'}}>{'Thêm'}</Text>
+            <Text style={{fontWeight: 'bold', fontSize: fontSize, color: 'white'}}>{'Thêm sự kiện cho sản phẩm hiện tại'}</Text>
         </TouchableOpacity>
 
         <Modal
         visible={showModalSua}
         animationType={'slide'}>
-            <View style={{height: '90%'}}>
+            <View style={{height: '90%', padding: 10}}>
                 <ScrollView>
                     <Text>{'Tên:'}</Text>
                     <TextInput

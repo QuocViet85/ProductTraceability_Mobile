@@ -1,6 +1,6 @@
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
 import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
-import { getHeightScreen } from "@/app/helpers/LogicHelper/helper";
+import { formatCurrency, getHeightScreen } from "@/app/helpers/LogicHelper/helper";
 import Footer from "@/app/helpers/ViewHelpers/footer";
 import Header from "@/app/helpers/ViewHelpers/header";
 import Loading from "@/app/helpers/ViewHelpers/loading";
@@ -10,10 +10,13 @@ import AvatarSanPham from "@/app/sanPhamTemplate/chiTietSanPham/avatarSanPham";
 import ThemSanPham from "@/app/sanPhamTemplate/chiTietSanPham/thaoTacTheoAuth/themSanPham";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
+import { Updating } from "@/app/helpers/ViewHelpers/updating";
+import SaoSanPham from "../chiTietSanPham/saoSanPham";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export let listSanPhamsHienThiTrangChu: SanPham[] = [];
 export let reRenderTrangChuListSanPhams: Function = () => {}
@@ -37,6 +40,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const [reRender, setReRender]  = useState<number>(0);
     
     const [forceReRender, setForceReRender]  = useState<number>(0);
+
+    const router = useRouter();
 
     if (!dN_Id && !nM_Id) {
       listSanPhamsHienThiTrangChu = listSanPhams;
@@ -141,39 +146,43 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     }
 
     const renderItem = ({ item } : {item: SanPham}) => (
-        <Link href={{pathname: '/sanPhamTemplate/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} }} withAnchor asChild>
-          <TouchableOpacity style={styles.card}>
-            <AvatarSanPham sP_Id={item.sP_Id as string} height={getHeightScreen() <= HEIGHT_SMARTPHONE ? 80 : 130} width={'100%'} marginBottom={8}/>
-            <Text style={styles.text}>{item.sP_Ten}</Text>
-          </TouchableOpacity>
-        </Link>
+        <TouchableOpacity 
+        style={styles.card}
+        onPress={() => router.push({pathname: '/sanPhamTemplate/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} })}>
+          <AvatarSanPham sP_Id={item.sP_Id as string} height={200} width={'100%'} marginBottom={8}/>
+          <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.sP_Ten}</Text>
+          <SaoSanPham sP_Id={item.sP_Id as string} sizeSao={12} fontSize={undefined}/>
+          <Text style={{fontSize: 12, fontStyle: 'italic',}}>{'Giá: '}{item.sP_Gia ? formatCurrency(item.sP_Gia as number) : (<Updating />)}</Text>
+        </TouchableOpacity>
   );
 
     return (
       <View style={styles.container}>
           {dN_Id ? (<Header title={`Sản phẩm doanh nghiệp`} resource={dN_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
           {nM_Id ? (<Header title={`Sản phẩm nhà máy`} resource={nM_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}
-          <View style={{width: '100%', flexDirection: 'row'}}>
-                <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={textTimKiemSanPham} onChangeText={handleTextInputSearch}></TextInput>
-                <TouchableOpacity style={styles.touchDestroySearch} onPress={handleTouchDestroySearch}>
-                    <Text>{'X'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.touchSearch} onPress={handleTouchSearch}>
-                  <IconSymbol name={'search'} color={'white'}/>
-                </TouchableOpacity>
-          </View>
-          <View style={{flexDirection: 'row'}}>
-              {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
-          </View>
-          <View style={{marginTop: 10}}>
-            <ThemSanPham width={100} height={30} paddingVertical={5} fontSize={12}/>
+          <View style={{padding: PADDING_DEFAULT}}>
+              <View style={{width: '100%', flexDirection: 'row'}}>
+                  <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={textTimKiemSanPham} onChangeText={handleTextInputSearch}></TextInput>
+                  <TouchableOpacity style={styles.touchDestroySearch} onPress={handleTouchDestroySearch}>
+                      <Text>{'X'}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.touchSearch} onPress={handleTouchSearch}>
+                    <IconSymbol name={'search'} color={'white'}/>
+                  </TouchableOpacity>
+              </View>
+              <View style={{flexDirection: 'row'}}>
+                  {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemSanPham}</Text></Text>) : (<View></View>)}
+              </View>
+              <View style={{height: 10}}></View>
+              <View>
+                <ThemSanPham width={100} height={30} paddingVertical={5} fontSize={12}/>
+              </View>
           </View>
           <FlatList
               data={listSanPhams}
               keyExtractor={(item: SanPham, index) => `${item.sP_Id}-${index}`}
               renderItem={renderItem}
               numColumns={2} // 👉 Mỗi dòng 2 cột
-              contentContainerStyle={{padding: 10}}
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0}
               />
@@ -210,22 +219,9 @@ const styles = StyleSheet.create({
   },
   card: {
     flex: 1, // 👉 để 2 item chia đều 1 hàng
-    margin: 5,
-    backgroundColor: '#f2f2f2',
-    alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 8,
     padding: 10,
-  },
-  image: {
-    width: '100%',
-    height: 80,
-    marginBottom: 10,
-    borderRadius: 8,
-  },
-  text: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    borderWidth: 0.3
   },
   container: {
     flex: 1,                     // cho phép chiếm toàn màn hình

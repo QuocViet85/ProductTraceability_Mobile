@@ -1,6 +1,7 @@
 import getBearerToken from "@/app/Auth/Authentication";
 import { quyenThemSanPham } from "@/app/Auth/Authorization/AuthSanPham";
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 import DanhMucs, { khongChonDanhMuc } from "@/app/danhMucTemplate/danhMucs";
 import { handleInputNumber } from "@/app/helpers/LogicHelper/inputHelper";
 import LuaChonDoanhNghiepHelper from "@/app/helpers/LuaChonHelper/luaChonDoanhNghiepHelper";
@@ -160,7 +161,7 @@ export default function ThemSanPham({width, height, paddingVertical, fontSize}: 
             <Modal
             visible={showModalThem}
             animationType={'slide'}>
-                <View style={{height: '90%'}}>
+                <View style={{height: '90%', padding: PADDING_DEFAULT}}>
                     <ScrollView>
                         <Text>{'Tên:'}</Text>
                         <TextInput

@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { temp_DoanhNghiep } from "..";
 import { listDoanhNghiepsHienThiTrangChu, reRenderTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {doanhNghiep: DoanhNghiep, setReRenderDoanhNghiep: Function}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -105,7 +106,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
             <Modal
                 visible={showModalSua}
                 animationType={'slide'}>
-                    <View style={{height: '90%'}}>
+                    <View style={{height: '90%', padding: PADDING_DEFAULT}}>
                         <ScrollView>
                             <Text>{'Tên:'}</Text>
                             <TextInput

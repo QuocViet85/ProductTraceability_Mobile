@@ -14,13 +14,14 @@ import Header from "@/app/helpers/ViewHelpers/header";
 import { paginate } from "../helpers/LogicHelper/helper";
 import ThemSuKienTruyXuat from "./thaoTacTheoAuth/themSuKienTruyXuat";
 import BlurLine from "../helpers/ViewHelpers/blurLine";
+import { PADDING_DEFAULT } from "../constant/Style";
 
 export const temp_ListSuKienTruyXuats: SuKienTruyXuat[] = []; 
 
 export default function DanhSachSuKienTruyXuat() {
     const params = useLocalSearchParams();
     const sP_Id = params.sP_Id;
-    const sP_Ten = params.nM_Ten;
+    const sP_Ten = params.sP_Ten;
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
     const sP_DN_SoHuu_Id = params.sP_DN_SoHuu_Id;
 
@@ -105,23 +106,25 @@ export default function DanhSachSuKienTruyXuat() {
     return (
         <View style={styles.container}>
             <Header title={'Nhật ký truy xuất của sản phẩm'} fontSize={20} resource={sP_Ten as string}></Header>
-            <View style={{marginTop: 10}}>
-                <ThemSuKienTruyXuat sanPhamId={sP_Id as string} doanhNghiepSoHuuId={sP_DN_SoHuu_Id as string} listSuKiensHienThi={listSuKiens} setTongSoSuKiens={setTongSoSuKiens} setReRenderSuKien={setReRender} width={200} height={30} paddingVertical={5} fontSize={12}/>
+            <View style={{flex: 1, padding: PADDING_DEFAULT}}>
+                <View style={{marginTop: 10}}>
+                    <ThemSuKienTruyXuat sanPhamId={sP_Id as string} doanhNghiepSoHuuId={sP_DN_SoHuu_Id as string} listSuKiensHienThi={listSuKiens} setTongSoSuKiens={setTongSoSuKiens} setReRenderSuKien={setReRender} width={250} height={30} paddingVertical={5} fontSize={12}/>
+                </View>
+                <BlurLine />
+                <FlatList
+                    data={listSuKiens}
+                    keyExtractor={(item: SuKienTruyXuat, index) => item.sK_Id as string + '-' + index}
+                    renderItem={({item}: {item: SuKienTruyXuat}) => {
+                        return (
+                            <SuKienTruyXuatRender suKien={item} listSuKiensHienThi={listSuKiens} pageNumber={pageNumber} setTongSoSuKiens={setTongSoSuKiens} setReRenderSuKien={setReRender}/>
+                        )
+                    }}
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={0}
+                    />
+                    {loading ? (<Loading />) : (<View></View>)}
             </View>
-            <BlurLine />
-            <FlatList
-                data={listSuKiens}
-                keyExtractor={(item: SuKienTruyXuat, index) => item.sK_Id as string + '-' + index}
-                renderItem={({item}: {item: SuKienTruyXuat}) => {
-                    return (
-                        <SuKienTruyXuatRender suKien={item} listSuKiensHienThi={listSuKiens} pageNumber={pageNumber} setTongSoSuKiens={setTongSoSuKiens} setReRenderSuKien={setReRender}/>
-                    )
-                }}
-                onEndReached={handleLoadMore}
-                onEndReachedThreshold={0}
-                />
-                {loading ? (<Loading />) : (<View></View>)}
-                <Footer backgroundColor={'black'} height={'6%'}/>
+            <Footer backgroundColor={'black'} height={'6%'}/>
         </View>
     )
 }

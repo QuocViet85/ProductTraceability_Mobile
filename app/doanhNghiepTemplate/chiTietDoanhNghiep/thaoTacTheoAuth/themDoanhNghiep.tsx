@@ -8,6 +8,7 @@ import { Alert, Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, Tex
 import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, setTongDoanhNghiep, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
 import { LIMIT_DOANHNGHIEP } from "@/app/constant/Limit";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function ThemDoanhNghiep({width, height, paddingVertical, fontSize}: { width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [showModalThem, setShowModalThem] = useState<boolean | undefined>(false);
@@ -102,7 +103,7 @@ export default function ThemDoanhNghiep({width, height, paddingVertical, fontSiz
             <Modal
                 visible={showModalThem}
                 animationType={'slide'}>
-                    <View style={{height: '90%'}}>
+                    <View style={{height: '90%', padding: PADDING_DEFAULT}}>
                         <ScrollView>
                             <Text>{'Tên:'}</Text>
                             <TextInput

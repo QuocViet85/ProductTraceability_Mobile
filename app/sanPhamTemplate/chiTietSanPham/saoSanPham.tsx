@@ -6,10 +6,8 @@ import { Text, View } from "react-native";
 
 const temp_SaoSanPham : {sP_Id: string, soSao: number}[] = [];
 
-export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
+export default function SaoSanPham({sP_Id, sizeSao, fontSize} : {sP_Id : string, sizeSao: number | undefined, fontSize: number | undefined}) {
     const [soSao, setSoSao] = useState<number>(0);
-
-    const sizeSao = 30;
     
     useEffect(() => {
         laySoSaoCuaSanPham();
@@ -52,9 +50,11 @@ export default function SaoSanPham({sP_Id} : {sP_Id : string}) {
     return (
         <View style={{flexDirection: 'row'}}>
             {saoArr};
-            <Text style={{ fontSize: 24, color: 'green' }}>
+            {fontSize ? (
+                <Text style={{ fontSize: fontSize, color: 'green' }}>
                 {"\u00A0"} {soSao}{'/5'}
-            </Text>
+            </Text>) : null}
+            
         </View>
     )
 }

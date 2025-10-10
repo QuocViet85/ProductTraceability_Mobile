@@ -14,6 +14,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { temp_SanPham } from "..";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setReRenderSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -185,7 +186,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
         <Modal
         visible={showModalSua}
         animationType={'slide'}>
-            <View style={{height: '90%'}}>
+            <View style={{height: '90%', padding: PADDING_DEFAULT}}>
                 <ScrollView>
                     <Text>{'Tên:'}</Text>
                     <TextInput

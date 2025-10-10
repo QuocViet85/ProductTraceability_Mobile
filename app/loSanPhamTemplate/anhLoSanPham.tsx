@@ -181,9 +181,11 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                 </TouchableOpacity>
             </View>)
             : (
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={{fontWeight: 'bold'}}>{'Hình ảnh lô sản phẩm: '}</Text>
-                    <Updating />
+                <View>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={{fontWeight: 'bold'}}>{'Hình ảnh lô sản phẩm: '}</Text>
+                        <Updating />
+                    </View>
                     {renderTaiLenAnhLoSanPham(30)}
                 </View>
             )}
@@ -247,7 +249,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
 const styles = StyleSheet.create({
   image: {
     width: width,
-    height: '90%',
+    height: '85%',
     resizeMode: 'cover',
   },
   indicatorContainer: {

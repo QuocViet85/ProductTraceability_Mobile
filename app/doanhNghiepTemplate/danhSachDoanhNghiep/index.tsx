@@ -11,6 +11,7 @@ import Header from "@/app/helpers/ViewHelpers/header";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import ThemDoanhNghiep from "../chiTietDoanhNghiep/thaoTacTheoAuth/themDoanhNghiep";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export let listDoanhNghiepsHienThiTrangChu: DoanhNghiep[] = [];
 export let reRenderTrangChuListDoanhNghieps: Function = () => {}
@@ -131,7 +132,8 @@ export default function DanhSachDoanhNghiep() {
     return (
       <View style={styles.container}>
           <Header title={`Danh sách doanh nghiệp`} fontSize={30} resource={undefined}/>
-          <View style={{width: '100%', flexDirection: 'row'}}>
+          <View style={{flex: 1, padding: PADDING_DEFAULT}}>
+              <View style={{width: '100%', flexDirection: 'row'}}>
                 <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={textTimKiemDoanhNghiep} onChangeText={handleTextInputSearch}></TextInput>
                 <TouchableOpacity style={styles.touchDestroySearch} onPress={handleTouchDestroySearch}>
                     <Text>{'X'}</Text>
@@ -139,22 +141,24 @@ export default function DanhSachDoanhNghiep() {
                 <TouchableOpacity style={styles.touchSearch} onPress={handleTouchSearch}>
                   <IconSymbol name={'search'} color={'white'}/>
                 </TouchableOpacity>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+                {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemDoanhNghiep}</Text></Text>) : (<View></View>)}
+            </View>
+            <View style={{marginTop: 10}}>
+              <ThemDoanhNghiep width={150} height={30} paddingVertical={5} fontSize={12}/>
+            </View>
+            <FlatList
+                data={listDoanhNghieps}
+                keyExtractor={(item: DoanhNghiep, index) => `${item.dN_Id}-${index}`}
+                renderItem={renderItem}
+                contentContainerStyle={{padding: 10}}
+                onEndReached={handleLoadMore}
+                onEndReachedThreshold={0}
+                />
+            {loading ? (<Loading />) : (<View></View>)}
           </View>
-          <View style={{flexDirection: 'row'}}>
-              {modeTimKiem ? (<Text>{'Kết quả tìm kiếm với từ khóa: '}<Text style={{fontWeight: 'bold'}}>{textTimKiemDoanhNghiep}</Text></Text>) : (<View></View>)}
-          </View>
-          <View style={{marginTop: 10}}>
-            <ThemDoanhNghiep width={150} height={30} paddingVertical={5} fontSize={12}/>
-          </View>
-          <FlatList
-              data={listDoanhNghieps}
-              keyExtractor={(item: DoanhNghiep, index) => `${item.dN_Id}-${index}`}
-              renderItem={renderItem}
-              contentContainerStyle={{padding: 10}}
-              onEndReached={handleLoadMore}
-              onEndReachedThreshold={0}
-              />
-          {loading ? (<Loading />) : (<View></View>)}
+          
       </View>     
     )
 }

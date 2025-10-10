@@ -12,6 +12,7 @@ import { temp_ListLoSanPhams } from "..";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import NhaMay from "@/app/model/NhaMay";
 import LuaChonNhaMayHelper from "@/app/helpers/LuaChonHelper/luaChonNhaMayHelper";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenSua, setQuyenSua] = useState<boolean>(false);
@@ -123,7 +124,7 @@ export default function SuaLoSanPham({loSanPham, listLoSanPhamsHienThi, doanhNgh
         <Modal
         visible={showModalSua}
         animationType={'slide'}>
-            <View style={{height: '90%'}}>
+            <View style={{height: '90%', padding: PADDING_DEFAULT}}>
                 <ScrollView>
                     <Text>{'Tên:'}</Text>
                     <TextInput

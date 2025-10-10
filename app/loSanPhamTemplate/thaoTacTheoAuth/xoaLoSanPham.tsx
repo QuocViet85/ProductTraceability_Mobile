@@ -8,7 +8,6 @@ import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "re
 import { View } from "react-native";
 import { temp_ListLoSanPhams } from "..";
 import { LIMIT_LO_SANPHAM } from "@/app/constant/Limit";
-import SanPham from "@/app/model/SanPham";
 
 export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, setTongSo, pageNumber, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], setTongSo: Function, pageNumber: number, doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);

@@ -32,11 +32,13 @@ export default function SuKienTruyXuatRender({suKien, listSuKiensHienThi, setTon
             <MoTaSuKienTruyXuat moTa={suKien.sK_MoTa}/>
             <LoSanPhamCuaSuKienTruyXuat loSanPham={suKien.sK_LSP}/>
             <AnhSuKienTruyXuat suKien={suKien} />
+            <View style={{height: 10}}></View>
             <View style={{flexDirection: 'row'}}>
                 <SuaSuKienTruyXuat suKien={suKien} listSuKiensHienThi={listSuKiensHienThi} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
                 <View style={{width: 10}}></View>
                 <XoaSuKienTruyXuat suKien={suKien} listSuKiensHienThi={listSuKiensHienThi} setTongSoSuKiens={setTongSoSuKiens} pageNumber={pageNumber} setReRenderSuKien={setReRenderSuKien} width={40} height={30} paddingVertical={5} fontSize={12}/>
             </View>
+            <View style={{height: 10}}></View>
             <Spacer height={10}/>
         </View>
     )

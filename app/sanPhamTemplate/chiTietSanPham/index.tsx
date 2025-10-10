@@ -23,6 +23,7 @@ import SaoSanPham from "./saoSanPham";
 import SuaSanPham from "./thaoTacTheoAuth/suaSanPham";
 import XoaSanPham from "./thaoTacTheoAuth/xoaSanPham";
 import WebsiteSanPham from "./websiteSanPham";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export const temp_SanPham : SanPham[] = [];
 
@@ -85,54 +86,56 @@ export default function Index() {
             (<View style={{flex: 1}}>
                   <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} dN_SoHuu_Id={sanPham.sP_DN_SoHuu_Id as string}/>
                   <Spacer height= {10} />
-                  <View style={{flexDirection: 'row'}}>
+                  <View style={{flex: 1, padding: PADDING_DEFAULT}}>
+                    <View style={{flexDirection: 'row'}}>
                         <Text style={{fontWeight: 'bold', fontSize: 25}}>{sanPham.sP_Ten}</Text>
                         <TouchableOpacity style={{marginLeft: 'auto'}} onPress={() => shareSanPham()}>
                             <IconSymbol name="share" size={30} color="#007AFF" />
                         </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                      <Text style={{fontSize: 15}}>{'Danh mục: '}</Text> {sanPham.sP_DM?.dM_Ten ? (<Text style={{fontSize: 15, fontWeight: 'bold'}}>{sanPham.sP_DM?.dM_Ten}</Text>) : (<Updating />)}
+                    </View>
+                      
+                    {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.textGia}>{'Giá:'} <Updating /></Text> 
+                    </View>)}
+                    
+                    <Text style = {{fontSize: 15}}>{'Mã vạch: '}
+                        {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
+                    </Text>
+                    <QrCode urlSanPham={urlSanPham} />
+                    <View style={{height: 10}}></View>
+                    <View style={{flexDirection: 'row'}}>
+                        <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
+                                          onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
+                            <Text>{'Lô sản phẩm'}</Text>
+                        </TouchableOpacity>
+                        <View style={{width: 10}}></View>
+                        <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
+                                          onPress={() => router.push({pathname: '/suKienTruyXuatTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
+                            <Text>{'Sự kiện truy xuất'}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{height: 10}}></View>
+                    <View style={{flexDirection: 'row'}}>
+                        <SuaSanPham sanPham={sanPham} setReRenderSanPham={setReRenderSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                        <View style={{width: 10}}></View>
+                        <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                    </View>
+                    
+                    <BlurLine />
+                    <SaoSanPham sP_Id={sanPham.sP_Id as string} sizeSao={30} fontSize={25}/>
+                    <Spacer height= {10} />
+                    <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SoHuu} vaiTro={"sở hữu"} />
+                    <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SanXuat} vaiTro={"sản xuất"} />
+                    <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
+                    <NhaMaySanPham nhaMay={sanPham.sP_NM}/>
+                    <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
+                    <WebsiteSanPham sP_Website={sanPham.sP_Website} />
+                    <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>
                   </View>
-                  <View style={{flexDirection: 'row'}}>
-                    <Text style={{fontSize: 15}}>{'Danh mục: '}</Text> {sanPham.sP_DM?.dM_Ten ? (<Text style={{fontSize: 15, fontWeight: 'bold'}}>{sanPham.sP_DM?.dM_Ten}</Text>) : (<Updating />)}
-                  </View>
-                  
-                {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={styles.textGia}>{'Giá:'} <Updating /></Text> 
-                </View>)}
-                
-                <Text style = {{fontSize: 15}}>{'Mã vạch: '}
-                    {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
-                </Text>
-                <QrCode urlSanPham={urlSanPham} />
-                <View style={{height: 10}}></View>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
-                                      onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
-                        <Text>{'Lô sản phẩm'}</Text>
-                    </TouchableOpacity>
-                    <View style={{width: 10}}></View>
-                    <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
-                                      onPress={() => router.push({pathname: '/suKienTruyXuatTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
-                        <Text>{'Sự kiện truy xuất'}</Text>
-                    </TouchableOpacity>
-                </View>
-                <View style={{height: 10}}></View>
-                <View style={{flexDirection: 'row'}}>
-                    <SuaSanPham sanPham={sanPham} setReRenderSanPham={setReRenderSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
-                    <View style={{width: 10}}></View>
-                    <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
-                </View>
-                
-                <BlurLine />
-                  <SaoSanPham sP_Id={sanPham.sP_Id as string} />
-                  <Spacer height= {10} />
-                  <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SoHuu} vaiTro={"sở hữu"} />
-                  <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_SanXuat} vaiTro={"sản xuất"} />
-                  <DoanhNghiepSanPham doanhNghiep={sanPham.sP_DN_VanTai} vaiTro={"vận tải"} /> 
-                  <NhaMaySanPham nhaMay={sanPham.sP_NM}/>
-                  <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
-                  <WebsiteSanPham sP_Website={sanPham.sP_Website} />
-                  <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>
             </View>) 
             : (<View style={{backgroundColor: '#fff'}}>
                 <Text>{'Không tồn tại sản phẩm'}</Text>

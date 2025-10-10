@@ -179,11 +179,14 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                     </TouchableOpacity>
                 </View>)
                 : (
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={{fontWeight: 'bold'}}>{'Hình ảnh sự kiện truy xuất: '}</Text>
-                        <Updating />
+                    <View>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontWeight: 'bold'}}>{'Hình ảnh sự kiện truy xuất: '}</Text>
+                            <Updating />
+                        </View>
                         {renderTaiLenAnhSuKien(30)}
                     </View>
+                    
                 )}
     
                 <Modal
@@ -245,7 +248,7 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
 const styles = StyleSheet.create({
   image: {
     width: width,
-    height: '90%',
+    height: '85%',
     resizeMode: 'cover',
   },
   indicatorContainer: {

@@ -128,7 +128,7 @@ export default function SuaSuKienTruyXuat({suKien, listSuKiensHienThi, setReRend
         <Modal
         visible={showModalSua}
         animationType={'slide'}>
-            <View style={{height: '90%'}}>
+            <View style={{height: '90%', padding: 10}}>
                 <ScrollView>
                     <Text>{'Tên:'}</Text>
                     <TextInput

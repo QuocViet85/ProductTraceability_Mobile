@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Button, DimensionValue, FlexAlignType, Modal, Text, TouchableOpacity, View } from "react-native";
 import ListDanhMucs from "./listDanhMucs";
 import { url } from "../server/backend";
+import { PADDING_DEFAULT } from "../constant/Style";
 
 export const khongChonDanhMuc = {dM_Id: undefined, dM_Ten: 'Không Chọn'};
 

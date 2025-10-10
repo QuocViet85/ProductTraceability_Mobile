@@ -44,13 +44,17 @@ export default function LoSanPhamRender({loSanPham, listLoSanPhamsHienThi, setTo
             <AnhLoSanPham loSanPham={loSanPham} sP_DN_SoHuu_Id={sP_DN_SoHuu_Id} />
             {sP_DN_SoHuu_Id ? 
             (
-                <View style={{flexDirection: 'row'}}>
-                <SuaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
-                <View style={{width: 10}}></View>
-                <XoaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} setTongSo={setTongSo} pageNumber={pageNumber} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                <View>
+                    <View style={{height: 10}}></View>
+                    <View style={{flexDirection: 'row'}}>
+                        <SuaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                        <View style={{width: 10}}></View>
+                        <XoaLoSanPham loSanPham={loSanPham} listLoSanPhamsHienThi={listLoSanPhamsHienThi} setTongSo={setTongSo} pageNumber={pageNumber} doanhNghiepSoHuuId={sP_DN_SoHuu_Id} setReRenderLoSanPham={setReRenderLoSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                    </View>
+                    <View style={{height: 10}}></View>
             </View>
             ) : null}
-            <View style={{height: 10}}></View>
+            
             
             <Spacer height={10}/>
         </View>

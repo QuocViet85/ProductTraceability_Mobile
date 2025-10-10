@@ -2,6 +2,8 @@ import DanhMuc from "@/app/model/DanhMuc";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useState } from "react";
 import { FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { PADDING_DEFAULT } from "../constant/Style";
+import BlurLine from "../helpers/ViewHelpers/blurLine";
 
 export default function ListDanhMucs({listDanhMucs, setDanhMucHienTai, setShowModal, moListDanhMucCon} : {listDanhMucs: DanhMuc[], setDanhMucHienTai: Function, setShowModal: Function, moListDanhMucCon: Function}) {
     const [timKiemDanhMuc, setTimKiemDanhMuc] = useState<string>('');
@@ -20,9 +22,9 @@ export default function ListDanhMucs({listDanhMucs, setDanhMucHienTai, setShowMo
         data={filterDanhMucs}
         renderItem={({item} : {item: DanhMuc}) => 
         (
-        <View>
+        <View style={{paddingLeft: PADDING_DEFAULT, paddingRight: PADDING_DEFAULT}}>
             <TouchableOpacity
-            style={{borderBlockColor:'black', borderWidth: 1, width: '100%', borderRadius: 5, padding: 10}}
+            style={{borderBlockColor:'black', width: '100%', borderRadius: 5}}
             onPress={() => {
             setDanhMucHienTai(item)
             setShowModal(false);
@@ -36,6 +38,7 @@ export default function ListDanhMucs({listDanhMucs, setDanhMucHienTai, setShowMo
                 
             </View>
             </TouchableOpacity>
+            <BlurLine />
         </View>
             )
         } />
