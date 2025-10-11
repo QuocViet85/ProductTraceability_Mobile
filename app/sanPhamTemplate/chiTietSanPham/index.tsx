@@ -108,7 +108,7 @@ export default function Index() {
                           )}>
             {sanPham ? 
             (<View style={{flex: 1}}>
-                  <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} dN_SoHuu_Id={sanPham.sP_DN_SoHuu_Id as string}/>
+                  <AnhSanPham sP_Id={sanPham.sP_Id as string} dN_SoHuu_Id={sanPham.sP_DN_SoHuu_Id as string}/>
                   <Spacer height= {10} />
                   <View style={{flex: 1, padding: PADDING_DEFAULT}}>
                     <View style={{flexDirection: 'row'}}>
@@ -117,14 +117,12 @@ export default function Index() {
                             <IconSymbol name="share" size={30} color="#007AFF" />
                         </TouchableOpacity>
                     </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Text style={{fontSize: 15}}>{'Danh mục: '}</Text> {sanPham.sP_DM?.dM_Ten ? (<Text style={{fontSize: 15, fontWeight: 'bold'}}>{sanPham.sP_DM?.dM_Ten}</Text>) : (<Updating />)}
-                    </View>
+
+                    <Text style={{fontSize: 15}}>
+                      {'Danh mục: '} {sanPham.sP_DM?.dM_Ten ? (<Text style={{fontSize: 15, fontWeight: 'bold'}}>{sanPham.sP_DM?.dM_Ten}</Text>) : (<Updating />)} 
+                    </Text>
                       
-                    {sanPham.sP_Gia ? (<Text style={styles.textGia}>{'Giá:'} {formatCurrency(sanPham.sP_Gia)}</Text>) : (
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.textGia}>{'Giá:'} <Updating /></Text> 
-                    </View>)}
+                    <Text style={styles.textGia}>{'Giá: '}{sanPham.sP_Gia ? formatCurrency(sanPham.sP_Gia as number) : (<Updating />)}</Text>
                     
                     <Text style = {{fontSize: 15}}>{'Mã vạch: '}
                         {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
@@ -148,6 +146,7 @@ export default function Index() {
                         <View style={{width: 10}}></View>
                         <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
                     </View>
+                    
                     
                     <BlurLine />
                     <SaoSanPham sP_Id={sanPham.sP_Id as string} sizeSao={30} fontSize={25}/>

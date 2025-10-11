@@ -101,7 +101,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
             setListSanPhams(newListSanPhams);
             setListSanPhamsTemp(newListSanPhams);
             setLoading(false);
-            setRefreshing(false);
           }
 
           if (res.data.tongSo) {
@@ -219,11 +218,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               refreshControl={(
                                 <RefreshControl 
                                 refreshing={refreshing}
-                                onRefresh={() => {
-                                  setRefreshing(true);
-                                  layCacSanPhamsTuDau();
-                                }}
-                                progressViewOffset={30}/>
+                                onRefresh={layCacSanPhamsTuDau} //hành vi khi refresh
+                                progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
                               )}
               />
           {loading ? (<Loading />) : (<View></View>)}

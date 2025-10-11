@@ -5,6 +5,7 @@ import AvatarSanPham from "../sanPhamTemplate/chiTietSanPham/avatarSanPham";
 import SaoSanPham from "../sanPhamTemplate/chiTietSanPham/saoSanPham";
 import { formatCurrency } from "../helpers/LogicHelper/helper";
 import { Updating } from "../helpers/ViewHelpers/updating";
+import { View } from "react-native";
 
 export const RenderDanhSachSanPhams = ({ item } : {item: SanPham}) => {
     const router = useRouter();

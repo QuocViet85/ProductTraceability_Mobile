@@ -49,7 +49,7 @@ export default function SaoSanPham({sP_Id, sizeSao, fontSize} : {sP_Id : string,
     
     return (
         <View style={{flexDirection: 'row'}}>
-            {saoArr};
+            {saoArr}
             {fontSize ? (
                 <Text style={{ fontSize: fontSize, color: 'green' }}>
                 {"\u00A0"} {soSao}{'/5'}
