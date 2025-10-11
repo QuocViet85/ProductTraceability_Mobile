@@ -9,7 +9,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, Platform, RefreshControl, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { HEIGHT_SMARTPHONE } from "../../constant/SizeScreen";
 import Footer from "../../helpers/ViewHelpers/footer";
 import { url } from "../../server/backend";
@@ -24,6 +24,8 @@ import SuaSanPham from "./thaoTacTheoAuth/suaSanPham";
 import XoaSanPham from "./thaoTacTheoAuth/xoaSanPham";
 import WebsiteSanPham from "./websiteSanPham";
 import { PADDING_DEFAULT } from "@/app/constant/Style";
+import SanPhamsCungDanhMuc from "./sanPhamsCungDanhMuc";
+import SanPhamsCungDoanhNghiepSoHuu from "./sanPhamsCungDoanhNghiepSoHuu";
 
 export const temp_SanPham : SanPham[] = [];
 
@@ -35,6 +37,8 @@ export default function Index() {
     const [reRenderSanPham, setReRenderSanPham] = useState<number>(0);
 
     const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
+
+    const [refreshing, setRefreshing] = useState(false);
   
     const router = useRouter();
 
@@ -76,12 +80,32 @@ export default function Index() {
       }catch {}
     }
 
+    const refreshSanPhams = async() => {
+      const indexSanPhamInTemp = temp_SanPham.findIndex((sanPham: SanPham) => {
+          return sanPham.sP_MaTruyXuat === sP_MaTruyXuat;
+      });
+
+      if (indexSanPhamInTemp !== -1) {
+        temp_SanPham.splice(indexSanPhamInTemp, 1);
+      }
+
+      setReRenderSanPham((value: number) => value + 1);
+    }
+
     return (
       <KeyboardAvoidingView
           style={{ flex: 1, backgroundColor: 'white' }}
           behavior={Platform.OS === "ios" ? "position" : "position"}
         >
-          <ScrollView style={{backgroundColor: '#fff'}} contentContainerStyle={styles.container}>
+          <ScrollView 
+          style={{backgroundColor: '#fff'}} 
+          contentContainerStyle={styles.container} 
+          refreshControl={(
+                            <RefreshControl 
+                            refreshing={refreshing}
+                            onRefresh={refreshSanPhams}
+                            progressViewOffset={30}/>
+                          )}>
             {sanPham ? 
             (<View style={{flex: 1}}>
                   <AnhSanPham sP_Id={sanPham.sP_Id ? sanPham.sP_Id : ''} dN_SoHuu_Id={sanPham.sP_DN_SoHuu_Id as string}/>
@@ -135,6 +159,11 @@ export default function Index() {
                     <MoTaSanPham moTa={sanPham.sP_MoTa as string}/>
                     <WebsiteSanPham sP_Website={sanPham.sP_Website} />
                     <BinhLuanSanPhan sP_Id={sanPham.sP_Id as string} userLogin={userLogin}/>
+                    
+                    <Spacer height={10}/>
+                    <SanPhamsCungDoanhNghiepSoHuu sanPham={sanPham} />
+                    <Spacer height={10}/>
+                    <SanPhamsCungDanhMuc sanPham={sanPham} />
                   </View>
             </View>) 
             : (<View style={{backgroundColor: '#fff'}}>

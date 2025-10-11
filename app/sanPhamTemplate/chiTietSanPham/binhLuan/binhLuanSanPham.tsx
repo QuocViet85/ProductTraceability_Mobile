@@ -215,7 +215,6 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                     <PostBinhLuan sP_Id={sP_Id} reloadBinhLuans={reloadBinhLuans} />
                 </View>
             ) : (null)}
-            <Spacer height={10}/>
         </View>
     )
 }

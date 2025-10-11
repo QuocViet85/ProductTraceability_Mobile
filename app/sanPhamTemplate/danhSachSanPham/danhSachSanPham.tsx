@@ -1,5 +1,4 @@
 import { LIMIT_SANPHAM } from "@/app/constant/Limit";
-import { HEIGHT_SMARTPHONE } from "@/app/constant/SizeScreen";
 import { formatCurrency, getHeightScreen } from "@/app/helpers/LogicHelper/helper";
 import Footer from "@/app/helpers/ViewHelpers/footer";
 import Header from "@/app/helpers/ViewHelpers/header";
@@ -12,11 +11,12 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { url } from "../../server/backend";
 import { Updating } from "@/app/helpers/ViewHelpers/updating";
 import SaoSanPham from "../chiTietSanPham/saoSanPham";
 import { PADDING_DEFAULT } from "@/app/constant/Style";
+import { RenderDanhSachSanPhams } from "@/app/constant/Render";
 
 export let listSanPhamsHienThiTrangChu: SanPham[] = [];
 export let reRenderTrangChuListSanPhams: Function = () => {}
@@ -42,6 +42,8 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
     const [reRender, setReRender]  = useState<number>(0);
     
     const [forceReRender, setForceReRender]  = useState<number>(0);
+
+    const [refreshing, setRefreshing] = useState(false);
 
     const router = useRouter();
 
@@ -99,6 +101,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
             setListSanPhams(newListSanPhams);
             setListSanPhamsTemp(newListSanPhams);
             setLoading(false);
+            setRefreshing(false);
           }
 
           if (res.data.tongSo) {
@@ -170,7 +173,12 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
 
     const renderItem = ({ item } : {item: SanPham}) => (
         <TouchableOpacity 
-        style={styles.card}
+        style={{
+            flex: 1, 
+            justifyContent: 'center',
+            padding: 10,
+            borderWidth: 0.3
+          }}
         onPress={() => router.push({pathname: '/sanPhamTemplate/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} })}>
           <AvatarSanPham sP_Id={item.sP_Id as string} height={200} width={'100%'} marginBottom={8}/>
           <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.sP_Ten}</Text>
@@ -204,10 +212,19 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
           <FlatList
               data={listSanPhams}
               keyExtractor={(item: SanPham, index) => `${item.sP_Id}-${index}`}
-              renderItem={renderItem}
+              renderItem={RenderDanhSachSanPhams}
               numColumns={2} // 👉 Mỗi dòng 2 cột
               onEndReached={handleLoadMore}
               onEndReachedThreshold={0}
+              refreshControl={(
+                                <RefreshControl 
+                                refreshing={refreshing}
+                                onRefresh={() => {
+                                  setRefreshing(true);
+                                  layCacSanPhamsTuDau();
+                                }}
+                                progressViewOffset={30}/>
+                              )}
               />
           {loading ? (<Loading />) : (<View></View>)}
           {isNotMainScreen() ? (<Footer backgroundColor={'black'} height={'6%'}/>) : (<View></View>)}
@@ -239,12 +256,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     marginLeft: '85%',
     paddingVertical: 10
-  },
-  card: {
-    flex: 1, // 👉 để 2 item chia đều 1 hàng
-    justifyContent: 'center',
-    padding: 10,
-    borderWidth: 0.3
   },
   container: {
     flex: 1,                     // cho phép chiếm toàn màn hình
