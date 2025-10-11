@@ -170,22 +170,6 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
       return dN_Id || nM_Id;
     }
 
-    const renderItem = ({ item } : {item: SanPham}) => (
-        <TouchableOpacity 
-        style={{
-            flex: 1, 
-            justifyContent: 'center',
-            padding: 10,
-            borderWidth: 0.3
-          }}
-        onPress={() => router.push({pathname: '/sanPhamTemplate/chiTietSanPham', params: {sP_MaTruyXuat: item.sP_MaTruyXuat} })}>
-          <AvatarSanPham sP_Id={item.sP_Id as string} height={200} width={'100%'} marginBottom={8}/>
-          <Text style={{fontSize: 16, fontWeight: 'bold',}}>{item.sP_Ten}</Text>
-          <SaoSanPham sP_Id={item.sP_Id as string} sizeSao={12} fontSize={undefined}/>
-          <Text style={{fontSize: 12, fontStyle: 'italic',}}>{'Giá: '}{item.sP_Gia ? formatCurrency(item.sP_Gia as number) : (<Updating />)}</Text>
-        </TouchableOpacity>
-  );
-
     return (
       <View style={styles.container}>
           {dN_Id ? (<Header title={`Sản phẩm doanh nghiệp`} resource={dN_Ten as string | undefined | null} fontSize={20}/>) : (<View></View>)}

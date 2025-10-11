@@ -2,7 +2,7 @@ import { getUserInfo } from "@/app/helpers/LogicHelper/userHelper";
 import AppUser from "@/app/model/AppUser";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AvatarUser from "../avatarUser";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Updating } from "@/app/helpers/ViewHelpers/updating";
@@ -11,7 +11,7 @@ import CoverPhotoUser from "../coverPhotoUser";
 import TuongTacUser from "./tuongTacUser";
 import BinhLuanCuaUser from "./binhLuanCuaUser/binhLuanCuaUser";
 import Footer from "@/app/helpers/ViewHelpers/footer";
-import { getUserInTemp, setUserToTemp } from "@/app/temp/tempUser";
+import { getUserInTemp, setUserToTemp, temp_User } from "@/app/temp/tempUser";
 
 export default function UserInfo() {
     const params = useLocalSearchParams();
@@ -19,9 +19,11 @@ export default function UserInfo() {
 
     const [user, setUser] = useState<AppUser | null>(null);
 
+    const [reRenderUser, setReRenderUser] = useState<number>(0);
+
     useEffect(() => {
         layUser();
-    }, []);
+    }, [reRenderUser]);
 
     const layUser = async() => {
         const userInTemp = getUserInTemp(userId as string);
@@ -38,12 +40,30 @@ export default function UserInfo() {
         }
     }
 
+    const refreshUser = async() => {
+            const indexUserInTemp = temp_User.findIndex((user: AppUser) => {
+                return user.id === userId;
+            });
+    
+            if (indexUserInTemp !== -1) {
+                temp_User.splice(indexUserInTemp, 1);
+            }
+    
+            setReRenderUser((value: number) => value + 1);
+        }
+
     return (
         <View style={styles.container}>
             {user ? (
                 <View>
                     {/* Banner */}
-                <ScrollView>
+                <ScrollView
+                refreshControl={(
+                                <RefreshControl 
+                                refreshing={false}
+                                onRefresh={refreshUser} //hành vi khi refresh
+                                progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                                )}>
                     {/* Logo + Name */}
                     <CoverPhotoUser userId={userId as string} height={300} canChange={false} />
                     <View style={{height: 10}}></View>

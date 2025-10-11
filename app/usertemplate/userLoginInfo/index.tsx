@@ -4,7 +4,7 @@ import AppUser from "@/app/model/AppUser";
 import { url } from "@/app/server/backend";
 import axios from "axios";
 import { useState } from "react";
-import { Alert, Button, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { ChangePassword } from "../auth/changePassword";
 import Logout from "../auth/logout";
 import AvatarUser from "../avatarUser";
@@ -66,7 +66,13 @@ export default function UserLoginInfo({userLogin, setUserLogin, setRefreshUserLo
 
     return(
         <View style={styles.container}>
-            <ScrollView>
+            <ScrollView
+            refreshControl={(
+                            <RefreshControl  
+                            refreshing={false}
+                            onRefresh={() => setRefreshUserLogin(true)} //hành vi khi refresh
+                            progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                            )}>
                 <CoverPhotoUser userId={userLogin.id as string} height={300} canChange= {true}/>
                 <View style={{flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', flex: 1, marginTop: 10}}>
                     <View>

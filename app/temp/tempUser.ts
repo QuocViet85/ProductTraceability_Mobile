@@ -1,6 +1,6 @@
 import AppUser from "../model/AppUser";
 
-const temp_User: AppUser[] = [];
+export const temp_User: AppUser[] = [];
 
 export function setUserToTemp(user: AppUser) {
     if (user) {

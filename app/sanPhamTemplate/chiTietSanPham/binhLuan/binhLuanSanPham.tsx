@@ -213,6 +213,7 @@ export default function BinhLuanSanPhan({sP_Id, userLogin} : {sP_Id : string, us
                     <ChonSaoSanPham sP_Id={sP_Id} userLoginId={userLogin.id as string} />
                     <View style={{height: 10}}></View>
                     <PostBinhLuan sP_Id={sP_Id} reloadBinhLuans={reloadBinhLuans} />
+                    <View style={{height: 10}}></View>
                 </View>
             ) : (null)}
         </View>

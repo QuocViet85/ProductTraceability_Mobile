@@ -4,12 +4,11 @@ import { url } from "@/app/server/backend";
 import axios from "axios";
 import { Link, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import AvatarDoanhNghiep from "../avatarDoanhNghiep";
 import Loading from "@/app/helpers/ViewHelpers/loading";
 import Header from "@/app/helpers/ViewHelpers/header";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import ThemDoanhNghiep from "../chiTietDoanhNghiep/thaoTacTheoAuth/themDoanhNghiep";
 import { PADDING_DEFAULT } from "@/app/constant/Style";
 
@@ -22,6 +21,7 @@ export let setTongDoanhNghiep: Function = () => {};
 
 export default function DanhSachDoanhNghiep() {
     const [listDoanhNghieps, setListDoanhNghieps] = useState<DoanhNghiep[]>([]);
+    const [listDoanhNghiepsTemp, setListDoanhNghiepsTemp] = useState<DoanhNghiep[]>([]);
     const [tongSoDoanhNghiep, setTongSoDoanhNghiep] = useState<number>(0);
     const [textTimKiemDoanhNghiep, setTextTimKiemDoanhNghiep] = useState<string>('');
     const [modeTimKiem, setModeTimKiem] = useState<boolean>(false);
@@ -69,6 +69,7 @@ export default function DanhSachDoanhNghiep() {
             }
 
             setListDoanhNghieps(newListDoanhNghieps);
+            setListDoanhNghiepsTemp(newListDoanhNghieps);
             setLoading(false);
           }
 
@@ -88,15 +89,31 @@ export default function DanhSachDoanhNghiep() {
 
     const handleLoadMore = () => {
       if (pageNumber < tongSoTrang) {
+        if (!modeTimKiem && textTimKiemDoanhNghiep) {
+          return;
+        }
         setPageNumber(pageNumber + 1);
       }
     };
 
     const handleTextInputSearch = (text: string) => {
       setTextTimKiemDoanhNghiep(text);
+
+      if (!modeTimKiem) {
+        //Nếu không ở chế độ tìm kiếm thì chỉ tìm kiếm trong các phần tử đã tải về client, không tìm trên server
+          const listDoanhNghiepsTimKiem = listDoanhNghiepsTemp.filter((item: DoanhNghiep) => {
+            return item.dN_Ten?.toLocaleLowerCase().includes(text.toLocaleLowerCase()) || item.dN_MaSoThue?.toLocaleLowerCase().includes(text.toLocaleLowerCase());
+        });
+        setListDoanhNghieps(listDoanhNghiepsTimKiem);
+      }
+          
       if (!text) {
-        setModeTimKiem(false);
-        layCacDoanhNghiepsTuDau();
+        if (modeTimKiem) {
+          setModeTimKiem(false);
+          layCacDoanhNghiepsTuDau();
+        }else {
+          setListDoanhNghieps(listDoanhNghiepsTemp);
+        }
       }
     }
 
@@ -110,14 +127,18 @@ export default function DanhSachDoanhNghiep() {
     const handleTouchDestroySearch = () => {
       if (textTimKiemDoanhNghiep) {
         setTextTimKiemDoanhNghiep('');
-        setModeTimKiem(false);
-        layCacDoanhNghiepsTuDau();
+        if (modeTimKiem) {
+          setModeTimKiem(false);
+          layCacDoanhNghiepsTuDau();
+        }else {
+          setListDoanhNghieps(listDoanhNghiepsTemp);
+        }
       }
     }
 
     const renderItem = ({ item } : {item: DoanhNghiep}) => (
-          <TouchableOpacity onPress={() => router.push({pathname: '/doanhNghiepTemplate/chiTietDoanhNghiep', params: {dN_Id: item.dN_Id}})}>
-            <View style={{backgroundColor: '#f2f2f2', flexDirection: 'row', marginBottom: 10}}>
+          <TouchableOpacity style={{borderWidth: 0.3, padding: 10}} onPress={() => router.push({pathname: '/doanhNghiepTemplate/chiTietDoanhNghiep', params: {dN_Id: item.dN_Id}})}>
+            <View style={{flexDirection: 'row'}}>
                 <View>
                     <AvatarDoanhNghiep dN_Id={item.dN_Id as string} width={40} height={40} canChange={false}/>
                 </View>
@@ -126,13 +147,19 @@ export default function DanhSachDoanhNghiep() {
                     <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{item.dN_Ten}</Text>
                 </View>
             </View>
+            <Text>{'Thể loại: '}
+              <Text style={{fontWeight: 'bold'}}>{item.dN_KieuDN === 1 ? 'Hộ Kinh Doanh Cá Nhân' : 'Doanh Nghiệp'}</Text>
+            </Text>
+            <Text>{'Mã số thuế: '}
+              <Text style={{fontWeight: 'bold'}}>{item.dN_MaSoThue}</Text>
+            </Text>
         </TouchableOpacity>
   );
 
     return (
       <View style={styles.container}>
           <Header title={`Danh sách doanh nghiệp`} fontSize={30} resource={undefined}/>
-          <View style={{flex: 1, padding: PADDING_DEFAULT}}>
+          <View style={{padding: PADDING_DEFAULT}}>
               <View style={{width: '100%', flexDirection: 'row'}}>
                 <TextInput style={styles.textInputSearch} placeholder='Tìm kiếm' value={textTimKiemDoanhNghiep} onChangeText={handleTextInputSearch}></TextInput>
                 <TouchableOpacity style={styles.touchDestroySearch} onPress={handleTouchDestroySearch}>
@@ -148,17 +175,21 @@ export default function DanhSachDoanhNghiep() {
             <View style={{marginTop: 10}}>
               <ThemDoanhNghiep width={150} height={30} paddingVertical={5} fontSize={12}/>
             </View>
-            <FlatList
+          </View>
+          <FlatList
                 data={listDoanhNghieps}
                 keyExtractor={(item: DoanhNghiep, index) => `${item.dN_Id}-${index}`}
                 renderItem={renderItem}
-                contentContainerStyle={{padding: 10}}
                 onEndReached={handleLoadMore}
                 onEndReachedThreshold={0}
+                refreshControl={(
+                                <RefreshControl  
+                                refreshing={false}
+                                onRefresh={layCacDoanhNghiepsTuDau} //hành vi khi refresh
+                                progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                              )}
                 />
             {loading ? (<Loading />) : (<View></View>)}
-          </View>
-          
       </View>     
     )
 }

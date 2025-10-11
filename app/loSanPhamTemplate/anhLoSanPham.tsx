@@ -139,8 +139,9 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
         }
     }
 
-    const renderTaiLenAnhLoSanPham = (size: number | undefined) => quyenSuaSP ? (
+    const renderTaiLenAnhLoSanPham = (size: number | undefined, fontSize: number | undefined) => quyenSuaSP ? (
             <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Tải lên ảnh lô sản phẩm: '}</Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity onPress={() => taiLenAnhLoSanPham(true)}>
                     <IconSymbol name={'camera'} size={size} color={'blue'}/>
@@ -149,7 +150,6 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                         <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
                     </TouchableOpacity>
                 </View>
-                <Text>{'Tải lên ảnh lô sản phẩm'}</Text>
             </View>
             ) :  null
 
@@ -186,7 +186,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                         <Text style={{fontWeight: 'bold'}}>{'Hình ảnh lô sản phẩm: '}</Text>
                         <Updating />
                     </View>
-                    {renderTaiLenAnhLoSanPham(30)}
+                    {renderTaiLenAnhLoSanPham(30, undefined)}
                 </View>
             )}
 
@@ -221,7 +221,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                                 )}
                             />
                             <View style={{alignItems: 'center'}}>
-                                {renderTaiLenAnhLoSanPham(50)}
+                                {renderTaiLenAnhLoSanPham(50, 20)}
                             </View>
                             
                             <Modal

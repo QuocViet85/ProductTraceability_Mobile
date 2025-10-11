@@ -2,7 +2,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Footer from "../../helpers/ViewHelpers/footer";
 import { Updating } from "../../helpers/ViewHelpers/updating";
 import DoanhNghiep from "../../model/DoanhNghiep";
@@ -59,15 +59,31 @@ export default function ChiTietDoanhNghiep()
         }else {
             setDoanhNghiep(doanhNghiepInTemp.doanhNghiep);
             setSoSanPhamSoHuu(doanhNghiepInTemp.soSanPham);
+        }   
+    }
+
+    const refreshDoanhNghiep = async() => {
+        const indexDoanhNghiepInTemp = temp_DoanhNghiep.findIndex((doanhNghiepTrongTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
+            return doanhNghiepTrongTemp.doanhNghiep.dN_Id === dN_Id;
+        });
+
+        if (indexDoanhNghiepInTemp !== -1) {
+            temp_DoanhNghiep.splice(indexDoanhNghiepInTemp, 1);
         }
-        
+
+        setReRenderDoanhNghiep((value: number) => value + 1);
     }
 
     return (
         <View style={styles.container}>
             {doanhNghiep ? (
             <View style={{flex: 1}}>
-                <ScrollView>
+                <ScrollView refreshControl={(
+                                            <RefreshControl 
+                                            refreshing={false}
+                                            onRefresh={refreshDoanhNghiep} //hành vi khi refresh
+                                            progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                                            )}>
                     <CoverPhotoDoanhNghiep dN_Id={doanhNghiep.dN_Id as string} height={300} canChange={true} />
                     <View style={styles.scrollContainer}>
                         {/* Logo + Name */}

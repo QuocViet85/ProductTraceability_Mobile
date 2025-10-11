@@ -137,8 +137,9 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
         }
     }
 
-    const renderTaiLenAnhSuKien = (size: number | undefined) => quyenSuaSP ? (
+    const renderTaiLenAnhSuKien = (size: number | undefined, fontSize: number | undefined) => quyenSuaSP ? (
             <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+                <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Tải lên ảnh sự kiện: '}</Text>
                 <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity onPress={() => taiLenAnhSuKien(true)}>
                     <IconSymbol name={'camera'} size={size} color={'blue'}/>
@@ -147,7 +148,6 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                         <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
                     </TouchableOpacity>
                 </View>
-                <Text>{'Tải lên ảnh sự kiện'}</Text>
             </View>
             ) :  null
 
@@ -184,7 +184,7 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                             <Text style={{fontWeight: 'bold'}}>{'Hình ảnh sự kiện truy xuất: '}</Text>
                             <Updating />
                         </View>
-                        {renderTaiLenAnhSuKien(30)}
+                        {renderTaiLenAnhSuKien(30, undefined)}
                     </View>
                     
                 )}
@@ -220,7 +220,7 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                                         )}
                             />
                             <View style={{alignItems: 'center'}}>
-                                {renderTaiLenAnhSuKien(50)}
+                                {renderTaiLenAnhSuKien(50, 20)}
                             </View>
                             
                             <Modal

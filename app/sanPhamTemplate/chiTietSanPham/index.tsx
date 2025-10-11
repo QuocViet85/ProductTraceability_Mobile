@@ -80,7 +80,7 @@ export default function Index() {
       }catch {}
     }
 
-    const refreshSanPhams = async() => {
+    const refreshSanPham = async() => {
       const indexSanPhamInTemp = temp_SanPham.findIndex((sanPham: SanPham) => {
           return sanPham.sP_MaTruyXuat === sP_MaTruyXuat;
       });
@@ -103,7 +103,7 @@ export default function Index() {
           refreshControl={(
                             <RefreshControl 
                             refreshing={refreshing}
-                            onRefresh={refreshSanPhams}
+                            onRefresh={refreshSanPham}
                             progressViewOffset={30}/>
                           )}>
             {sanPham ? 

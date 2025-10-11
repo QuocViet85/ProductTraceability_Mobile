@@ -14,7 +14,6 @@ export default function HomeScreen() {
       <Header title={"Sản phẩm"} fontSize={30} resource={null}></Header>
       <View style={{height: 10}}></View>
       <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} height={25} alignItems='center'/>
-      <View style={{height: 10}}></View>
       <DanhSachSanPham danhMucHienTai={danhMucHienTai} />
     </View>
   );

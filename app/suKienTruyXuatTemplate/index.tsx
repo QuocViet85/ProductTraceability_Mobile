@@ -1,6 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import SuKienTruyXuat from "../model/SuKienTruyXuat";
 import { url } from "../server/backend";
 import { LIMIT_SU_KIEN_TRUY_XUAT } from "../constant/Limit";
@@ -103,6 +103,19 @@ export default function DanhSachSuKienTruyXuat() {
       }
     };
 
+    const layListSuKiensTuDau = async() => {
+        temp_ListSuKienTruyXuats.forEach((item: SuKienTruyXuat, key: number) => {
+            if (item.sK_SP_Id === sP_Id) {
+                temp_ListSuKienTruyXuats[key] = new SuKienTruyXuat();
+            }
+        })
+        if (pageNumber !== 1) {
+            setPageNumber(1)
+        }else {
+            layCacSuKiens();
+        }
+    }
+
     return (
         <View style={styles.container}>
             <Header title={'Nhật ký truy xuất của sản phẩm'} fontSize={20} resource={sP_Ten as string}></Header>
@@ -121,6 +134,12 @@ export default function DanhSachSuKienTruyXuat() {
                     }}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0}
+                    refreshControl={(
+                                    <RefreshControl  
+                                    refreshing={false}
+                                    onRefresh={layListSuKiensTuDau} //hành vi khi refresh
+                                    progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                                    )}
                     />
                     {loading ? (<Loading />) : (<View></View>)}
             </View>

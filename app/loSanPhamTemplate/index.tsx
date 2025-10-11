@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { LIMIT_LO_SANPHAM } from "../constant/Limit";
 import Header from "../helpers/ViewHelpers/header";
 import LoSanPham from "../model/LoSanPham";
@@ -87,6 +87,19 @@ export default function DanhSachLoSanPham() {
       }
     };
 
+    const layListLoSanPhamsTuDau = async() => {
+        temp_ListLoSanPhams.forEach((item: LoSanPham, key: number) => {
+            if (item.lsP_SP_Id === sP_Id) {
+                temp_ListLoSanPhams[key] = new LoSanPham();
+            }
+        })
+        if (pageNumber !== 1) {
+            setPageNumber(1)
+        }else {
+            layListLoSanPhams();
+        }
+    }
+
     
     return (
         <View style={styles.container}>
@@ -106,6 +119,12 @@ export default function DanhSachLoSanPham() {
                     }}
                     onEndReached={handleLoadMore}
                     onEndReachedThreshold={0}
+                    refreshControl={(
+                                    <RefreshControl  
+                                    refreshing={false}
+                                    onRefresh={layListLoSanPhamsTuDau} //hành vi khi refresh
+                                    progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                                    )}
                     />
                 {loading ? (<Loading />) : (<View></View>)}
             </View>

@@ -4,7 +4,6 @@ import BinhLuan from "@/app/model/BinhLuan";
 import { url } from "@/app/server/backend";
 import { temp_ListBinhLuansCuaUser } from "@/app/usertemplate/user/binhLuanCuaUser/binhLuanCuaUser";
 import { IconSymbol } from "@/components/ui/IconSymbol";
-import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useState } from "react";
 import { Alert, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -122,7 +121,7 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
 
     return (
         <View style={{flex: 1}}>
-            <View style={{flexDirection: 'row'}}>
+            <View>
                 <TextInput
                     style={{
                             height: 120,
@@ -130,7 +129,7 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
                             borderWidth: 1,
                             padding: 10,
                             borderRadius: 8,
-                            width: '85%'}}
+                            width: '100%'}}
                     placeholder="Nhập bình luận..."
                     value={noiDungBinhLuan}
                     onChangeText={setNoiDungBinhLuan}
@@ -139,33 +138,39 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
                     textAlignVertical="top" // Cho chữ căn từ trên xuống (Android)
                     maxLength={1000}
                     />
-                <View>
-                    <TouchableOpacity onPress={chonAnhBinhLuanTuCamera}>
-                        <IconSymbol style={{marginLeft: 'auto'}} name="camera" size={50} color="blue" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={chonAnhBinhLuanTuThuVien}>
-                        <IconSymbol style={{marginLeft: 'auto'}} name="photo-album" size={50} color="blue" />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={postBinhLuan}>
-                        <Ionicons style={{marginLeft: 'auto'}} name="arrow-forward-circle-outline" size={50} color="blue" />
-                    </TouchableOpacity>
+                <View style={{height: 10}}></View>
+
+                <View style={{alignItems: 'center', borderWidth: 0.3, borderRadius: 8}}>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={{marginTop: 5}}>{'Tải ảnh lên'}</Text>
+                        <TouchableOpacity style={{flexDirection: 'row'}} onPress={chonAnhBinhLuanTuCamera}>
+                            <IconSymbol style={{marginLeft: 'auto'}} name="camera" size={30} color="black" />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{flexDirection: 'row'}} onPress={chonAnhBinhLuanTuThuVien}>
+                            <IconSymbol style={{marginLeft: 'auto'}} name="photo-album" size={30} color="black" />
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
             
+            <View style={{height: listUriAnhBinhLuan.length > 0 ? 10 : 0}}></View>
             <View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {listUriAnhBinhLuan.map((item, key) => {
                     return (
                             <TouchableOpacity key={key} onPress={() => huyAnhBinhLuan(item)}>
-                                <Image key={key} source={{ uri: item }} style={{width: 80, height: 80, marginRight: 10}} />
+                                <Image key={key} source={{ uri: item }} style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}} />
                             </TouchableOpacity>
                     )
                 })}
                 </ScrollView>
                 {listUriAnhBinhLuan.length > 0 ? (<View><Text>{'(nhấn vào ảnh để xóa)'}</Text></View>) : (<View></View>)}
             </View>
+            <View style={{height: 10}}></View>
+            <TouchableOpacity style={{width: '100%', backgroundColor: 'green', alignItems: 'center', borderRadius: 8}} onPress={postBinhLuan}>
+                <Text style={{color: 'white', fontSize: 20}}>{'Đăng bình luận'}</Text>
+            </TouchableOpacity>
         </View>
-        
     )
 }
 

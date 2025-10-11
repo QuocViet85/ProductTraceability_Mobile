@@ -49,10 +49,10 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
             <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setShowModalAnhBinhLuan(true)}>
                 {listFilesAnhBinhLuan.map((item, key) => {
                     if (key <= 2) {
-                        return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
+                        return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}} />)
                     }else if (key === 3) {
                         return (
-                            <View key={key} style={{backgroundColor: 'grey'}}>
+                            <View key={key} style={{backgroundColor: 'grey', borderRadius: 8}}>
                                 <IconSymbol key={key} name="more-horiz" size={80} color="white" />
                             </View>
                     )

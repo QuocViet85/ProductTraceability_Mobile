@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import NhaMay from "../model/NhaMay";
 import axios from "axios";
 import { url } from "../server/backend";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Updating } from "../helpers/ViewHelpers/updating";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
@@ -28,7 +28,6 @@ export default function NhaMayChiTiet() {
     }, [reRenderNhaMay]);
 
     const layNhaMay = async() => {
-
         try {
             const nhaMayTrongTemp = temp_NhaMay.find((item: NhaMay) => item.nM_Id === nM_Id);
 
@@ -47,11 +46,29 @@ export default function NhaMayChiTiet() {
         }catch {}
     }
 
+    const refreshNhaMay = async() => {
+        const indexNhaMayInTemp = temp_NhaMay.findIndex((nhaMay: NhaMay) => {
+            return nhaMay.nM_Id === nM_Id;
+        });
+
+        if (indexNhaMayInTemp !== -1) {
+        temp_NhaMay.splice(indexNhaMayInTemp, 1);
+        }
+
+        setReRenderNhaMay((value: number) => value + 1);
+    }
+
     return (
         <View style={styles.container}>
             {nhaMay ? (
                 <View>
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <ScrollView contentContainerStyle={styles.scrollContainer}
+                refreshControl={(
+                                <RefreshControl  
+                                refreshing={false}
+                                onRefresh={refreshNhaMay} //hành vi khi refresh
+                                progressViewOffset={30}/> //kéo mũi tên xuống bao nhiêu thì refresh
+                                )}>
                     <AnhNhaMay nM_Id={nM_Id as string}/>
                     <View style={{height: 50}}></View>
                     {/* Logo + Name */}
