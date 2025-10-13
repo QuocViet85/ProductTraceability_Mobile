@@ -19,6 +19,7 @@ export default function ThemDoanhNghiep({width, height, paddingVertical, fontSiz
     const [diaChi, setDiaChi] = useState<string | undefined>(undefined);
     const [soDienThoai, setSoDienThoai] = useState<string | undefined>(undefined);
     const [email, setEmail] = useState<string | undefined>(undefined);
+    const [maGS1, setMaGS1] = useState<string | undefined>(undefined);
 
     const [hoKinhDoanhCaNhan, setHoKinhDoanhCaNhan] = useState<boolean>(false);
 
@@ -34,7 +35,8 @@ export default function ThemDoanhNghiep({width, height, paddingVertical, fontSiz
                     dN_DiaChi: diaChi,
                     dN_SoDienThoai: soDienThoai,
                     dN_Email: email,
-                    dN_KieuDN: hoKinhDoanhCaNhan ? 1 : 2
+                    dN_KieuDN: hoKinhDoanhCaNhan ? 1 : 2,
+                    dN_MaGS1: maGS1
                 } as DoanhNghiep, {headers: {Authorization: await getBearerToken()}});
 
                 Alert.alert('Thông báo', 'Thêm doanh nghiệp thành công');
@@ -92,6 +94,7 @@ export default function ThemDoanhNghiep({width, height, paddingVertical, fontSiz
             setSoDienThoai(undefined);
             setEmail(undefined);
             setEmail(undefined);
+            setMaGS1(undefined);
         }
 
     return (
@@ -126,7 +129,27 @@ export default function ThemDoanhNghiep({width, height, paddingVertical, fontSiz
                                 style={styles.input}
                                 placeholder="Mã GLN"
                                 value={maGLN}
-                                onChangeText={setMaGLN}
+                                onChangeText={(text: string) => {
+                                    if (text.length <= 13) {
+                                        setMaGLN(text)
+                                    }else {
+                                        Alert.alert('Lỗi', 'Mã GLN không được quá 13 ký tự')
+                                    }
+                                }}
+                            />
+
+                            <Text>{'Mã GS1:'}</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Mã GS1"
+                                value={maGS1}
+                                onChangeText={(text: string) => {
+                                    if (text.length <= 7) {
+                                        setMaGS1(text)
+                                    }else {
+                                        Alert.alert('Lỗi', 'Mã GS1 không được quá 7 ký tự')
+                                    }
+                                }}
                             />
         
                             <Text>{'Địa chỉ:'}</Text>

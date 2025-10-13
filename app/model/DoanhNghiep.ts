@@ -8,6 +8,8 @@ export default class DoanhNghiep
 
     dN_MaGLN: string | undefined;
 
+    dN_MaGS1: string | undefined;
+
     dN_DiaChi: string | undefined;
 
     dN_SoDienThoai: string | undefined;

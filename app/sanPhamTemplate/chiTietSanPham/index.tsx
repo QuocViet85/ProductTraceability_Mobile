@@ -113,9 +113,12 @@ export default function Index() {
                   <View style={{flex: 1, padding: PADDING_DEFAULT}}>
                     <View style={{flexDirection: 'row'}}>
                         <Text style={{fontWeight: 'bold', fontSize: 25}}>{sanPham.sP_Ten}</Text>
-                        <TouchableOpacity style={{marginLeft: 'auto'}} onPress={() => shareSanPham()}>
-                            <IconSymbol name="share" size={30} color="#007AFF" />
-                        </TouchableOpacity>
+                        <View style={{marginLeft: 'auto'}}>
+                            <TouchableOpacity onPress={() => shareSanPham()}>
+                              <IconSymbol name="share" size={30} color="#007AFF" />
+                            </TouchableOpacity>
+                        </View>
+                        
                     </View>
 
                     <Text style={{fontSize: 15}}>
@@ -127,8 +130,12 @@ export default function Index() {
                     <Text style = {{fontSize: 15}}>{'Mã vạch: '}
                         {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
                     </Text>
-                    <QrCode urlSanPham={urlSanPham} />
                     <View style={{height: 10}}></View>
+
+                    <QrCode urlSanPham={urlSanPham} />
+                    
+                    <View style={{height: 10}}></View>
+
                     <View style={{flexDirection: 'row'}}>
                         <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
                                           onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
@@ -140,6 +147,17 @@ export default function Index() {
                             <Text>{'Sự kiện truy xuất'}</Text>
                         </TouchableOpacity>
                     </View>
+                    
+                    {sanPham.sP_Verified ? (
+                      <View>
+                          <View style={{height: 10}}></View>
+                          <View style={{flexDirection: 'row'}}>
+                            <IconSymbol name={'verified'} color={'green'}/>
+                            <Text style={{color: 'green', fontWeight: 'bold', fontStyle: 'italic'}}>{'Verified'}</Text>
+                          </View>
+                      </View>
+                    ) :  undefined}
+                    
                     <View style={{height: 10}}></View>
                     <View style={{flexDirection: 'row'}}>
                         <SuaSanPham sanPham={sanPham} setReRenderSanPham={setReRenderSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>

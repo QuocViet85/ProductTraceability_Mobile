@@ -20,6 +20,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
     const [diaChi, setDiaChi] = useState<string | undefined>(doanhNghiep.dN_DiaChi);
     const [soDienThoai, setSoDienThoai] = useState<string | undefined>(doanhNghiep.dN_SoDienThoai);
     const [email, setEmail] = useState<string | undefined>(doanhNghiep.dN_Email);
+    const [maGS1, setMaGS1] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         layQuyenSua();
@@ -41,8 +42,9 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                     dN_MaGLN: maGLN,
                     dN_DiaChi: diaChi,
                     dN_SoDienThoai: soDienThoai,
-                    dN_Email: email
-                }, {headers: {Authorization: await getBearerToken()}});
+                    dN_Email: email,
+                    dN_MaGS1: maGS1
+                } as DoanhNghiep, {headers: {Authorization: await getBearerToken()}});
 
                 Alert.alert('Thông báo', 'Sửa doanh nghiệp thành công');
 
@@ -57,6 +59,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                     doanhNghiepInTemp.doanhNghiep.dN_DiaChi = diaChi;
                     doanhNghiepInTemp.doanhNghiep.dN_SoDienThoai = soDienThoai;
                     doanhNghiepInTemp.doanhNghiep.dN_Email = email;
+                    doanhNghiepInTemp.doanhNghiep.dN_MaGS1 = maGS1;
                 }
 
                 const doanhNghiepInTrangChu = listDoanhNghiepsHienThiTrangChu.find((doanhNghiepInTrangChu: DoanhNghiep) => {
@@ -129,7 +132,27 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
                                 style={styles.input}
                                 placeholder="Mã GLN"
                                 value={maGLN}
-                                onChangeText={setMaGLN}
+                                onChangeText={(text: string) => {
+                                    if (text.length <= 13) {
+                                        setMaGLN(text)
+                                    }else {
+                                        Alert.alert('Lỗi', 'Mã GLN không được quá 13 ký tự')
+                                    }
+                                }}
+                            />
+
+                            <Text>{'Mã GS1:'}</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Mã GS1"
+                                value={maGS1}
+                                onChangeText={(text: string) => {
+                                    if (text.length <= 7) {
+                                        setMaGS1(text)
+                                    }else {
+                                        Alert.alert('Lỗi', 'Mã GS1 không được quá 7 ký tự')
+                                    }
+                                }}
                             />
         
                             <Text>{'Địa chỉ:'}</Text>

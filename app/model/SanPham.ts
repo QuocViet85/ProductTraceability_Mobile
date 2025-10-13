@@ -50,6 +50,8 @@ export default class SanPham
 
     sP_NM: NhaMay | undefined;
 
+    sP_Verified: boolean = false;
+
     uriAvatar: string | undefined | null;
 
     

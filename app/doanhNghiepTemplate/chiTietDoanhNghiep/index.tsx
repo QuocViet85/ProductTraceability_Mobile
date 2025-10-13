@@ -139,6 +139,20 @@ export default function ChiTietDoanhNghiep()
                             </View>
 
                             <View style={styles.addressRow}>
+                                <MaterialIcons name="code" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Mã GS1: '}{doanhNghiep.dN_MaGS1 ? doanhNghiep.dN_MaGS1 : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="code" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Mã GLN: '}{doanhNghiep.dN_MaGLN ? doanhNghiep.dN_MaGLN : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
                                 <MaterialIcons name="location-on" size={20} color="#555" />
                                 <Text style={styles.addressText}>
                                     {'Địa chỉ: '}{doanhNghiep.dN_DiaChi ? doanhNghiep.dN_DiaChi : (<Updating />)}
