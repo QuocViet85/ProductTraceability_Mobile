@@ -4,8 +4,9 @@ import { Alert, Button, Modal, TouchableOpacity, View } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import * as MediaLibrary from 'expo-media-library';
 import * as FileSystem from 'expo-file-system';
+import SanPham from "@/app/model/SanPham";
 
-export default function QrCode({urlSanPham} : {urlSanPham: string}) {
+export default function QrCode({sanPham} : {sanPham: SanPham}) {
     const qrRef = useRef<any>(null);
     const [showModalQrCode, setShowModalQrCode] = useState<boolean | undefined>(false);
 
@@ -18,7 +19,7 @@ export default function QrCode({urlSanPham} : {urlSanPham: string}) {
             }
 
             if (qrRef.current) {
-                const maTruyXuat = layMaTruyXuatTuUrl(urlSanPham);
+                const maTruyXuat = sanPham.sP_MaTruyXuat as string;
 
                 qrRef.current.toDataURL(async (dataURL: any) => {
                     try {
@@ -40,14 +41,13 @@ export default function QrCode({urlSanPham} : {urlSanPham: string}) {
         }catch {
             Alert.alert('Lỗi', 'Không thể lưu mã QR');
         }
-        
     }
 
     return (
         <View>
             <TouchableOpacity onPress={() => setShowModalQrCode(true)}>
                 <QRCode
-                    value={urlSanPham}
+                    value={sanPham.sP_MaTruyXuat}
                     size={70}
                     color="black"
                     backgroundColor="white"
@@ -61,12 +61,12 @@ export default function QrCode({urlSanPham} : {urlSanPham: string}) {
                     <View style={{marginTop: 'auto'}}>
                         <View style={{alignItems: 'center'}}>
                                 <QRCode
-                                    value={urlSanPham}
+                                    value={sanPham.sP_MaTruyXuat}
                                     size={300}
                                     color="black"
                                     backgroundColor="white"
                                     getRef={(ref) => (qrRef.current = ref)}
-                            />
+                                />
                         </View>
                         <View style={{height: 10}}>
 

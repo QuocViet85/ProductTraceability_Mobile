@@ -14,11 +14,10 @@ export default function QuetMaBangAnhCoSan() {
         if (!result.canceled) {
             const base64 = result.assets[0].base64;
             try {
-                const urlSanPham = await giaiMaQrCode(base64);
-                const maTruyXuat = layMaTruyXuatTuUrl(urlSanPham);
+                const maTruyXuat = await giaiMaQrCode(base64);;
                 router.push({
-                pathname: '/sanPhamTemplate/chiTietSanPham', 
-                params: {sP_MaTruyXuat: maTruyXuat}
+                    pathname: '/sanPhamTemplate/chiTietSanPham', 
+                    params: {sP_MaTruyXuat: maTruyXuat}
                 });
             }catch {
                 Alert.alert("Lỗi", "Lỗi quét ảnh");

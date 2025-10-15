@@ -26,6 +26,8 @@ import WebsiteSanPham from "./websiteSanPham";
 import { PADDING_DEFAULT } from "@/app/constant/Style";
 import SanPhamsCungDanhMuc from "./sanPhamsCungDanhMuc";
 import SanPhamsCungDoanhNghiepSoHuu from "./sanPhamsCungDoanhNghiepSoHuu";
+import MaVach from "./maVach";
+
 
 export const temp_SanPham : SanPham[] = [];
 
@@ -126,13 +128,12 @@ export default function Index() {
                     </Text>
                       
                     <Text style={styles.textGia}>{'Giá: '}{sanPham.sP_Gia ? formatCurrency(sanPham.sP_Gia as number) : (<Updating />)}</Text>
+
+                    <MaVach sanPham={sanPham}/>
                     
-                    <Text style = {{fontSize: 15}}>{'Mã vạch: '}
-                        {sanPham.sP_MaVach ? sanPham.sP_MaVach : (<Updating />)}
-                    </Text>
                     <View style={{height: 10}}></View>
 
-                    <QrCode urlSanPham={urlSanPham} />
+                    <QrCode sanPham={sanPham} />
                     
                     <View style={{height: 10}}></View>
 
@@ -208,5 +209,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold', 
     color:'green',
     fontSize: 25
-  }
+  },
 });

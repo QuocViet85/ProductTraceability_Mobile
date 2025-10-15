@@ -25,7 +25,7 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
     // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Text style={styles.message}>{'We need your permission to show the camera'}</Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
     );
@@ -36,7 +36,7 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
   }
 
   function handleBarCodeScanned({data}: {data: string}) {
-    const maTruyXuat = layMaTruyXuatTuUrl(data);
+    const maTruyXuat = data;
     router.push({
       pathname: '/sanPhamTemplate/chiTietSanPham', 
       params: {sP_MaTruyXuat: maTruyXuat}
