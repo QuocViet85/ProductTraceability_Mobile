@@ -2,7 +2,6 @@ import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { layMaTruyXuatTuUrl } from '../helpers/LogicHelper/helper';
 import axios from 'axios';
 import { url } from '../server/backend';
 
@@ -42,7 +41,6 @@ export default function QuetMaBangCamera({navigation} : {navigation: any}) {
       setIsScanned(false); //quét ra dữ liệu rồi thì khóa quét để không bị quét tiếp dẫn đến chuyển trang nhiều lần
 
       let res = await axios.get(url(`api/sanpham/ma-truy-xuat/ton-tai/${data}`));
-
       if (res.data) {
         router.push({
           pathname: '/sanPhamTemplate/chiTietSanPham', 

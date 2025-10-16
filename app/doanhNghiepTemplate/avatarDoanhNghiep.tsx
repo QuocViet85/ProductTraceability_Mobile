@@ -156,27 +156,34 @@ export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN
             <Modal
                 visible={showModalChangeAvatar && quyenSua}
                 animationType="slide">
-                    <View style={{marginTop: 'auto'}}>
+                    <View style={{marginTop: 'auto', flex: 1}}>
                         <Image
                             source={{ uri: uriAvatar as string }}
-                            style={{width: '100%', height: "80%", marginBottom: 40}}
+                            style={{width: '100%', height: "83%", marginBottom: 10}}
                             resizeMode="cover"
                         />
                         <View style={{alignItems: 'center'}}>
                             <View style={{flexDirection: 'row'}}>
-                                <TouchableOpacity onPress={() => setAvatar(true)}>
-                                    <IconSymbol name={'camera'} size={50} color={'blue'}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setAvatar(false)}>
-                                    <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
-                                </TouchableOpacity>
-                                <Text>{`${uriAvatar ? 'Đổi' : 'Tải lên'} ảnh đại diện`}</Text>
+                                <View style={{alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => setAvatar(false)}>
+                                        <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                                    </TouchableOpacity>
+                                    <Text>{'Ảnh trong máy'}</Text>
+                                </View>
+                                <View style={{width: 20}}></View>
+                                <View style={{alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => setAvatar(true)}>
+                                        <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                                    </TouchableOpacity>
+                                    <Text>{'Camera'}</Text>
+                                </View>
+                                <View style={{width: 20}}></View>
                                 {uriAvatar ? (
-                                    <View style={{flexDirection: 'row'}}>
+                                    <View style={{alignItems: 'center'}}>
                                         <TouchableOpacity onPress={deleteAvatar}>
-                                        <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                            <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
-                                        <Text>{'Xóa ảnh đại diện'}</Text>
+                                        <Text>{'Xóa ảnh'}</Text>
                                     </View>
                                     ) : (<View></View>)}
                             </View>

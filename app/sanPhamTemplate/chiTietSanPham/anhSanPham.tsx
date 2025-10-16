@@ -169,7 +169,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                 </TouchableOpacity>
                 )}
             />) : (quyenSuaSP ? (
-            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
+            <View style={{marginTop: 'auto', alignItems: 'center'}}>
                   <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity onPress={() => taiLenAnhSanPham(true)}>
                       <IconSymbol name={'camera'} size={50} color={'blue'}/>
@@ -178,7 +178,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                         <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
                     </TouchableOpacity>
                   </View>
-                  <Text>{'Tải lên thêm ảnh sản phẩm'}</Text>
+                  <Text>{'Tải lên ảnh mới'}</Text>
               </View>
               ) : (<View></View>))
               }
@@ -186,16 +186,16 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
           <Modal
           visible={showModalTaiLenVaXoaAnh && quyenSuaSP}
           animationType="slide">
-            <View style={{marginTop: 'auto'}}>
+            <View style={{marginTop: 'auto', flex: 1}}>
               <Image
                     source={{ uri: getUriFile(fileAnhHienTai as File) as string }}
-                    style={{width: '100%', height: "77%", marginBottom: 40}}
+                    style={{width: '100%', height: "83%", marginBottom: 10}}
                     resizeMode="cover"
                 />
 
-                <View>
+                <View style={{alignItems: 'center'}}>
                       <View style={{flexDirection: 'row'}}>
-                        <View>
+                        <View style={{alignItems: 'center'}}>
                             <View style={{flexDirection: 'row'}}>
                               <TouchableOpacity onPress={() => taiLenAnhSanPham(true)}>
                                 <IconSymbol name={'camera'} size={50} color={'blue'}/>
@@ -204,14 +204,14 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                                   <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
                               </TouchableOpacity>
                             </View>
-                            <Text>{'Tải lên thêm ảnh sản phẩm'}</Text>
+                            <Text>{'Tải lên ảnh mới'}</Text>
                         </View>
-                        <View style={{width: 40}}></View>
+                        <View style={{width: 20}}></View>
                         <View>
                             <TouchableOpacity onPress={xoaAnhSanPham}>
                               <IconSymbol name={'delete'} size={50} color={'red'}/>
                             </TouchableOpacity>
-                            <Text>{'Xóa ảnh sản phẩm này'}</Text>
+                            <Text>{'Xóa ảnh'}</Text>
                         </View>
                       </View>
                   </View>

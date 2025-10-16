@@ -151,27 +151,34 @@ export default function CoverPhotoUser({userId, height, canChange}: {userId: str
             <Modal
             visible={showModalChangeCoverPhoto}
             animationType="slide">
-                <View style={{marginTop: 'auto'}}>
+                <View style={{marginTop: 'auto', flex: 1}}>
                     <Image
                         source={{ uri: uriCoverPhoto as string }}
-                        style={{width: '100%', height: "80%", marginBottom: 40}}
+                        style={{width: '100%', height: "83%", marginBottom: 10}}
                         resizeMode="cover"
                     />
                     <View style={{alignItems: 'center'}}>
                         <View style={{flexDirection: 'row'}}>
-                            <TouchableOpacity onPress={() => setCoverPhoto(true)}>
-                                <IconSymbol name={'camera'} size={50} color={'blue'}/>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setCoverPhoto(false)}>
-                                <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
-                            </TouchableOpacity>
-                            <Text>{`${uriCoverPhoto ? 'Đổi' : 'Tải lên'} ảnh bìa`}</Text>
+                            <View style={{alignItems: 'center'}}>
+                                <TouchableOpacity onPress={() => setCoverPhoto(false)}>
+                                    <IconSymbol name={'photo-album'} size={50} color={'blue'}/>
+                                </TouchableOpacity>
+                                <Text>{'Ảnh trong máy'}</Text>
+                            </View>
+                            <View style={{width: 20}}></View>
+                            <View style={{alignItems: 'center'}}>
+                                <TouchableOpacity onPress={() => setCoverPhoto(true)}>
+                                    <IconSymbol name={'camera'} size={50} color={'blue'}/>
+                                </TouchableOpacity>
+                                <Text>{'Camera'}</Text>
+                            </View>
+                            <View style={{width: 20}}></View>
                             {uriCoverPhoto ? (
-                                <View style={{flexDirection: 'row'}}>
+                                <View style={{alignItems: 'center'}}>
                                     <TouchableOpacity onPress={deleteCoverPhoto}>
-                                    <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                        <IconSymbol name={'delete'} size={50} color={'red'}/>
                                     </TouchableOpacity>
-                                    <Text>{'Xóa ảnh bìa'}</Text>
+                                    <Text>{'Xóa ảnh'}</Text>
                                 </View>
                                 ) : (<View></View>)}
                         </View>

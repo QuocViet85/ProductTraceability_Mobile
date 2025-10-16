@@ -140,9 +140,21 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
                     />
                 <View style={{height: 10}}></View>
 
+                <View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {listUriAnhBinhLuan.map((item, key) => {
+                        return (
+                                <TouchableOpacity key={key} onPress={() => huyAnhBinhLuan(item)}>
+                                    <Image key={key} source={{ uri: item }} style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}} />
+                                </TouchableOpacity>
+                        )
+                    })}
+                    </ScrollView>
+                    {listUriAnhBinhLuan.length > 0 ? (<View><Text>{'(nhấn vào ảnh để xóa)'}</Text></View>) : (<View></View>)}
+                </View>
+
                 <View style={{alignItems: 'center', borderWidth: 0.3, borderRadius: 8}}>
                     <View style={{flexDirection: 'row'}}>
-                        <Text style={{marginTop: 5}}>{'Tải ảnh lên'}</Text>
                         <TouchableOpacity style={{flexDirection: 'row'}} onPress={chonAnhBinhLuanTuCamera}>
                             <IconSymbol style={{marginLeft: 'auto'}} name="camera" size={30} color="black" />
                         </TouchableOpacity>
@@ -150,22 +162,11 @@ export default function PostBinhLuan({sP_Id, reloadBinhLuans}: {sP_Id: string, r
                             <IconSymbol style={{marginLeft: 'auto'}} name="photo-album" size={30} color="black" />
                         </TouchableOpacity>
                     </View>
+                    <Text style={{marginTop: 5}}>{'Tải lên ảnh'}</Text>
                 </View>
             </View>
             
-            <View style={{height: listUriAnhBinhLuan.length > 0 ? 10 : 0}}></View>
-            <View>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {listUriAnhBinhLuan.map((item, key) => {
-                    return (
-                            <TouchableOpacity key={key} onPress={() => huyAnhBinhLuan(item)}>
-                                <Image key={key} source={{ uri: item }} style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}} />
-                            </TouchableOpacity>
-                    )
-                })}
-                </ScrollView>
-                {listUriAnhBinhLuan.length > 0 ? (<View><Text>{'(nhấn vào ảnh để xóa)'}</Text></View>) : (<View></View>)}
-            </View>
+            
             <View style={{height: 10}}></View>
             <TouchableOpacity style={{width: '100%', backgroundColor: 'green', alignItems: 'center', borderRadius: 8}} onPress={postBinhLuan}>
                 <Text style={{color: 'white', fontSize: 20}}>{'Đăng bình luận'}</Text>

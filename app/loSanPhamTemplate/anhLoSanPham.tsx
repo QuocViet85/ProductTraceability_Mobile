@@ -140,17 +140,17 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
     }
 
     const renderTaiLenAnhLoSanPham = (size: number | undefined, fontSize: number | undefined) => quyenSuaSP ? (
-            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Tải lên ảnh lô sản phẩm: '}</Text>
-                <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(true)}>
-                    <IconSymbol name={'camera'} size={size} color={'blue'}/>
-                    </TouchableOpacity>
+                <View style={{alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row'}}>
                     <TouchableOpacity onPress={() => taiLenAnhLoSanPham(false)}>
                         <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => taiLenAnhLoSanPham(true)}>
+                        <IconSymbol name={'camera'} size={size} color={'blue'}/>
+                    </TouchableOpacity>
+                    </View>
+                    <Text style={{fontSize: fontSize}}>{'Tải lên ảnh mới'}</Text>
                 </View>
-            </View>
             ) :  null
 
     const onScroll = (event: any) => {
@@ -166,10 +166,10 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                 <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setShowModalAnhLoSanPham(true)}>
                     {listFileAnhLoSanPhams.map((item, key) => {
                         if (key <= 2) {
-                            return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
+                            return (<Image key={key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}} />)
                         }else if (key === 3) {
                             return (
-                                <View key={key} style={{backgroundColor: 'grey'}}>
+                                <View key={key} style={{backgroundColor: 'grey', borderRadius: 8}}>
                                     <IconSymbol key={key} name="more-horiz" size={80} color="white" />
                                 </View>
                         )
@@ -186,7 +186,9 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                         <Text style={{fontWeight: 'bold'}}>{'Hình ảnh lô sản phẩm: '}</Text>
                         <Updating />
                     </View>
-                    {renderTaiLenAnhLoSanPham(30, undefined)}
+                    <View style={{flexDirection: 'row'}}>
+                        {renderTaiLenAnhLoSanPham(30, undefined)}
+                    </View>
                 </View>
             )}
 
@@ -195,7 +197,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                 animationType={'slide'}
                 style={{width: '100%', height: '100%'}}
                 >
-                    <View>
+                    <View style={{ flex: 1}}>
                         <FlatList
                             data={listFileAnhLoSanPhams}
                             horizontal
@@ -221,26 +223,28 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                                 )}
                             />
                             <View style={{alignItems: 'center'}}>
-                                {renderTaiLenAnhLoSanPham(50, 20)}
+                                {renderTaiLenAnhLoSanPham(50, undefined)}
                             </View>
                             
                             <Modal
                             visible={showModalXoaAnh}
                             animationType="slide">
-                                <View style={{marginTop: 'auto'}}>
-                                    <View>
+                                <View style={{marginTop: 'auto', alignItems: 'center'}}>
+                                    <View style={{alignItems: 'center'}}>
                                         <TouchableOpacity onPress={xoaAnhLoSanPham}>
-                                        <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                            <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
                                         <Text>{'Xóa ảnh vừa chọn?'}</Text>
                                     </View>
-                                    <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                                 </View>
+                                <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                             </Modal>
+
+                            <View style={{marginTop: 'auto'}}>
+                                <Button title="Đóng" onPress={() => setShowModalAnhLoSanPham(false)}></Button>
+                            </View>
                     </View>
-                    <View style={{marginTop: 'auto'}}>
-                        <Button title="Đóng" onPress={() => setShowModalAnhLoSanPham(false)}></Button>
-                    </View>
+                    
                 </Modal>
         </View>
     )
@@ -249,7 +253,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
 const styles = StyleSheet.create({
   image: {
     width: width,
-    height: '85%',
+    height: '100%',
     resizeMode: 'cover',
   },
   indicatorContainer: {

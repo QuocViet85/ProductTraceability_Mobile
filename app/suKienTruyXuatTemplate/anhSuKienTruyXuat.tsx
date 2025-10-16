@@ -138,16 +138,16 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
     }
 
     const renderTaiLenAnhSuKien = (size: number | undefined, fontSize: number | undefined) => quyenSuaSP ? (
-            <View style={{marginTop: 'auto', flexDirection: 'row'}}>
-                <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Tải lên ảnh sự kiện: '}</Text>
+            <View style={{alignItems: 'center'}}>   
                 <View style={{flexDirection: 'row'}}>
-                    <TouchableOpacity onPress={() => taiLenAnhSuKien(true)}>
-                    <IconSymbol name={'camera'} size={size} color={'blue'}/>
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => taiLenAnhSuKien(false)}>
                         <IconSymbol name={'photo-album'} size={size} color={'blue'}/>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => taiLenAnhSuKien(true)}>
+                        <IconSymbol name={'camera'} size={size} color={'blue'}/>
+                    </TouchableOpacity>
                 </View>
+                <Text style={{fontSize: fontSize}}>{'Tải lên ảnh mới'}</Text>
             </View>
             ) :  null
 
@@ -164,10 +164,10 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                     <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => setShowModalAnhSuKien(true)}>
                         {listFilesAnhSuKien.map((item, key) => {
                             if (key <= 2) {
-                                return (<Image key={item.f_Id + '_' + key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10}} />)
+                                return (<Image key={item.f_Id + '_' + key} source={{ uri: getUriFile(item) }} style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}} />)
                             }else if (key === 3) {
                                 return (
-                                    <View key={key} style={{backgroundColor: 'grey'}}>
+                                    <View key={key} style={{backgroundColor: 'grey', borderRadius: 8}}>
                                         <IconSymbol key={item.f_Id + '_' + key} name="more-horiz" size={80} color="white" />
                                     </View>
                             )
@@ -184,7 +184,10 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                             <Text style={{fontWeight: 'bold'}}>{'Hình ảnh sự kiện truy xuất: '}</Text>
                             <Updating />
                         </View>
-                        {renderTaiLenAnhSuKien(30, undefined)}
+                        <View style={{flexDirection: 'row'}}>
+                            {renderTaiLenAnhSuKien(30, undefined)}
+                        </View>
+                        
                     </View>
                     
                 )}
@@ -194,7 +197,7 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                     animationType={'slide'}
                     style={{width: '100%', height: '100%'}}
                     >
-                        <View>
+                        <View style={{flex: 1}}>
                             <FlatList
                                 data={listFilesAnhSuKien}
                                 horizontal
@@ -217,28 +220,29 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
                                         ))}
                                     </View>
                                 </TouchableOpacity>
-                                        )}
+                                )}
                             />
                             <View style={{alignItems: 'center'}}>
-                                {renderTaiLenAnhSuKien(50, 20)}
+                                {renderTaiLenAnhSuKien(50, undefined)}
                             </View>
                             
                             <Modal
                             visible={showModalXoaAnh}
                             animationType="slide">
-                                <View style={{marginTop: 'auto'}}>
-                                    <View>
+                                <View style={{marginTop: 'auto', alignItems: 'center'}}>
+                                    <View style={{alignItems: 'center'}}>
                                         <TouchableOpacity onPress={xoaAnhSuKien}>
-                                        <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                            <IconSymbol name={'delete'} size={50} color={'red'}/>
                                         </TouchableOpacity>
                                         <Text>{'Xóa ảnh vừa chọn?'}</Text>
                                     </View>
-                                    <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                                 </View>
+                                <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                             </Modal>
-                        </View>
-                        <View style={{marginTop: 'auto'}}>
-                            <Button title="Đóng" onPress={() => setShowModalAnhSuKien(false)}></Button>
+
+                            <View style={{marginTop: 'auto'}}>
+                                <Button title="Đóng" onPress={() => setShowModalAnhSuKien(false)}></Button>
+                            </View>
                         </View>
                     </Modal>
             </View>
@@ -248,7 +252,7 @@ export default function AnhSuKienTruyXuat({suKien}: {suKien: SuKienTruyXuat}) {
 const styles = StyleSheet.create({
   image: {
     width: width,
-    height: '85%',
+    height: '100%',
     resizeMode: 'cover',
   },
   indicatorContainer: {

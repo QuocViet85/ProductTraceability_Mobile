@@ -68,7 +68,7 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
             animationType={'slide'}
             style={{width: '100%', height: '100%'}}
             >
-                <View>
+                <View style={{flex: 1}}>
                     <FlatList
                         data={listFilesAnhBinhLuan}
                         horizontal
@@ -77,25 +77,25 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
                         onScroll={onScroll}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
-                        <View>
-                            <Image source={{ uri: getUriFile(item) }} style={styles.image} />
-                            <View style={styles.indicatorContainer}>
-                                {listFilesAnhBinhLuan.map((_, i) => (
-                                <View
-                                    key={i}
-                                    style={[
-                                    styles.dot,
-                                        { backgroundColor: i === activeIndex ? '#333' : '#aaa' },
-                                    ]}
-                                />
-                                ))}
+                            <View>
+                                <Image source={{ uri: getUriFile(item) }} style={styles.image} />
+                                <View style={styles.indicatorContainer}>
+                                    {listFilesAnhBinhLuan.map((_, i) => (
+                                    <View
+                                        key={i}
+                                        style={[
+                                        styles.dot,
+                                            { backgroundColor: i === activeIndex ? '#333' : '#aaa' },
+                                        ]}
+                                    />
+                                    ))}
+                                </View>
                             </View>
+                        )}
+                        />
+                        <View style={{marginTop: 'auto'}}>
+                            <Button title="Đóng" onPress={() => setShowModalAnhBinhLuan(false)}></Button>
                         </View>
-                                )}
-                    />
-                </View>
-                <View style={{marginTop: 'auto'}}>
-                    <Button title="Đóng" onPress={() => setShowModalAnhBinhLuan(false)}></Button>
                 </View>
             </Modal>
         </View>
@@ -105,7 +105,7 @@ export default function AnhBinhLuan({bL_Id}: {bL_Id: string}) {
 const styles = StyleSheet.create({
   image: {
     width: width,
-    height: '90%',
+    height: '100%',
     resizeMode: 'cover',
   },
   indicatorContainer: {
