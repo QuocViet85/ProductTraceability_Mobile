@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, DimensionValue, Image, Modal, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Button, DimensionValue, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { getUriAvatarDoanhNghiep, getUriImagesFromCamera, getUriImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 import { quyenSuaDoanhNghiep } from "../Auth/Authorization/AuthDoanhNghiep";
 import getBearerToken from "../Auth/Authentication";
@@ -7,6 +7,7 @@ import { url } from "../server/backend";
 import axios from "axios";
 import { STATE_CHANGE } from "../constant/State";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Ionicons } from "@expo/vector-icons";
 
 const temp_UriAvatarDoanhNghiep : {
     dN_Id: string,
@@ -125,22 +126,31 @@ export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN
         }
     }
 
+    const styles = StyleSheet.create({
+        frameAvatarDoanhNghiep: {
+            width: width,
+            height: height,
+            borderRadius: 32,
+            backgroundColor: '#eee',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderWidth: 1,
+            borderColor: '#ccc',
+        }
+    })
+
     return (
         <View>
             <TouchableOpacity onPress={handleTouchAvatar}>
+                {uriAvatar ? (
                 <Image 
                 source={{uri: uriAvatar ? uriAvatar : ''}}
-                style={{
-                            width: width,
-                            height: height,
-                            borderRadius: 32,
-                            backgroundColor: '#eee',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            borderWidth: 1,
-                            borderColor: '#ccc',
-                        }}
-                />
+                style={styles.frameAvatarDoanhNghiep}
+                />) : (
+                <View
+                style={styles.frameAvatarDoanhNghiep}>
+                    <Ionicons name={'business-outline'} size={width as number * 0.5}/>
+                </View>)}
             </TouchableOpacity>
             
             <Modal
@@ -169,13 +179,12 @@ export default function AvatarDoanhNghiep({dN_Id, width, height, canChange}: {dN
                                         <Text>{'Xóa ảnh đại diện'}</Text>
                                     </View>
                                     ) : (<View></View>)}
-                                
                             </View>
                         </View>
                         <Button title="Đóng" onPress={() => setShowModalChangeAvatar(false)}></Button>
                     </View>
                 </Modal>
         </View>
-        
     )
 }
+

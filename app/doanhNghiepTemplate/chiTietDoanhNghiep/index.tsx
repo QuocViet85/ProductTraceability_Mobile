@@ -2,7 +2,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Footer from "../../helpers/ViewHelpers/footer";
 import { Updating } from "../../helpers/ViewHelpers/updating";
 import DoanhNghiep from "../../model/DoanhNghiep";
@@ -20,42 +20,62 @@ export default function ChiTietDoanhNghiep()
 {
     const params = useLocalSearchParams();
     const dN_Id = params.dN_Id;
+    const dN_MaGS1 = params.dN_MaGS1;
+    const thongBao = params.thongBao;
 
     const [doanhNghiep, setDoanhNghiep] = useState<DoanhNghiep | null>(null);
     const [soSanPhamSoHuu, setSoSanPhamSoHuu] = useState<number>(0);
     const [reRenderDoanhNghiep, setReRenderDoanhNghiep] = useState<number>(0);
     const router = useRouter();
+
+    let urlDoanhNghiep = url(`api/doanhnghiep`);
+
+    if (dN_Id) {
+      urlDoanhNghiep += `/${dN_Id}`
+    }else if (dN_MaGS1) {
+      urlDoanhNghiep += `/ma-gs1/${dN_MaGS1}`
+    }else {
+      urlDoanhNghiep = '';
+    }
     
 
     useEffect(() => {
         layDoanhNghiep();
     }, [reRenderDoanhNghiep]);
 
+    useEffect(() => {
+        if (thongBao) {
+            Alert.alert('Thông báo', thongBao as string);
+        }
+    }, [])
+
     const layDoanhNghiep = async() => {
         const doanhNghiepInTemp = temp_DoanhNghiep.find((dn) => {
-            return dn.doanhNghiep.dN_Id === dN_Id;
+            return dn.doanhNghiep.dN_Id === dN_Id || (dN_MaGS1 && dn.doanhNghiep.dN_MaGS1 === dN_MaGS1);
         });
 
         if (!doanhNghiepInTemp) {
-            const urlDoanhNghiep = url(`api/doanhnghiep/${dN_Id}`);
+            if (urlDoanhNghiep) {
+                const resDN = await axios.get(urlDoanhNghiep);
 
-            const resDN = await axios.get(urlDoanhNghiep);
-            if (resDN.data) {
-                const doanhNghiep : DoanhNghiep = resDN.data;
-                setDoanhNghiep(doanhNghiep);
-                const doanhNghiepPushToTemp : {doanhNghiep: DoanhNghiep, soSanPham: number} = {doanhNghiep: doanhNghiep, soSanPham: 0};
+                if (resDN.data) {
+                    const doanhNghiep : DoanhNghiep = resDN.data;
+                    setDoanhNghiep(doanhNghiep);
+                    const doanhNghiepPushToTemp : {doanhNghiep: DoanhNghiep, soSanPham: number} = {doanhNghiep: doanhNghiep, soSanPham: 0};
 
-                temp_DoanhNghiep.push(doanhNghiepPushToTemp);
+                    temp_DoanhNghiep.push(doanhNghiepPushToTemp);
 
-                const urlSoSanPhamSoHuu = url(`api/sanpham/doanh-nghiep-so-huu/tong-so/${dN_Id}`);
+                    const urlSoSanPhamSoHuu = url(`api/sanpham/doanh-nghiep-so-huu/tong-so/${doanhNghiep.dN_Id}`);
 
-                const resSoSP = await axios.get(urlSoSanPhamSoHuu);
+                    const resSoSP = await axios.get(urlSoSanPhamSoHuu);
 
-                if (resSoSP.data) {
-                    setSoSanPhamSoHuu(resSoSP.data);
-                    doanhNghiepPushToTemp.soSanPham = resSoSP.data;
+                    if (resSoSP.data) {
+                        setSoSanPhamSoHuu(resSoSP.data);
+                        doanhNghiepPushToTemp.soSanPham = resSoSP.data;
+                    }
                 }
             }
+            
         }else {
             setDoanhNghiep(doanhNghiepInTemp.doanhNghiep);
             setSoSanPhamSoHuu(doanhNghiepInTemp.soSanPham);
@@ -64,7 +84,7 @@ export default function ChiTietDoanhNghiep()
 
     const refreshDoanhNghiep = async() => {
         const indexDoanhNghiepInTemp = temp_DoanhNghiep.findIndex((doanhNghiepTrongTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
-            return doanhNghiepTrongTemp.doanhNghiep.dN_Id === dN_Id;
+            return doanhNghiepTrongTemp.doanhNghiep.dN_Id === dN_Id || (dN_MaGS1 && doanhNghiepTrongTemp.doanhNghiep.dN_MaGS1 === dN_MaGS1);
         });
 
         if (indexDoanhNghiepInTemp !== -1) {

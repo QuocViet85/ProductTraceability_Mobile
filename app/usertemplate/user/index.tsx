@@ -67,47 +67,50 @@ export default function UserInfo() {
                     {/* Logo + Name */}
                     <CoverPhotoUser userId={userId as string} height={300} canChange={false} />
                     <View style={{height: 10}}></View>
-                    <View style={styles.profileHeader}>
-                    <AvatarUser userId={user.id as string} width={64} height={64} canChange={false}/>
-                    <View style={styles.nameSection}>
-                        <Text style={styles.businessName}>{user.name}</Text>
-                        <Text style={styles.businessType}>{'Tài khoản'} {generateExactRole(user.role as string)}</Text>
-                    </View>
-                    </View>
-
-                    <TuongTacUser userId={userId as string} />
-
-                    {/* Giới thiệu */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{'Giới thiệu'}</Text>
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="location-on" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                {'Số điện thoại: '}{user.phoneNumber ? user.phoneNumber : (<Updating />)}
-                            </Text>
+                    <View style={{padding: 10}}>
+                        <View style={styles.profileHeader}>
+                        <AvatarUser userId={user.id as string} width={64} height={64} canChange={false}/>
+                        <View style={styles.nameSection}>
+                            <Text style={styles.businessName}>{user.name}</Text>
+                            <Text style={styles.businessType}>{'Tài khoản'} {generateExactRole(user.role as string)}</Text>
+                        </View>
                         </View>
 
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="email" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                {'Email: '}{user.email ? user.email : (<Updating />)}
-                            </Text>
+                        <TuongTacUser userId={userId as string} />
+
+                        {/* Giới thiệu */}
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>{'Giới thiệu'}</Text>
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="location-on" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Số điện thoại: '}{user.phoneNumber ? user.phoneNumber : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="email" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Email: '}{user.email ? user.email : (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="location-on" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Địa chỉ: '}{user.address ? user.address : (<Updating />)}
+                                </Text>
+                            </View>
                         </View>
 
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="location-on" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                {'Địa chỉ: '}{user.address ? user.address : (<Updating />)}
-                            </Text>
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>{'Đánh giá sản phẩm'}</Text>
+                            <BinhLuanCuaUser userId={userId as string}/>
                         </View>
-                    </View>
 
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{'Đánh giá sản phẩm'}</Text>
-                        <BinhLuanCuaUser userId={userId as string}/>
+                        <View style={{height: 50}}></View>
                     </View>
-
-                    <View style={{height: 50}}></View>
+                    
                 </ScrollView>
 
                 {/* Bottom Tabs */}

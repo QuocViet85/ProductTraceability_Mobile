@@ -20,7 +20,7 @@ export default function SuaDoanhNghiep({doanhNghiep, setReRenderDoanhNghiep}: {d
     const [diaChi, setDiaChi] = useState<string | undefined>(doanhNghiep.dN_DiaChi);
     const [soDienThoai, setSoDienThoai] = useState<string | undefined>(doanhNghiep.dN_SoDienThoai);
     const [email, setEmail] = useState<string | undefined>(doanhNghiep.dN_Email);
-    const [maGS1, setMaGS1] = useState<string | undefined>(undefined);
+    const [maGS1, setMaGS1] = useState<string | undefined>(doanhNghiep.dN_MaGS1);
 
     useEffect(() => {
         layQuyenSua();

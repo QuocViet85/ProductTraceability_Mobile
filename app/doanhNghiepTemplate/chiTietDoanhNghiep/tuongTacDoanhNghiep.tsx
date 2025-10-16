@@ -5,6 +5,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import getBearerToken from "../../Auth/Authentication";
 import { makePhoneCall } from "../../helpers/LogicHelper/helper";
 import { url } from "../../server/backend";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export const temp_ThongTinTheoDoiDoanhNghiep : ThongTinTheoDoiDoanhNghiepTrongTemp[] = [];
 
@@ -97,9 +98,11 @@ export default function TuongTacDoanhNghiep({dN_Id, dN_SoDienThoai}: {dN_Id: str
         <View>
             <View style={styles.actionRow}>
                 <View style={{width: '70%'}}>
-                    {!dangTheoDoi ? 
-                    (<Button title="+Theo dõi" color={'green'} onPress={theoDoiHoacHuyTheoDoi}></Button>) : 
-                    (<Button title="-Hủy theo dõi" color={'green'} onPress={theoDoiHoacHuyTheoDoi}></Button>)}        
+                    <TouchableOpacity 
+                    style={{ flex: 1, backgroundColor: '#00b050', borderRadius: 8, width: '100%', alignItems: 'center', paddingTop: PADDING_DEFAULT}} 
+                    onPress={theoDoiHoacHuyTheoDoi}>
+                        <Text style={{color: 'white', fontWeight: 'bold'}}>{!dangTheoDoi ? '+Theo dõi' : '-Hủy theo dõi'}</Text>
+                    </TouchableOpacity>        
                 </View>
                 <TouchableOpacity style={styles.iconButton} onPress={() => makePhoneCall(dN_SoDienThoai)}>
                     <IconSymbol name="call" size={24} color="green" />

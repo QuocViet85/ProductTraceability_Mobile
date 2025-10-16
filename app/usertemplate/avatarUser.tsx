@@ -2,6 +2,7 @@ import getBearerToken from "@/app/Auth/Authentication";
 import { getUriAvatarUser, getUriImagesFromCamera, getUriImagesPickInDevice } from "@/app/helpers/LogicHelper/fileHelper";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
+import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, Image, Modal, Text, TouchableOpacity, View } from "react-native";
@@ -119,8 +120,8 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
     return (
         <View>
             <TouchableOpacity onPress={handleTouchAvatar}>
-                <Image
-                    source={{uri: uriAvatar ? uriAvatar : ''}}
+                {uriAvatar ? (<Image
+                    source={{uri: uriAvatar}}
                     style={{
                         width: width,
                         height: height,
@@ -131,7 +132,7 @@ export default function AvatarUser({userId, width, height, canChange} : {userId 
                         borderWidth: 1,
                         borderColor: '#ccc',
                     }}
-                    />
+                    />) : (<IconSymbol name={'account-circle'} size={height} color={'grey'}/>)}
             </TouchableOpacity>
 
             <Modal

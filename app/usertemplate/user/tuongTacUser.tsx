@@ -1,4 +1,5 @@
 import getBearerToken from "@/app/Auth/Authentication";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 import { url } from "@/app/server/backend";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import axios from "axios";
@@ -98,9 +99,11 @@ export default function TuongTacUser({userId}: {userId: string}) {
         <View>
             <View style={styles.actionRow}>
                 <View style={{width: '70%'}}>
-                    {!dangTheoDoi ? 
-                    (<Button title="+Theo dõi" color={'green'} onPress={theoDoiHoacHuyTheoDoi}></Button>) : 
-                    (<Button title="-Hủy theo dõi" color={'green'} onPress={theoDoiHoacHuyTheoDoi}></Button>)}        
+                    <TouchableOpacity 
+                    style={{ flex: 1, backgroundColor: '#00b050', borderRadius: 8, width: '100%', alignItems: 'center', paddingTop: PADDING_DEFAULT}} 
+                    onPress={theoDoiHoacHuyTheoDoi}>
+                        <Text style={{color: 'white', fontWeight: 'bold'}}>{!dangTheoDoi ? '+Theo dõi' : '-Hủy theo dõi'}</Text>
+                    </TouchableOpacity>  
                 </View>
                 <TouchableOpacity style={styles.iconButton}>
                         <IconSymbol name="message" size={22} color="green" />
@@ -119,7 +122,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 12,
   },
-  followButton: { flex: 1, backgroundColor: '#00b050', marginRight: 8 },
   iconButton: {
     padding: 8,
     borderWidth: 1,

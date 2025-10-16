@@ -28,19 +28,25 @@ import SanPhamsCungDanhMuc from "./sanPhamsCungDanhMuc";
 import SanPhamsCungDoanhNghiepSoHuu from "./sanPhamsCungDoanhNghiepSoHuu";
 import MaVach from "./maVach";
 
-
 export const temp_SanPham : SanPham[] = [];
 
 export default function Index() {
     const params = useLocalSearchParams();
     const sP_MaTruyXuat = params.sP_MaTruyXuat;
+    const sP_MaVach = params.sP_MaVach;
     const [sanPham, setSanPham] = useState<SanPham | null>(null);
     const [userLogin, setUserLogin] = useState<AppUser | null>(null);
     const [reRenderSanPham, setReRenderSanPham] = useState<number>(0);
 
-    const urlSanPham = url(`api/sanPham/ma-truy-xuat/${sP_MaTruyXuat}`);
+    let urlSanPham : string = url(`api/sanPham`);
 
-    const [refreshing, setRefreshing] = useState(false);
+    if (sP_MaTruyXuat) {
+      urlSanPham += `/ma-truy-xuat/${sP_MaTruyXuat}`;
+    }else if (sP_MaVach) {
+      urlSanPham += `/ma-vach/${sP_MaVach}`
+    }else {
+      urlSanPham = '';
+    }
   
     const router = useRouter();
 
@@ -57,15 +63,17 @@ export default function Index() {
     const laySanPham = async () => {
       try {
         const sanPhamInTemp = temp_SanPham.find((sanPham: SanPham) => {
-          return sanPham.sP_MaTruyXuat === sP_MaTruyXuat;
+          return sanPham.sP_MaTruyXuat === sP_MaTruyXuat || (sP_MaVach && sanPham.sP_MaVach === sP_MaVach);
         });
 
         if (!sanPhamInTemp) {
-          const res = await axios.get(urlSanPham);
-          if (res.data) {
-            const sP: SanPham = res.data;
-            setSanPham(sP);
-            temp_SanPham.push(sP);
+          if (urlSanPham) {
+            const res = await axios.get(urlSanPham);
+            if (res.data) {
+              const sP: SanPham = res.data;
+              setSanPham(sP);
+              temp_SanPham.push(sP);
+            }
           }
         }else {
           setSanPham(sanPhamInTemp);
@@ -84,7 +92,7 @@ export default function Index() {
 
     const refreshSanPham = async() => {
       const indexSanPhamInTemp = temp_SanPham.findIndex((sanPham: SanPham) => {
-          return sanPham.sP_MaTruyXuat === sP_MaTruyXuat;
+          return sanPham.sP_MaTruyXuat === sP_MaTruyXuat || (sP_MaVach && sanPham.sP_MaVach === sP_MaVach);
       });
 
       if (indexSanPhamInTemp !== -1) {
@@ -104,9 +112,9 @@ export default function Index() {
           contentContainerStyle={styles.container} 
           refreshControl={(
                             <RefreshControl 
-                            refreshing={refreshing}
-                            onRefresh={refreshSanPham}
-                            progressViewOffset={30}/>
+                              refreshing={false}
+                              onRefresh={refreshSanPham}
+                              progressViewOffset={30}/>
                           )}>
             {sanPham ? 
             (<View style={{flex: 1}}>

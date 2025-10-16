@@ -10,9 +10,9 @@ export function layMaTruyXuatTuUrl(url: string) {
     return maTruyXuat;
 }
 
-export async function giaiMaQrCode(base64: any) {
+export async function giaiMaCode(base64: any) {
     try {
-    const urlGiaiMaQrCode = url('api/qrcode/giai-ma');
+    const urlGiaiMaQrCode = url('api/code/giai-ma');
     const response = await axios.post(urlGiaiMaQrCode, {imageBase64: base64}, {
         headers: {"Content-Type": "application/json"}
     })
@@ -21,11 +21,11 @@ export async function giaiMaQrCode(base64: any) {
       console.log('✅ QR Content:', response.data.data);
       return response.data.data;
     } else {
-      console.log('❌ Không decode được mã QR');
+      console.log('❌ Không decode được mã');
       throw new Error('Không decode được');
     }
   } catch (err : any) {
-    console.log('❌ Không decode được mã QR', err.response.data.error);
+    console.log('❌ Không decode được mã', err.response.data.error);
     throw new Error('Không decode được');
   }
 }
