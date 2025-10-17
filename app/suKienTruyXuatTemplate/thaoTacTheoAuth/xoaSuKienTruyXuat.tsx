@@ -8,6 +8,7 @@ import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "re
 import { View } from "react-native";
 import { temp_ListSuKienTruyXuats } from "..";
 import { LIMIT_SU_KIEN_TRUY_XUAT } from "@/app/constant/Limit";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumber, setTongSoSuKiens, setReRenderSuKien, width, height, paddingVertical, fontSize}: {suKien: SuKienTruyXuat, setTongSoSuKiens: Function, listSuKiensHienThi: SuKienTruyXuat[], pageNumber: number, setReRenderSuKien: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -82,18 +83,19 @@ export default function XoaSuKienTruyXuat({suKien, listSuKiensHienThi, pageNumbe
         </TouchableOpacity>
 
         <Modal
-            visible={showModalXoa}
-            animationType={'slide'}>
-
-            <View style={{marginTop: '90%', alignItems: 'center', borderRadius: 8}}>
-                <Text>{'Chắc chắn xóa sự kiện truy xuất ?'}</Text>
-                <View style={{width: 50}}>
-                    <Button title="Xóa" color={'red'} onPress={xoaSuKienTruyXuat}></Button>
+        visible={showModalXoa}
+        animationType={'slide'}
+        transparent= {true}>
+            <View style={{ marginTop: '80%', alignItems: 'center' }}>
+                <View style={{ width: '50%', backgroundColor: '#f2f2f2', borderRadius: 8 }}>
+                    <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={xoaSuKienTruyXuat}>
+                            <IconSymbol name={'delete'} size={50} color={'red'}/>
+                        </TouchableOpacity>
+                        <Text>{'Xóa sự kiện '}<Text style={{fontWeight: 'bold'}}>{suKien.sK_Ten}</Text></Text>
+                    </View>
+                    <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                 </View>
-            </View>
-
-            <View style={{ marginTop: 'auto'}}>
-                <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
             </View>
         </Modal>
     </View>) 

@@ -97,7 +97,7 @@ export default function AnhNhaMay({nM_Id}: {nM_Id: string}) {
                   return item.nM_Id === nM_Id;
                 });
                 if (indexFilesAnhCuaNhaMayInTemp !== -1) {
-                  temp_ListFilesAnhNhaMay.splice(indexFilesAnhCuaNhaMayInTemp);
+                  temp_ListFilesAnhNhaMay.splice(indexFilesAnhCuaNhaMayInTemp, 1);
                 }
 
                 setReRender((value) => value + 1);
@@ -124,7 +124,7 @@ export default function AnhNhaMay({nM_Id}: {nM_Id: string}) {
               return item.nM_Id === nM_Id;
             });
             if (indexFilesAnhCuaNhaMayInTemp !== -1) {
-              temp_ListFilesAnhNhaMay.splice(indexFilesAnhCuaNhaMayInTemp);
+              temp_ListFilesAnhNhaMay.splice(indexFilesAnhCuaNhaMayInTemp, 1);
             }
             setReRender((value) => value + 1);
         }catch {

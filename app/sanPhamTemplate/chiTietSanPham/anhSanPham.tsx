@@ -98,7 +98,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
                   return item.sP_Id === sP_Id;
                 });
                 if (indexFilesAnhCuaSanPhamInTemp !== -1) {
-                  temp_ListFilesAnhSanPham.splice(indexFilesAnhCuaSanPhamInTemp);
+                  temp_ListFilesAnhSanPham.splice(indexFilesAnhCuaSanPhamInTemp, 1);
                 }
 
                 setReRender((value) => value + 1);
@@ -126,7 +126,7 @@ export default function AnhSanPham({sP_Id, dN_SoHuu_Id} : {sP_Id : string, dN_So
             });
 
             if (indexFilesAnhCuaSanPhamInTemp !== -1) {
-              temp_ListFilesAnhSanPham.splice(indexFilesAnhCuaSanPhamInTemp);
+              temp_ListFilesAnhSanPham.splice(indexFilesAnhCuaSanPhamInTemp, 1);
             }
 
             setReRender((value) => value + 1);

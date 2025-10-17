@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Alert, Button, Modal, StyleSheet, Text, View } from "react-native";
 import { temp_NhaMay } from "..";
 import { TouchableOpacity } from "react-native";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function XoaNhaMay({nhaMay, setNhaMay}: {nhaMay: NhaMay, setNhaMay: Function}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -35,7 +36,7 @@ export default function XoaNhaMay({nhaMay, setNhaMay}: {nhaMay: NhaMay, setNhaMa
             });
 
             if (indexNhaMayBiXoa !== -1) {
-                temp_NhaMay.splice(indexNhaMayBiXoa);
+                temp_NhaMay.splice(indexNhaMayBiXoa, 1);
             }
 
             setNhaMay(null);
@@ -51,18 +52,19 @@ export default function XoaNhaMay({nhaMay, setNhaMay}: {nhaMay: NhaMay, setNhaMa
                 </TouchableOpacity>
 
                 <Modal
-                    visible={showModalXoa}
-                    animationType={'slide'}>
-        
-                    <View style={{marginTop: '90%', alignItems: 'center', borderRadius: 8}}>
-                        <Text>{'Chắc chắn xóa nhà máy ?'}</Text>
-                        <View style={{width: 50}}>
-                            <Button title="Xóa" color={'red'} onPress={xoaNhaMay}></Button>
+                visible={showModalXoa}
+                animationType={'slide'}
+                transparent={true}>
+                    <View style={{ marginTop: '80%', alignItems: 'center' }}>
+                        <View style={{ width: '50%', backgroundColor: '#f2f2f2', borderRadius: 8 }}>
+                            <View style={{alignItems: 'center'}}>
+                                <TouchableOpacity onPress={xoaNhaMay}>
+                                    <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                </TouchableOpacity>
+                                <Text>{'Xóa nhà máy '}<Text style={{fontWeight: 'bold'}}>{nhaMay.nM_Ten}</Text></Text>
+                            </View>
+                            <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                         </View>
-                    </View>
-        
-                    <View style={{ marginTop: 'auto'}}>
-                        <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                     </View>
                 </Modal>
             </View>

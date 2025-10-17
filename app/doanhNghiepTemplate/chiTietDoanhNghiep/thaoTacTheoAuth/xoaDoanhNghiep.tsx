@@ -8,6 +8,7 @@ import { Alert, Button, Modal, StyleSheet, Text, TouchableOpacity, View } from "
 import { temp_DoanhNghiep } from "../";
 import { listDoanhNghiepsHienThiTrangChu, modeTimKiemTrangChuListDoanhNghieps, pageNumberTrangChuListDoanhNghieps, reRenderTrangChuListDoanhNghieps, setTongDoanhNghiep, textTimKiemTrangChuListDoanhNghieps } from "../../danhSachDoanhNghiep";
 import { LIMIT_DOANHNGHIEP } from "@/app/constant/Limit";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghiep: DoanhNghiep, setDoanhNghiep: Function}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -31,12 +32,20 @@ export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghi
 
             Alert.alert('Thông báo', 'Xóa doanh nghiệp thành công');
 
-            const indexDoanhNghiepBiXoa = temp_DoanhNghiep.findIndex((doanhNghiepInTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
+            const indexDoanhNghiepBiXoaInTemp = temp_DoanhNghiep.findIndex((doanhNghiepInTemp: {doanhNghiep: DoanhNghiep, soSanPham: number}) => {
                 return doanhNghiepInTemp.doanhNghiep.dN_Id === doanhNghiep.dN_Id;
             });
 
-            if (indexDoanhNghiepBiXoa !== -1) {
-                temp_DoanhNghiep.splice(indexDoanhNghiepBiXoa);
+            if (indexDoanhNghiepBiXoaInTemp !== -1) {
+                temp_DoanhNghiep.splice(indexDoanhNghiepBiXoaInTemp, 1);
+            }
+
+            const indexDoanhNghiepBiXoaInTrangChu = listDoanhNghiepsHienThiTrangChu.findIndex((doanhNghiepInTrangChu: DoanhNghiep) => {
+                return doanhNghiepInTrangChu.dN_Id === doanhNghiep.dN_Id;
+            });
+
+            if (indexDoanhNghiepBiXoaInTrangChu !== -1) {
+                listDoanhNghiepsHienThiTrangChu.splice(indexDoanhNghiepBiXoaInTrangChu, 1);
             }
 
             setDoanhNghiep(null);
@@ -63,18 +72,19 @@ export default function XoaDoanhNghiep({doanhNghiep, setDoanhNghiep}: {doanhNghi
                 </TouchableOpacity>
 
                 <Modal
-                    visible={showModalXoa}
-                    animationType={'slide'}>
-        
-                    <View style={{marginTop: '90%', alignItems: 'center', borderRadius: 8}}>
-                        <Text>{'Chắc chắn xóa sản phẩm ?'}</Text>
-                        <View style={{width: 50}}>
-                            <Button title="Xóa" color={'red'} onPress={xoaDoanhNghiep}></Button>
+                visible={showModalXoa}
+                animationType={'slide'}
+                transparent={true}>
+                    <View style={{ marginTop: '80%', alignItems: 'center' }}>
+                        <View style={{ width: '50%', backgroundColor: '#f2f2f2', borderRadius: 8 }}>
+                            <View style={{alignItems: 'center'}}>
+                                <TouchableOpacity onPress={xoaDoanhNghiep}>
+                                    <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                </TouchableOpacity>
+                                <Text>{'Xóa doanh nghiệp '}<Text style={{fontWeight: 'bold'}}>{doanhNghiep.dN_Ten}</Text></Text>
+                            </View>
+                            <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                         </View>
-                    </View>
-        
-                    <View style={{ marginTop: 'auto'}}>
-                        <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                     </View>
                 </Modal>
             </View>

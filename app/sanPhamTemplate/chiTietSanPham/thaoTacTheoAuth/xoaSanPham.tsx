@@ -8,6 +8,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity, View } from "react-native";
 import { temp_SanPham } from "..";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function XoaSanPham({sanPham, setSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -73,17 +74,18 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
 
         <Modal
             visible={showModalXoa}
-            animationType={'slide'}>
-
-            <View style={{marginTop: '90%', alignItems: 'center', borderRadius: 8}}>
-                <Text>{'Chắc chắn xóa sản phẩm ?'}</Text>
-                <View style={{width: 50}}>
-                    <Button title="Xóa" color={'red'} onPress={xoaSanPham}></Button>
+            animationType={'slide'}
+            transparent= {true}>
+            <View style={{ marginTop: '80%', alignItems: 'center' }}>
+                <View style={{ width: '50%', backgroundColor: '#f2f2f2', borderRadius: 8 }}>
+                    <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={xoaSanPham}>
+                            <IconSymbol name={'delete'} size={50} color={'red'}/>
+                        </TouchableOpacity>
+                        <Text>{'Xóa sản phẩm '}<Text style={{fontWeight: 'bold'}}>{sanPham.sP_Ten}</Text></Text>
+                    </View>
+                    <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                 </View>
-            </View>
-
-            <View style={{ marginTop: 'auto'}}>
-                <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
             </View>
         </Modal>
     </View>) 

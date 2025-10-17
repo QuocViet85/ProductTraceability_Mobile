@@ -103,7 +103,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                     return item.lsP_Id === loSanPham.lsP_Id;
                 });
                 if (indexFilesAnhCuaLoSanPhamInTemp !== -1) {
-                    temp_ListAnhLoSanPhams.splice(indexFilesAnhCuaLoSanPhamInTemp);
+                    temp_ListAnhLoSanPhams.splice(indexFilesAnhCuaLoSanPhamInTemp, 1);
                 }
 
                 setReRender((value) => value + 1);
@@ -130,7 +130,7 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                 return item.lsP_Id === loSanPham.lsP_Id;
             });
             if (indexFilesAnhCuaLoSanPhamInTemp !== -1) {
-                temp_ListAnhLoSanPhams.splice(indexFilesAnhCuaLoSanPhamInTemp);
+                temp_ListAnhLoSanPhams.splice(indexFilesAnhCuaLoSanPhamInTemp, 1);
             }
 
             setReRender((value) => value + 1);
@@ -228,16 +228,21 @@ export default function AnhLoSanPham({loSanPham, sP_DN_SoHuu_Id}: {loSanPham: Lo
                             
                             <Modal
                             visible={showModalXoaAnh}
-                            animationType="slide">
-                                <View style={{marginTop: 'auto', alignItems: 'center'}}>
-                                    <View style={{alignItems: 'center'}}>
-                                        <TouchableOpacity onPress={xoaAnhLoSanPham}>
-                                            <IconSymbol name={'delete'} size={50} color={'red'}/>
-                                        </TouchableOpacity>
-                                        <Text>{'Xóa ảnh vừa chọn?'}</Text>
+                            animationType="slide"
+                            transparent= {true}>
+                                <View style={{ marginTop: '80%', alignItems: 'center' }}>
+                                    <View style={{ width: '50%', backgroundColor: 'white', borderRadius: 8 }}>
+                                        <View style={{alignItems: 'center'}}>
+                                            <TouchableOpacity onPress={xoaAnhLoSanPham}>
+                                                <IconSymbol name={'delete'} size={50} color={'red'}/>
+                                            </TouchableOpacity>
+                                            <Text>{'Xóa ảnh'}</Text>
+                                        </View>
+                                        <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
                                     </View>
+                                    
                                 </View>
-                                <Button title="Đóng" onPress={() => setShowModalXoaAnh(false)}></Button>
+                                
                             </Modal>
 
                             <View style={{marginTop: 'auto'}}>

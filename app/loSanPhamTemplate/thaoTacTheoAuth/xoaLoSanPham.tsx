@@ -8,6 +8,7 @@ import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity } from "re
 import { View } from "react-native";
 import { temp_ListLoSanPhams } from "..";
 import { LIMIT_LO_SANPHAM } from "@/app/constant/Limit";
+import { IconSymbol } from "@/components/ui/IconSymbol";
 
 export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, setTongSo, pageNumber, doanhNghiepSoHuuId, setReRenderLoSanPham, width, height, paddingVertical, fontSize}: {loSanPham: LoSanPham, listLoSanPhamsHienThi: LoSanPham[], setTongSo: Function, pageNumber: number, doanhNghiepSoHuuId: string, setReRenderLoSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -36,7 +37,7 @@ export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, setTongS
             });
 
             if (indexLoSanPhamBiXoaInTemp !== -1) {
-                temp_ListLoSanPhams.splice(indexLoSanPhamBiXoaInTemp);
+                temp_ListLoSanPhams.splice(indexLoSanPhamBiXoaInTemp, 1);
             }
 
             const indexLoSanPhamHienThiBiXoa = listLoSanPhamsHienThi.findIndex((loSanPhamHienThi: LoSanPham) => {
@@ -44,7 +45,7 @@ export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, setTongS
             });
 
             if (indexLoSanPhamHienThiBiXoa !== -1) {
-                listLoSanPhamsHienThi.splice(indexLoSanPhamBiXoaInTemp);
+                listLoSanPhamsHienThi.splice(indexLoSanPhamBiXoaInTemp, 1);
             }
 
             const res = await axios.get(url(`api/losanpham/san-pham/${loSanPham.lsP_SP_Id}?pageNumber=${pageNumber}&limit=${LIMIT_LO_SANPHAM}`));
@@ -81,18 +82,19 @@ export default function XoaLoSanPham({loSanPham, listLoSanPhamsHienThi, setTongS
         </TouchableOpacity>
 
         <Modal
-            visible={showModalXoa}
-            animationType={'slide'}>
-
-            <View style={{marginTop: '90%', alignItems: 'center', borderRadius: 8}}>
-                <Text>{'Chắc chắn xóa lô sản phẩm ?'}</Text>
-                <View style={{width: 50}}>
-                    <Button title="Xóa" color={'red'} onPress={xoaLoSanPham}></Button>
+        visible={showModalXoa}
+        animationType={'slide'}
+        transparent={true}>
+            <View style={{ marginTop: '80%', alignItems: 'center' }}>
+                <View style={{ width: '50%', backgroundColor: '#f2f2f2', borderRadius: 8 }}>
+                    <View style={{alignItems: 'center'}}>
+                        <TouchableOpacity onPress={xoaLoSanPham}>
+                            <IconSymbol name={'delete'} size={50} color={'red'}/>
+                        </TouchableOpacity>
+                        <Text>{'Xóa lô sản phẩm '}<Text style={{fontWeight: 'bold'}}>{loSanPham.lsP_MaLSP}</Text></Text>
+                    </View>
+                    <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
                 </View>
-            </View>
-
-            <View style={{ marginTop: 'auto'}}>
-                <Button title="Đóng" onPress={() => setShowModalXoa(false)}></Button>
             </View>
         </Modal>
     </View>) 
