@@ -1,0 +1,1 @@
+export const Date_Undefined = new Date("1970-01-01");
