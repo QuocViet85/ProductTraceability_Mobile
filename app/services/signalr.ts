@@ -10,9 +10,9 @@ let connection: HubConnection;
 
 const ReceiveMessage = "ReceiveMessage";
 
-let state_SetMessagesInStorage = false;
+export let state_SetMessagesInStorage = false;
 
-export const connectToSignalR = async (onReceive: Function | undefined) => {
+export const connectToSignalR = async (onReceive: Function | undefined = undefined) => {
   if (!connection || connection?.state === "Disconnected") {
       const accessToken = await getAccessToken();
       connection = new HubConnectionBuilder()
@@ -42,11 +42,25 @@ export const disconnectToSignalR = async () => {
   if (connection) await connection.stop();
 };
 
-export async function getListMessagesFromStorage() : Promise<Message[]> {
+export async function getListMessagesFromStorage(sort: boolean = false) : Promise<Message[]> {
     const listMessageStrings = await AsyncStorage.getItem(ListMessages);
     const listMessages: Message[] = JSON.parse(listMessageStrings as string);
     if (!listMessages) {
         return [];
+    }
+
+    if (sort) {
+      listMessages.sort((a: Message, b: Message) => {
+        a.timeSend = new Date(a.timeSend);
+        b.timeSend = new Date(b.timeSend);
+
+        if (a.timeSend > b.timeSend) {
+          return -1;
+        }else if (a.timeSend > b.timeSend) {
+          return 1;
+        }
+        return 0;
+      })
     }
     return listMessages;
 }
