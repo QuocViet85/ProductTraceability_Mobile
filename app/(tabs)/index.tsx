@@ -13,7 +13,7 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Header title={"Sản phẩm"} fontSize={30} resource={null}></Header>
       <View style={{height: 10}}></View>
-      <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} height={25} alignItems='center'/>
+      <DanhMucs danhMucHienTai={danhMucHienTai} setDanhMucHienTai={setDanhMucHienTai} height={undefined} alignItems='center'/>
       <DanhSachSanPham danhMucHienTai={danhMucHienTai} />
     </View>
   );

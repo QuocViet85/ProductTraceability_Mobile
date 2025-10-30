@@ -146,12 +146,12 @@ export default function Index() {
                     <View style={{height: 10}}></View>
 
                     <View style={{flexDirection: 'row'}}>
-                        <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
+                        <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', padding: PADDING_DEFAULT, height: 40}}
                                           onPress={() => router.push({pathname: '/loSanPhamTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
                             <Text>{'Lô sản phẩm'}</Text>
                         </TouchableOpacity>
                         <View style={{width: 10}}></View>
-                        <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', paddingVertical: 10, alignItems: 'center', height: 40}}
+                        <TouchableOpacity style={{borderWidth: 0.5, borderRadius: 8, backgroundColor: '#f2f2f2', padding: PADDING_DEFAULT, height: 40}}
                                           onPress={() => router.push({pathname: '/suKienTruyXuatTemplate', params:{sP_Id: sanPham.sP_Id, sP_Ten: sanPham.sP_Ten, sP_MaTruyXuat: sanPham.sP_MaTruyXuat, sP_DN_SoHuu_Id: sanPham.sP_DN_SoHuu_Id}})}>
                             <Text>{'Sự kiện truy xuất'}</Text>
                         </TouchableOpacity>
@@ -169,9 +169,9 @@ export default function Index() {
                     
                     <View style={{height: 10}}></View>
                     <View style={{flexDirection: 'row'}}>
-                        <SuaSanPham sanPham={sanPham} setReRenderSanPham={setReRenderSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                        <SuaSanPham sanPham={sanPham} setReRenderSanPham={setReRenderSanPham} width={60} height={30} paddingVertical={5} fontSize={12}/>
                         <View style={{width: 10}}></View>
-                        <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={40} height={30} paddingVertical={5} fontSize={12}/>
+                        <XoaSanPham sanPham={sanPham} setSanPham={setSanPham} width={60} height={30} paddingVertical={5} fontSize={12}/>
                     </View>
                     
                     

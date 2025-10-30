@@ -16,6 +16,7 @@ import AnhBinhLuan from "./anhBinhLuan";
 import ChonSaoSanPham from "./chonSaoSanPham";
 import PostBinhLuan from "./postBinhLuan";
 import XoaBinhLuan from "./xoaBinhLuan";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export const temp_ListBinhLuansCuaSanPham : BinhLuan[] = [];
 
@@ -223,6 +224,8 @@ const styles = StyleSheet.create({
     touchSaoBinhLuan: {
         borderWidth: 0.5,
         borderRadius: 8,
-        marginLeft: 10
+        marginLeft: 5,
+        paddingLeft: PADDING_DEFAULT,
+        paddingRight: PADDING_DEFAULT
     }
 })

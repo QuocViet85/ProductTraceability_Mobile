@@ -40,7 +40,10 @@ export default function DanhMucs({danhMucHienTai, setDanhMucHienTai, height, ali
     return (
         <View style={{width: '100%'}}>
             <View style={{alignItems: alignItems}}>
-                <Text style={{borderWidth: 1, borderColor: 'grey', borderRadius: 8, height: height}} onPress={() => setShowModal(true)}>{danhMucHienTai.dM_Id === undefined ? 'Danh mục ▼' : danhMucHienTai.dM_Ten + ' ▼'}</Text>
+                <View>
+                    <Text style={{borderWidth: 1, borderColor: 'grey', borderRadius: 8, height: height, paddingLeft: PADDING_DEFAULT, paddingRight: PADDING_DEFAULT, paddingTop: 5, paddingBottom: 5}} onPress={() => setShowModal(true)}>{danhMucHienTai.dM_Id === undefined ? 'Danh mục ▼' : danhMucHienTai.dM_Ten + ' ▼'}</Text>
+                </View>
+                
             </View>
                   
             <Modal

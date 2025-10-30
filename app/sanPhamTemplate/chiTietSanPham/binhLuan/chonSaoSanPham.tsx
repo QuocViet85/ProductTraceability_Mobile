@@ -1,4 +1,5 @@
 import { getBearerToken } from "@/app/Auth/Authentication";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 import BlurLine from "@/app/helpers/ViewHelpers/blurLine";
 import { url } from "@/app/server/backend";
 import { laySoSaoCuaMotNguoiVoiMotSanPham, temp_SoSaoCuaMotNguoiVoiMotSanPham } from "@/app/temp/tempSaoSanPhamCuaNguoiVoiSanPham";
@@ -42,7 +43,7 @@ export default function ChonSaoSanPham({sP_Id, userLoginId} : {sP_Id: string, us
         <View>
             <View style={{alignItems: 'center'}}>
                 <TouchableOpacity onPress={() => setShowModalChonSao(true)}>
-                    <View style={{flexDirection: 'row', borderWidth: 0.5, borderRadius: 8}}>
+                    <View style={{flexDirection: 'row', borderWidth: 0.5, borderRadius: 8, paddingLeft: PADDING_DEFAULT, paddingRight: PADDING_DEFAULT}}>
                         <Text>{'Chọn sao: ' + soSaoChon}</Text>
                         <IconSymbol name="star" size={25} color="#FFD700" />
                     </View>

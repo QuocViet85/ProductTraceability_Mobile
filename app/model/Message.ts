@@ -12,6 +12,8 @@ export class Message
 
     receiveUserName: string | undefined;
 
+    typeMessage: string | undefined;
+
     timeSend: Date = new Date();
 
     success: boolean = true;

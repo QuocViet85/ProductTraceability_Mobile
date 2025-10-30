@@ -179,7 +179,7 @@ export default function SuaSanPham({sanPham, setReRenderSanPham, width, height, 
     return quyenSua 
     ? (
     <View>
-        <TouchableOpacity style={{backgroundColor: 'yellow', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalSua(true)}>
+        <TouchableOpacity style={{backgroundColor: 'yellow', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center', padding: PADDING_DEFAULT}} onPress={() => setShowModalSua(true)}>
             <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Sửa'}</Text>
         </TouchableOpacity>
 

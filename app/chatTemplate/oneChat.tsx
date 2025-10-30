@@ -10,6 +10,8 @@ import { Message } from "../model/Message";
 import { connectToSignalR, deleteOneChat, getListMessagesFromStorage, receiveMessage, sendMessage } from "../services/signalr";
 import MenuChat from "./menuChat";
 import ShowMessage from "./showMessage";
+import { MESSAGE_IMAGE, MESSAGE_TEXT } from "../constant/TypeMessage";
+import { getBase64ImagesFromCamera, getBase64ImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 
 export let listMessagesGlobalInOneChat : Message[] = []
 export let setReRenderOneChat: Function = () => {}
@@ -74,9 +76,9 @@ export default function OneChat()
         }catch {}
     }
 
-    const handleSend = async() => {
+    const handleSendText = async() => {
         if (chatText) {
-            const newMessage = await sendMessage(chatText, userChatWithId as string, userChatWithName);
+            const newMessage = await sendMessage(chatText, userChatWithId as string, userChatWithName, MESSAGE_TEXT);
 
             if (newMessage) {
                 listMessages.push(newMessage);
@@ -84,6 +86,10 @@ export default function OneChat()
             }
         }
     };
+
+    const handSendImage = async(camera: boolean) => {
+        
+    }
 
     const deleteThisChat = async() => {
         await deleteOneChat(userLogin?.id as string, userChatWithId as string);
@@ -125,8 +131,14 @@ export default function OneChat()
                         <View style={{width: '100%', flexDirection: 'row', marginBottom: 30}}>
                             <TextInput style={styles.textInputChat} placeholder='Nhập tin nhắn' value={chatText} onChangeText={setChatText}>
                             </TextInput>
-                            <TouchableOpacity style={styles.touchSend} onPress={handleSend}>
+                            <TouchableOpacity style={{...styles.touchSendText, display: chatText ? undefined : 'none'}} onPress={handleSendText}>
                                 <IconSymbol name={'send'} color={'white'}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{display: chatText ? 'none' : undefined, paddingTop: 5}} onPress={() => handSendImage(true)}>
+                                <IconSymbol name={'camera'} color={'blue'} size={30}/>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{display: chatText ? 'none' : undefined, paddingTop: 5}} onPress={() => handSendImage(false)}>
+                                <IconSymbol name={'photo-album'} color={'blue'} size={30}/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -151,7 +163,7 @@ const styles = StyleSheet.create({
     width: '60%',
     borderRadius: 8
   },
-  touchSend: {
+  touchSendText: {
     borderWidth: 1,
     borderColor: 'black',
     borderRadius: 8,

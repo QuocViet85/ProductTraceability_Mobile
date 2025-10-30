@@ -1,4 +1,5 @@
 import { logOut } from "@/app/Auth/Authentication";
+import { setForceReRenderDanhSachChat } from "@/app/chatTemplate/danhSachChat";
 import { useState } from "react";
 import { Button, Modal, View } from "react-native";
 
@@ -10,6 +11,7 @@ export default function Logout({setUserLogin} : {setUserLogin : any}) {
             await logOut(allDevices);
             setUserLogin(null);
             setModalLogout(false);
+            setForceReRenderDanhSachChat((value: number) => value + 1);
         }catch {}
     }
 

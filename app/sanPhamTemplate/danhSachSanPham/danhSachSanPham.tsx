@@ -189,7 +189,7 @@ export default function DanhSachSanPham({danhMucHienTai} : {danhMucHienTai: Danh
               </View>
               <View style={{height: 10}}></View>
               <View>
-                <ThemSanPham width={100} height={30} paddingVertical={5} fontSize={12}/>
+                <ThemSanPham width={120} height={30} paddingVertical={5} fontSize={12}/>
               </View>
           </View>
           <FlatList

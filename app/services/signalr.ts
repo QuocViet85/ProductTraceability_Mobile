@@ -28,8 +28,8 @@ export const connectToSignalR = async (onReceive: Function | undefined = undefin
 
   if (onReceive) {
     connection.off(ReceiveMessage);
-    connection.on(ReceiveMessage, async(userSendId: string, userSendName: string | undefined, message: string, timeSend: Date) => {
-      const newMessage = await receiveMessage(userSendId, userSendName, message, timeSend);
+    connection.on(ReceiveMessage, async(userSendId: string, userSendName: string | undefined, message: string, typeMessage: string, timeSend: Date) => {
+      const newMessage = await receiveMessage(userSendId, userSendName, message, typeMessage, timeSend);
       onReceive(newMessage);
     })
   }else {
@@ -130,7 +130,7 @@ export async function deleteAllChats() {
   }
 }
 
-export const sendMessage = async (chatText: string, userChatWithId: string, userChatWithName: string | undefined) : Promise<Message | undefined> => {
+export const sendMessage = async (chatText: string, userChatWithId: string, userChatWithName: string | undefined, typeMessage: string) : Promise<Message | undefined> => {
   if (connection && connection.state === "Connected") {
     const userLogin = await getUserLogin();
 
@@ -143,6 +143,7 @@ export const sendMessage = async (chatText: string, userChatWithId: string, user
     newMessage.timeSend = new Date();
     newMessage.sendUserId = userLogin.id;
     newMessage.receiveUserId = userChatWithId as string;
+    newMessage.typeMessage = typeMessage;
 
     newMessage.sendUserName = userLogin.name;
     newMessage.receiveUserName = userChatWithName;
@@ -151,7 +152,7 @@ export const sendMessage = async (chatText: string, userChatWithId: string, user
     await saveMessageToStorage(newMessage);
 
     try {
-      await connection.invoke("SendMessage", newMessage.receiveUserId, newMessage.content);
+      await connection.invoke("SendMessage", newMessage.receiveUserId, newMessage.content, newMessage.typeMessage);
       return newMessage;
     }catch {
       await deleteOneMessage(newMessage);
@@ -162,7 +163,7 @@ export const sendMessage = async (chatText: string, userChatWithId: string, user
   }
 };
 
-export async function receiveMessage(userSendId: string, userSendName: string | undefined, message: string, timeSend: Date) : Promise<Message | undefined> {
+export async function receiveMessage(userSendId: string, userSendName: string | undefined, message: string, typeMessage: string, timeSend: Date) : Promise<Message | undefined> {
     const userLogin = await getUserLogin();
 
     if (!userLogin) {
@@ -173,6 +174,7 @@ export async function receiveMessage(userSendId: string, userSendName: string | 
     newMessage.sendUserId = userSendId;
     newMessage.receiveUserId = userLogin.id;
     newMessage.content = message;
+    newMessage.typeMessage = typeMessage;
 
     newMessage.sendUserName = userSendName;
     newMessage.receiveUserName = userLogin.name;

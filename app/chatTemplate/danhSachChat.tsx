@@ -13,7 +13,7 @@ import AvatarUser from "../usertemplate/avatarUser";
 
 let listMessagesCuoiInDanhSachChat: Message[] |  undefined = undefined;
 let setReRenderDanhSachChat : Function = () => {}
-let setForceReRenderDanhSachChat : Function = () => {}
+export let setForceReRenderDanhSachChat : Function = () => {}
 
 export default function DanhSachChat() 
 {

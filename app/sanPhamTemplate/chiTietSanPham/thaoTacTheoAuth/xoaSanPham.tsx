@@ -9,6 +9,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Alert, Button, DimensionValue, Modal, Text, TouchableOpacity, View } from "react-native";
 import { temp_SanPham } from "..";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function XoaSanPham({sanPham, setSanPham, width, height, paddingVertical, fontSize}: {sanPham: SanPham, setSanPham: Function, width: DimensionValue | undefined, height: DimensionValue | undefined, paddingVertical: DimensionValue | undefined, fontSize: number | undefined}) {
     const [quyenXoa, setQuyenXoa] = useState<boolean>(false);
@@ -68,7 +69,7 @@ export default function XoaSanPham({sanPham, setSanPham, width, height, paddingV
     return quyenXoa 
     ? (
     <View>
-        <TouchableOpacity style={{backgroundColor: 'red', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalXoa(true)}>
+        <TouchableOpacity style={{backgroundColor: 'red', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center', padding: PADDING_DEFAULT}} onPress={() => setShowModalXoa(true)}>
             <Text style={{fontWeight: 'bold', fontSize: fontSize}}>{'Xóa'}</Text>
         </TouchableOpacity>
 

@@ -4,12 +4,13 @@ import { useState } from "react";
 import { Alert, Button, StyleSheet, TextInput, View } from "react-native";
 import { getUserLogin, setAccessAndRefreshToken } from "../../Auth/Authentication";
 import { url } from "../../server/backend";
+import { setForceReRenderDanhSachChat } from "@/app/chatTemplate/danhSachChat";
 
 export default function Login({setFormDangNhap, setUserLogin} : {setFormDangNhap : any, setUserLogin: any}) {
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
-    const onLogin = () => {
+    const onLogin = async () => {
         if (phoneNumber === '' || password === '') {
             Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin');
             return;
@@ -17,19 +18,20 @@ export default function Login({setFormDangNhap, setUserLogin} : {setFormDangNhap
 
         let urlDangNhap = url('api/auth/login');
 
-        axios.post(urlDangNhap, {
-            phoneNumber: phoneNumber,
-            passWord: password
-        }).then((response) => {
-            const token = response.data;
-            setAccessAndRefreshToken(token.accessToken, token.refreshToken).then(() => {
-                getUserLogin().then((userLogin) => {
-                    setUserLogin(userLogin)
-                })
-            });
-        }).catch(() => {
-            Alert.alert("Lỗi","Tên đăng nhập hoặc mật khẩu không hợp lệ")
-        });
+        try {
+            const res = await axios.post(urlDangNhap, {
+              phoneNumber: phoneNumber,
+              passWord: password
+          });
+
+          const token = res.data;
+          await setAccessAndRefreshToken(token.accessToken, token.refreshToken);
+          const userLogin = await getUserLogin();
+          setUserLogin(userLogin);
+          setForceReRenderDanhSachChat((value: number) => value + 1);
+        }catch {
+          Alert.alert("Lỗi","Tên đăng nhập hoặc mật khẩu không hợp lệ")
+        }
     };
 
     return (

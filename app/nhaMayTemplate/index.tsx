@@ -13,6 +13,7 @@ import { getWidthScreen } from "../helpers/LogicHelper/helper";
 import { HEIGHT_SMARTPHONE } from "../constant/SizeScreen";
 import SuaNhaMay from "./thaoTacTheoAuth/suaNhaMay";
 import XoaNhaMay from "./thaoTacTheoAuth/xoaNhaMay";
+import { PADDING_DEFAULT } from "../constant/Style";
 
 export const temp_NhaMay: NhaMay[] = [];
 
@@ -79,59 +80,62 @@ export default function NhaMayChiTiet() {
                         </View>
                     </View>
 
-                    {/* Giới thiệu */}
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>Giới thiệu</Text>
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="contact-phone" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                {'Số điện thoại: '}{nhaMay.nM_SoDienThoai ? nhaMay.nM_SoDienThoai: (<Updating />)}
-                            </Text>
+                    <View style={{padding: PADDING_DEFAULT}}>
+                        {/* Giới thiệu */}
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>{'Giới thiệu'}</Text>
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="contact-phone" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Số điện thoại: '}{nhaMay.nM_SoDienThoai ? nhaMay.nM_SoDienThoai: (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="email" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Email: '}{nhaMay.nM_Email ? nhaMay.nM_Email: (<Updating />)}
+                                </Text>
+                            </View>
+
+                            <View style={styles.addressRow}>
+                                <MaterialIcons name="location-on" size={20} color="#555" />
+                                <Text style={styles.addressText}>
+                                    {'Địa chỉ: '}{nhaMay.nM_DiaChi ? nhaMay.nM_DiaChi : (<Updating />)}
+                                </Text>
+                            </View>
                         </View>
 
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="email" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                {'Email: '}{nhaMay.nM_Email ? nhaMay.nM_Email: (<Updating />)}
-                            </Text>
-                        </View>
-
-                        <View style={styles.addressRow}>
-                            <MaterialIcons name="location-on" size={20} color="#555" />
-                            <Text style={styles.addressText}>
-                                {'Địa chỉ: '}{nhaMay.nM_DiaChi ? nhaMay.nM_DiaChi : (<Updating />)}
-                            </Text>
-                        </View>
-                    </View>
-
-                    <View style={{marginTop: 10, alignItems: 'center'}}>
-                        <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/sanPhamTemplate/danhSachSanPham/danhSachSanPham', params: {nM_Id: nhaMay.nM_Id, nM_Ten: nhaMay.nM_Ten
-                        }})}>
-                            <Text style={styles.statLabel}>{'Sản phẩm được sản xuất tại nhà máy'}</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.statsRow}>
-                        <SuaNhaMay nhaMay={nhaMay} setReRenderNhaMay={setReRenderNhaMay} />
-                        <XoaNhaMay nhaMay={nhaMay} setNhaMay={setNhaMay} />
-                    </View>
-
-                    <View style={styles.section}>
-                        <Text style={styles.sectionTitle}>{'Doanh Nghiệp Sở Hữu Nhà Máy'}</Text>
-                        {nhaMay.nM_DN ? (<View>
-                            <Link href={{pathname: '/doanhNghiepTemplate/chiTietDoanhNghiep', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
-                            <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
-                                <View>
-                                    <AvatarDoanhNghiep dN_Id={nhaMay.nM_DN?.dN_Id as string} width={40} height={40} canChange={false}/>
-                                </View>
-                                <View style={{marginLeft: 10}}>
-                                    <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{nhaMay.nM_DN?.dN_Ten}</Text>
-                                </View>
+                        <View style={{marginTop: 10, alignItems: 'center'}}>
+                            <TouchableOpacity style={styles.statBox} onPress={() => router.push({pathname: '/sanPhamTemplate/danhSachSanPham/danhSachSanPham', params: {nM_Id: nhaMay.nM_Id, nM_Ten: nhaMay.nM_Ten
+                            }})}>
+                                <Text style={styles.statLabel}>{'Sản phẩm được sản xuất tại nhà máy'}</Text>
                             </TouchableOpacity>
-                            </Link>
-                        </View>) : (<View></View>)}
-                        
+                        </View>
+
+                        <View style={styles.statsRow}>
+                            <SuaNhaMay nhaMay={nhaMay} setReRenderNhaMay={setReRenderNhaMay} />
+                            <XoaNhaMay nhaMay={nhaMay} setNhaMay={setNhaMay} />
+                        </View>
+
+                        <View style={styles.section}>
+                            <Text style={styles.sectionTitle}>{'Doanh Nghiệp Sở Hữu Nhà Máy'}</Text>
+                            {nhaMay.nM_DN ? (<View>
+                                <Link href={{pathname: '/doanhNghiepTemplate/chiTietDoanhNghiep', params: {dN_Id: nhaMay.nM_DN?.dN_Id} }} withAnchor asChild>
+                                <TouchableOpacity style={{height: 40, flexDirection: 'row'}}>
+                                    <View>
+                                        <AvatarDoanhNghiep dN_Id={nhaMay.nM_DN?.dN_Id as string} width={40} height={40} canChange={false}/>
+                                    </View>
+                                    <View style={{marginLeft: 10}}>
+                                        <Text style={{color: 'black', fontWeight: 'bold', fontSize: 25}}>{nhaMay.nM_DN?.dN_Ten}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                                </Link>
+                            </View>) : (<View></View>)}
+                            
+                        </View>
                     </View>
+                    
                 </ScrollView>
 
                 {/* Bottom Tabs */}
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     marginBottom: 10,
     borderRadius: 8,
-    alignItems: 'center',
+    padding: PADDING_DEFAULT
   },
   statValue: { fontWeight: 'bold', fontSize: 16 },
   statLabel: { color: '#555', fontSize: 13 },

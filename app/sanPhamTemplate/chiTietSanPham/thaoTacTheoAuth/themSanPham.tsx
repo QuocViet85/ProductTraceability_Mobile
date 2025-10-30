@@ -154,7 +154,7 @@ export default function ThemSanPham({width, height, paddingVertical, fontSize}: 
 
     return (
         <View>
-            <TouchableOpacity style={{backgroundColor: 'blue', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center'}} onPress={() => setShowModalThem(true)}>
+            <TouchableOpacity style={{backgroundColor: 'blue', width: width, height: height, borderRadius: 8, paddingVertical: paddingVertical, alignItems: 'center', padding: PADDING_DEFAULT}} onPress={() => setShowModalThem(true)}>
                 <Text style={{fontWeight: 'bold', fontSize: fontSize, color: 'white'}}>{'Thêm sản phẩm'}</Text>
             </TouchableOpacity>
 

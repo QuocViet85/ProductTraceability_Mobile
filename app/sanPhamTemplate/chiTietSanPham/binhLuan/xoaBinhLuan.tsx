@@ -7,6 +7,7 @@ import { temp_ListBinhLuansCuaUser } from "@/app/usertemplate/user/binhLuanCuaUs
 import axios from "axios";
 import { Alert, DimensionValue, Text, TouchableOpacity, View } from "react-native";
 import { temp_ListBinhLuansCuaSanPham } from "./binhLuanSanPham";
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 
 export default function XoaBinhLuan({userLogin, binhLuan, setTongSoBinhLuan, setForceReRender, width} : {userLogin: AppUser | null, binhLuan: BinhLuan, setTongSoBinhLuan: Function, setForceReRender: Function, width: DimensionValue | undefined}) {
     const xoaBinhLuan = async () => {
@@ -62,7 +63,7 @@ export default function XoaBinhLuan({userLogin, binhLuan, setTongSoBinhLuan, set
             ? userLogin?.id === binhLuan.bL_NguoiTao_Id || userLogin?.role === ROLE_ADMIN 
                     ? 
             (<View>
-                <TouchableOpacity style={{backgroundColor: 'red', width: width, borderRadius: 8, alignItems: 'center'}} onPress={xoaBinhLuan}>
+                <TouchableOpacity style={{backgroundColor: 'red', width: width, borderRadius: 8, alignItems: 'center', paddingLeft: PADDING_DEFAULT, paddingRight: PADDING_DEFAULT}} onPress={xoaBinhLuan}>
                     <Text style={{fontWeight: 'bold'}}>{'Xóa'}</Text>
                 </TouchableOpacity>
             </View>)

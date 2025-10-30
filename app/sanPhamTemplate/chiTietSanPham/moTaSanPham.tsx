@@ -1,3 +1,4 @@
+import { PADDING_DEFAULT } from "@/app/constant/Style";
 import Spacer from "@/app/helpers/ViewHelpers/spacer";
 import { Link } from "expo-router";
 import { useState } from "react";
@@ -25,7 +26,7 @@ export default function MoTaSanPham({moTa} : {moTa: string}) {
                         visible={showModalMoTa}
                         animationType='slide'
                         >
-                            <ScrollView>
+                            <ScrollView style={{padding: PADDING_DEFAULT}}>
                                 <Text style={{fontSize: 20}}>
                                     {moTa}
                                 </Text>

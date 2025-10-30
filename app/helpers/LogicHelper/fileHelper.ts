@@ -66,7 +66,7 @@ export async function getUriAvatarSanPham(sP_Id: string) {
     }
 }
 
-export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean) : Promise<string[]> {
+export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean, quality: number = 1) : Promise<string[]> {
   const uriImagesArr = [];
   const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!permissionResult.granted) {
@@ -76,7 +76,7 @@ export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean)
   // Mở thư viện ảnh
   let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
-      quality: 1,
+      quality: quality,
       allowsMultipleSelection: allowsMultipleSelection
   });
 
@@ -88,7 +88,7 @@ export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean)
   return uriImagesArr;
 }
 
-export async function getUriImagesFromCamera() : Promise<string[]> {
+export async function getUriImagesFromCamera(quantity: number = 1) : Promise<string[]> {
   const uriImagesArr = [];
   const permission = await ImagePicker.requestCameraPermissionsAsync();
     if (!permission.granted) {
@@ -96,7 +96,7 @@ export async function getUriImagesFromCamera() : Promise<string[]> {
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      quality: 1,
+      quality: quantity,
     });
 
     if (!result.canceled) {
@@ -105,5 +105,52 @@ export async function getUriImagesFromCamera() : Promise<string[]> {
       }
     }
     return uriImagesArr;
+}
+
+export async function getBase64ImagesPickInDevice(allowsMultipleSelection: boolean, quantity: number = 1) : Promise<(string | null | undefined)[]> {
+  const base64ImagesArr = [];
+  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (!permissionResult.granted) {
+      Alert.alert("Quyền bị từ chối", "Bạn cần cấp quyền để chọn ảnh");
+  }
+
+  // Mở thư viện ảnh
+  let result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      quality: quantity,
+      base64: true,
+      allowsMultipleSelection: allowsMultipleSelection
+  });
+
+  if (!result.canceled) {
+      for (const asset of result.assets) {
+        base64ImagesArr.push(asset.base64)
+      }
+  }
+  return base64ImagesArr;
+}
+
+export async function getBase64ImagesFromCamera(quantity: number = 1) : Promise<(string | null | undefined)[]> {
+  const base64ImagesArr = [];
+  const permission = await ImagePicker.requestCameraPermissionsAsync();
+    if (!permission.granted) {
+      Alert.alert("Quyền bị từ chối", "Bạn cần cấp quyền camera");
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      quality: quantity,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      for (const asset of result.assets) {
+        base64ImagesArr.push(asset.base64)
+      }
+    }
+    return base64ImagesArr;
+}
+
+export function generateBase64ToDisplayImage(base64: string): string {
+  return `data:image/png;base64,${base64}`;
 }
 
