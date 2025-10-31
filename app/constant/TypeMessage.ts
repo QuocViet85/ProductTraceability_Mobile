@@ -1,3 +1,3 @@
-export const MESSAGE_TEXT = "TEXT";
+export const MESSAGE_TEXT = "MESSAGE_TEXT";
 
-export const MESSAGE_IMAGE = "MESSAGE";
+export const MESSAGE_IMAGE = "MESSAGE_IMAGE";

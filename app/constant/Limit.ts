@@ -19,6 +19,11 @@ export const LIMIT_SU_KIEN_TRUY_XUAT = 8;
 
 export const LIMIT_TAINGUYEN_LIENQUAN = 8;
 
+// LIMIT FILE
+export const LIMIT_FILE_SIZE = 5000000;
+
+export const LIMIT_IMAGE_WIDTH = 1000;
+
 
 /*
     LIMIT tài nguyên render bằng FlatList (để vừa cuộn vừa render) phải set = số tài nguyên đủ để chiều cao nội dung render của FlatList vượt quá chiều cao hiển thị của FlatList thì mới cuộn được.

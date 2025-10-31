@@ -2,9 +2,13 @@
 import { HubConnectionBuilder, HubConnection, LogLevel } from '@microsoft/signalr';
 import { url } from '../server/backend';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getAccessToken, getUserLogin } from '../Auth/Authentication';
+import { getAccessToken, getBearerToken, getUserLogin } from '../Auth/Authentication';
 import { Message } from '../model/Message';
 import { ListMessages } from '../constant/KeyStorage';
+import { MESSAGE_IMAGE, MESSAGE_TEXT } from '../constant/TypeMessage';
+import { getUriImagesFromCamera, getUriImagesPickInDevice } from '../helpers/LogicHelper/fileHelper';
+import axios from 'axios';
+import { Alert } from 'react-native';
 
 let connection: HubConnection;
 
@@ -100,6 +104,11 @@ export async function deleteOneMessage(message: Message) {
       await setListMessagesFromStorage(listMessages);
     }
 
+    if (message.typeMessage === MESSAGE_IMAGE) {
+      const urlDeleteMessageImage = url(`api/chat/message-image/${message.sendUserId}?tenFile=${message.content}`)
+      axios.delete(urlDeleteMessageImage, {headers: {Authorization: await getBearerToken() }})
+    }
+
     state_SetMessagesInStorage = false;
   }
 }
@@ -130,37 +139,81 @@ export async function deleteAllChats() {
   }
 }
 
-export const sendMessage = async (chatText: string, userChatWithId: string, userChatWithName: string | undefined, typeMessage: string) : Promise<Message | undefined> => {
-  if (connection && connection.state === "Connected") {
-    const userLogin = await getUserLogin();
+export const sendMessage = async (chatText: string, userChatWithId: string, userChatWithName: string | undefined, typeMessage: string, camera: boolean = false) : Promise<Message | undefined> => {
+  const userLogin = await getUserLogin();
 
-    if (!userLogin) {
+  if (!userLogin) {
       return;
-    }
-
-    const newMessage = new Message();
-    newMessage.content = chatText;
-    newMessage.timeSend = new Date();
-    newMessage.sendUserId = userLogin.id;
-    newMessage.receiveUserId = userChatWithId as string;
-    newMessage.typeMessage = typeMessage;
-
-    newMessage.sendUserName = userLogin.name;
-    newMessage.receiveUserName = userChatWithName;
-    
-
-    await saveMessageToStorage(newMessage);
-
-    try {
-      await connection.invoke("SendMessage", newMessage.receiveUserId, newMessage.content, newMessage.typeMessage);
-      return newMessage;
-    }catch {
-      await deleteOneMessage(newMessage);
-    }
-
-  } else {
-    console.warn("SignalR not connected");
   }
+
+  if (typeMessage === MESSAGE_TEXT) {
+    if (connection && connection.state === "Connected") {
+      const newMessage = new Message();
+      newMessage.content = chatText;
+      newMessage.timeSend = new Date();
+      newMessage.sendUserId = userLogin.id;
+      newMessage.receiveUserId = userChatWithId as string;
+      newMessage.typeMessage = typeMessage;
+
+      newMessage.sendUserName = userLogin.name;
+      newMessage.receiveUserName = userChatWithName;
+      
+
+      await saveMessageToStorage(newMessage);
+
+      try {
+        await connection.invoke("SendMessage", newMessage.receiveUserId, newMessage.content, newMessage.typeMessage);
+        return newMessage;
+      }catch {
+        await deleteOneMessage(newMessage);
+      }
+    } else {
+      console.warn("SignalR not connected");
+    }
+  }else if (typeMessage === MESSAGE_IMAGE) {
+    let uriImgArr : string[] = [];
+    
+    if (camera) {
+        uriImgArr = await getUriImagesFromCamera();
+    }else {
+        uriImgArr = await getUriImagesPickInDevice();
+    }
+
+    if (uriImgArr.length > 0) {
+        const uriImg: string = uriImgArr[0];
+
+        const formData = new FormData();
+
+        formData.append("file", {
+                        uri: uriImg,
+                        type: "image/jpeg",
+                        name: "message.jpg",
+                        } as any);
+
+        const uriTaiLenImageMessage = url(`api/chat/message-image/${userChatWithId}`);
+
+        try {
+            const res = await axios.post(uriTaiLenImageMessage, formData, { headers : {"Content-Type": "multipart/form-data", Authorization: await getBearerToken()}});
+            const tenImg = res.data;
+
+            const newMessage = new Message();
+            newMessage.content = tenImg;
+            newMessage.timeSend = new Date();
+            newMessage.sendUserId = userLogin.id;
+            newMessage.receiveUserId = userChatWithId as string;
+            newMessage.typeMessage = typeMessage;
+
+            newMessage.sendUserName = userLogin.name;
+            newMessage.receiveUserName = userChatWithName;
+
+            await saveMessageToStorage(newMessage);
+
+            return newMessage;
+        }catch {
+              Alert.alert('Lỗi', 'Gửi ảnh thất bại');
+        }
+    }
+  } 
 };
 
 export async function receiveMessage(userSendId: string, userSendName: string | undefined, message: string, typeMessage: string, timeSend: Date) : Promise<Message | undefined> {

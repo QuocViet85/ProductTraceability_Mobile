@@ -1,15 +1,15 @@
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { getAccessToken, getUserLogin } from "../Auth/Authentication";
+import {  getUserLogin } from "../Auth/Authentication";
 import { PADDING_DEFAULT } from "../constant/Style";
-import { getUserById } from "../helpers/LogicHelper/userHelper";
 import BlurLine from "../helpers/ViewHelpers/blurLine";
 import Header from "../helpers/ViewHelpers/header";
 import AppUser from "../model/AppUser";
 import { Message } from "../model/Message";
 import { connectToSignalR, getListMessagesFromStorage, state_SetMessagesInStorage } from "../services/signalr";
 import AvatarUser from "../usertemplate/avatarUser";
+import { MESSAGE_TEXT } from "../constant/TypeMessage";
 
 let listMessagesCuoiInDanhSachChat: Message[] |  undefined = undefined;
 let setReRenderDanhSachChat : Function = () => {}
@@ -74,12 +74,18 @@ export default function DanhSachChat()
 
     const showChat = (lastMessage: Message) => {
         if (lastMessage) {
-            let contentLastMessageShow = lastMessage.content;
+            let contentLastMessageShow = null;
 
-            if (contentLastMessageShow && contentLastMessageShow.length > 40) {
-                contentLastMessageShow = contentLastMessageShow.slice(0, 40) + '...';
+            if (lastMessage.typeMessage === MESSAGE_TEXT) {
+                contentLastMessageShow = lastMessage.content;
+
+                if (contentLastMessageShow && contentLastMessageShow.length > 40) {
+                    contentLastMessageShow = contentLastMessageShow.slice(0, 40) + '...';
+                }
+            }else {
+                contentLastMessageShow = '[ Hình ảnh ]';
             }
-
+            
             const userChatWithId : string | undefined = lastMessage.sendUserId === userLogin?.id ? lastMessage.receiveUserId : lastMessage.sendUserId; 
             const userChatWithName : string | undefined = lastMessage.sendUserId === userLogin?.id ? lastMessage.receiveUserName : lastMessage.sendUserName;
             return (

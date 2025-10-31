@@ -7,8 +7,10 @@ import {Message } from "../model/Message";
 import { listMessagesGlobalInOneChat, setReRenderOneChat } from "./oneChat";
 import { deleteOneMessage } from "../services/signalr";
 import AppUser from "../model/AppUser";
-import { MESSAGE_TEXT } from "../constant/TypeMessage";
-import { generateBase64ToDisplayImage } from "../helpers/LogicHelper/fileHelper";
+import { MESSAGE_IMAGE, MESSAGE_TEXT } from "../constant/TypeMessage";
+import { IMAGE } from "../constant/KieuFile";
+import File from "../model/File";
+import { getUriFile } from "../helpers/LogicHelper/fileHelper";
 
 export default function ShowMessage({message, userLogin} : {message: Message, userLogin: AppUser}) {
     const [showDate, setShowDate] = useState<boolean>(false);
@@ -41,36 +43,42 @@ export default function ShowMessage({message, userLogin} : {message: Message, us
         setShowMenuMessage(false);
     }
 
-    return (
-        <View>
-            {
-                message.typeMessage === MESSAGE_TEXT ? 
-                (
-                    <View>
-                        <TouchableOpacity style={{borderRadius: 8, 
-                            borderWidth: 0.5, 
-                            padding: PADDING_DEFAULT, 
-                            backgroundColor: message.sendUserId === userLogin.id ? '#66FFFF' : 'white', 
-                            marginLeft: message.sendUserId === userLogin.id ? 'auto' : undefined, 
-                            marginRight: message.sendUserId === userLogin.id ? undefined : 'auto'}}
-                            onPress={showAndHideDate}
-                            onLongPress={() => setShowMenuMessage(true)}>
+    let showMessage =  (<View></View>)
 
-                            <Text style={{color: 'black'}}>{message.content}</Text>
-                        </TouchableOpacity>
+    if (message.typeMessage === MESSAGE_TEXT) {
+        showMessage = (
+                <View>
+                    <TouchableOpacity style={{borderRadius: 8, 
+                        borderWidth: 0.5, 
+                        padding: PADDING_DEFAULT, 
+                        backgroundColor: message.sendUserId === userLogin.id ? '#66FFFF' : 'white', 
+                        marginLeft: message.sendUserId === userLogin.id ? 'auto' : undefined, 
+                        marginRight: message.sendUserId === userLogin.id ? undefined : 'auto'}}
+                        onPress={showAndHideDate}
+                        onLongPress={() => setShowMenuMessage(true)}>
 
-                        <Text style={{
-                            marginLeft: message.sendUserId === userLogin.id ? 'auto' : undefined, 
-                            marginRight: message.sendUserId === userLogin.id ? undefined : 'auto',
-                            fontStyle: 'italic',
-                            fontSize: 10,
-                            display: showDate ? undefined : 'none'
-                        }}>
-                            {message.timeSend.toLocaleString('vi-VN')}
-                        </Text>
-                    </View>
-                ) :
-                (
+                        <Text style={{color: 'black'}}>{message.content}</Text>
+                    </TouchableOpacity>
+
+                    <Text style={{
+                        marginLeft: message.sendUserId === userLogin.id ? 'auto' : undefined, 
+                        marginRight: message.sendUserId === userLogin.id ? undefined : 'auto',
+                        fontStyle: 'italic',
+                        fontSize: 10,
+                        display: showDate ? undefined : 'none'
+                    }}>
+                        {message.timeSend.toLocaleString('vi-VN')}
+                    </Text>
+                </View>
+            )
+    }else {
+        const fileImg = new File();
+        fileImg.f_KieuFile = IMAGE;
+        fileImg.f_KieuTaiNguyen = MESSAGE_IMAGE;
+        fileImg.f_TaiNguyen_Id = message.sendUserId;
+        fileImg.f_Ten = message.content;
+
+        showMessage = (
                     <View>
                         <TouchableOpacity style={{
                             marginLeft: message.sendUserId === userLogin.id ? 'auto' : undefined, 
@@ -78,7 +86,7 @@ export default function ShowMessage({message, userLogin} : {message: Message, us
                             onPress={() => setShowModalMessageImage(true)}
                             onLongPress={() => setShowMenuMessage(true)}>
                             <Image
-                                source={{ uri: generateBase64ToDisplayImage(message.content as string) }}
+                                source={{ uri: getUriFile(fileImg)}}
                                 resizeMode={undefined}
                                 style={{width: 80, height: 80, marginRight: 10, borderRadius: 8}}
                                 />
@@ -90,7 +98,7 @@ export default function ShowMessage({message, userLogin} : {message: Message, us
                             style={{width: '100%', height: '100%'}}
                             >
                             <View>
-                                <Image source={{ uri: generateBase64ToDisplayImage(message.content as string) }} 
+                                <Image source={{ uri: getUriFile(fileImg) }} 
                                         style={{width: '100%',
                                                 height: '90%',
                                                 resizeMode: 'cover',}} />
@@ -105,9 +113,13 @@ export default function ShowMessage({message, userLogin} : {message: Message, us
                         </Modal>
                     </View>
                 )
-            }
-            
+    }
 
+    return (
+        <View>
+            {
+                showMessage
+            }
             <Modal
             visible={showMenuMessage}
             animationType="slide"

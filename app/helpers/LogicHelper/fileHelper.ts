@@ -1,12 +1,12 @@
 import axios from "axios";
 import { url } from "../../server/backend";
 import * as ImagePicker from 'expo-image-picker';
-import { Alert, PermissionsAndroid } from "react-native";
+import { Alert, } from "react-native";
 import { AVATAR, COVER_PHOTO, IMAGE } from "@/app/constant/KieuFile";
 import { DOANH_NGHIEP, SAN_PHAM, USER } from "@/app/constant/KieuTaiNguyen";
-import {launchCamera} from 'react-native-image-picker';
 import File from "@/app/model/File";
-
+import { LIMIT_FILE_SIZE } from "@/app/constant/Limit";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 export async function getFileAsync  (
   kieuTaiNguyen: string,
@@ -66,7 +66,7 @@ export async function getUriAvatarSanPham(sP_Id: string) {
     }
 }
 
-export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean, quality: number = 1) : Promise<string[]> {
+export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean = false, quality: number = 1) : Promise<string[]> {
   const uriImagesArr = [];
   const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (!permissionResult.granted) {
@@ -77,12 +77,12 @@ export async function getUriImagesPickInDevice(allowsMultipleSelection: boolean,
   let result = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       quality: quality,
-      allowsMultipleSelection: allowsMultipleSelection
+      allowsMultipleSelection: allowsMultipleSelection,
   });
 
   if (!result.canceled) {
       for (const asset of result.assets) {
-        uriImagesArr.push(asset.uri)
+        uriImagesArr.push(await getUriFileAfterReduceSize(asset))
       }
   }
   return uriImagesArr;
@@ -101,10 +101,24 @@ export async function getUriImagesFromCamera(quantity: number = 1) : Promise<str
 
     if (!result.canceled) {
       for (const asset of result.assets) {
-        uriImagesArr.push(asset.uri)
+        uriImagesArr.push(await getUriFileAfterReduceSize(asset));
       }
     }
     return uriImagesArr;
+}
+
+export async function getUriFileAfterReduceSize(ass: ImagePicker.ImagePickerAsset): Promise<string> {
+    let asset = ass;
+
+    while (asset.fileSize && asset.fileSize > LIMIT_FILE_SIZE) {
+      if (asset.width > 1000) {
+        asset = await (await ImageManipulator.ImageManipulator.manipulate(asset.uri).resize({width: 1000}).renderAsync()).saveAsync();
+      }else {
+        asset = await (await ImageManipulator.ImageManipulator.manipulate(asset.uri).resize({width: asset.width - 100 }).renderAsync()).saveAsync();
+      }
+    }
+
+    return asset.uri;
 }
 
 export async function getBase64ImagesPickInDevice(allowsMultipleSelection: boolean, quantity: number = 1) : Promise<(string | null | undefined)[]> {

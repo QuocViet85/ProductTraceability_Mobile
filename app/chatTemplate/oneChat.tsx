@@ -2,7 +2,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { FlatList, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { getUserLogin } from "../Auth/Authentication";
+import {  getUserLogin } from "../Auth/Authentication";
 import { PADDING_DEFAULT } from "../constant/Style";
 import { getUserNameById } from "../helpers/LogicHelper/userHelper";
 import AppUser from "../model/AppUser";
@@ -11,7 +11,6 @@ import { connectToSignalR, deleteOneChat, getListMessagesFromStorage, receiveMes
 import MenuChat from "./menuChat";
 import ShowMessage from "./showMessage";
 import { MESSAGE_IMAGE, MESSAGE_TEXT } from "../constant/TypeMessage";
-import { getBase64ImagesFromCamera, getBase64ImagesPickInDevice } from "../helpers/LogicHelper/fileHelper";
 
 export let listMessagesGlobalInOneChat : Message[] = []
 export let setReRenderOneChat: Function = () => {}
@@ -88,7 +87,12 @@ export default function OneChat()
     };
 
     const handSendImage = async(camera: boolean) => {
-        
+        const newMessage = await sendMessage(chatText, userChatWithId as string, userChatWithName, MESSAGE_IMAGE, camera);
+
+        if (newMessage) {
+            listMessages.push(newMessage);
+            setReRender((value: number) => value + 1);
+        }
     }
 
     const deleteThisChat = async() => {
